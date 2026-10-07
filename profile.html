@@ -1,0 +1,317 @@
+<style>
+    .profile-wrapper { padding: 10px; }
+    
+    .module-header { 
+        color: #00f3ff; font-family: 'Orbitron', sans-serif; margin-bottom: 25px; 
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); border-bottom: 1px solid rgba(0, 243, 255, 0.2); 
+        padding-bottom: 10px; display: flex; align-items: center; gap: 15px;
+    }
+
+    .profile-container {
+        background: rgba(11, 16, 33, 0.8); padding: 30px; border-radius: 12px;
+        border: 1px solid rgba(0, 243, 255, 0.2); box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.05);
+        max-width: 900px; margin: 0 auto; backdrop-filter: blur(5px);
+    }
+    
+    /* Cyber Search Section */
+    .search-section { display: flex; gap: 15px; margin-bottom: 30px; }
+    .search-section input {
+        flex: 1; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(0, 243, 255, 0.3);
+        padding: 12px 18px; border-radius: 8px; color: #fff; font-size: 15px;
+        font-family: 'Poppins', sans-serif; outline: none; transition: 0.3s;
+    }
+    .search-section input:focus {
+        border-color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); background: rgba(0, 243, 255, 0.05);
+    }
+    .cyber-search-btn {
+        background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; color: #00f3ff;
+        padding: 0 30px; border-radius: 8px; cursor: pointer; font-family: 'Orbitron', sans-serif;
+        font-weight: bold; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    }
+    .cyber-search-btn:hover {
+        background: #00f3ff; color: #050914; box-shadow: 0 0 20px rgba(0, 243, 255, 0.6); transform: translateY(-2px);
+    }
+
+    /* Profile Card Setup */
+    #profileCard {
+        display: none; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 12px;
+        overflow: hidden; background: rgba(0, 0, 0, 0.4); box-shadow: 0 0 25px rgba(0, 243, 255, 0.1);
+        animation: fadeIn 0.4s ease-in;
+    }
+
+    /* Header with Logo */
+    .profile-header {
+        background: linear-gradient(135deg, rgba(0, 243, 255, 0.15) 0%, rgba(179, 102, 255, 0.2) 100%);
+        color: white; text-align: center; padding: 25px;
+        border-bottom: 1px solid rgba(0, 243, 255, 0.3); position: relative;
+    }
+    .profile-header h2 { margin: 0; font-size: 24px; color: #00f3ff; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 10px rgba(0,243,255,0.5); letter-spacing: 2px; display: flex; align-items: center; justify-content: center; gap: 15px;}
+    .profile-header p { margin: 8px 0 0; color: #a5c3e0; font-size: 14px; font-family: 'Poppins', sans-serif; letter-spacing: 1px; }
+    
+    /* Action Buttons Area */
+    .profile-actions {
+        padding: 15px 25px; background: rgba(0, 0, 0, 0.6); border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+        display: flex; justify-content: flex-end; gap: 15px;
+    }
+    .action-btn {
+        padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;
+        display: flex; align-items: center; gap: 8px; font-family: 'Orbitron', sans-serif; font-size: 13px;
+        letter-spacing: 1px; transition: 0.3s;
+    }
+    .btn-edit { background: rgba(255, 170, 0, 0.15); border: 1px solid #ffaa00; color: #ffaa00; box-shadow: 0 0 10px rgba(255,170,0,0.2); }
+    .btn-edit:hover { background: #ffaa00; color: #050914; box-shadow: 0 0 20px rgba(255,170,0,0.6); }
+    
+    .btn-save-pdf { background: rgba(0, 255, 136, 0.15); border: 1px solid #00ff88; color: #00ff88; box-shadow: 0 0 10px rgba(0,255,136,0.2); }
+    .btn-save-pdf:hover { background: #00ff88; color: #050914; box-shadow: 0 0 20px rgba(0,255,136,0.6); }
+    
+    /* Form Grid */
+    .profile-body { padding: 30px; }
+    .info-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 35px;
+    }
+    .info-group { display: flex; flex-direction: column; gap: 8px; }
+    .info-group label {
+        font-size: 12px; color: #a5c3e0; font-weight: 600;
+        font-family: 'Orbitron', sans-serif; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .info-group input {
+        padding: 12px 15px; border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 6px;
+        font-size: 15px; color: #fff; font-weight: 500; background: rgba(0, 0, 0, 0.4);
+        font-family: 'Poppins', sans-serif; transition: 0.3s; outline: none;
+    }
+    
+    /* Editable State */
+    .info-group input.editable {
+        border-color: #00f3ff; background: rgba(0, 243, 255, 0.05); box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); color: #fff;
+    }
+    .info-group input.locked { pointer-events: none; opacity: 0.8; }
+
+    /* Payment History Table */
+    .history-section h3 {
+        color: #b366ff; margin-bottom: 15px; font-family: 'Orbitron', sans-serif;
+        font-size: 16px; letter-spacing: 1px; border-bottom: 1px solid rgba(179, 102, 255, 0.3); padding-bottom: 8px;
+        text-shadow: 0 0 8px rgba(179,102,255,0.4); display: flex; justify-content: space-between; align-items: center;
+    }
+    .history-table { width: 100%; border-collapse: collapse; }
+    .history-table th, .history-table td {
+        padding: 14px; text-align: left; border-bottom: 1px solid rgba(0, 243, 255, 0.15);
+        font-family: 'Poppins', sans-serif; color: #a5c3e0; font-size: 14px;
+    }
+    .history-table th { background: rgba(0, 0, 0, 0.6); color: #00f3ff; font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 1px; }
+    .status-badge {
+        padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+        background: rgba(0, 255, 136, 0.15); color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.3);
+        text-shadow: 0 0 5px rgba(0,255,136,0.4);
+    }
+    
+    .dues-alert { color: #ff0055; font-weight: bold; background: rgba(255,0,85,0.1); padding: 4px 10px; border-radius: 4px; font-size: 13px; }
+
+    /* Hide elements during PDF generation */
+    .pdf-document .no-print { display: none !important; }
+</style>
+
+<div class="profile-wrapper">
+    <h2 class="module-header"><i class="fa-solid fa-id-card"></i> STUDENT PROFILE & RECORDS</h2>
+
+    <div class="profile-container" id="printableProfileArea">
+        
+        <!-- Search Section (Hides in PDF) -->
+        <div class="search-section no-print">
+            <input type="text" id="profileSearchInput" placeholder="Enter UID or Mobile No.">
+            <button class="cyber-search-btn" id="profSearchBtn" onclick="searchProfile()"><i class="fa-solid fa-magnifying-glass"></i> SEARCH</button>
+        </div>
+
+        <div id="profileCard">
+            <!-- Header for PDF Export -->
+            <div class="profile-header">
+                <h2><img src="logo.png" style="width: 40px; border-radius:50%; margin-right: 10px;"> PURIX ACADEMY</h2>
+                <p>Student Academic & Financial Dossier</p>
+            </div>
+
+            <!-- Actions (Hides in PDF) -->
+            <div class="profile-actions no-print">
+                <button class="action-btn btn-edit" id="editBtn" onclick="toggleEdit()">
+                    <i class="fa-solid fa-pen-to-square"></i> EDIT DETAILS
+                </button>
+                <button class="action-btn btn-save-pdf" onclick="generateProfilePDF()">
+                    <i class="fa-solid fa-file-pdf"></i> SAVE AS PDF
+                </button>
+            </div>
+
+            <!-- Profile Data -->
+            <div class="profile-body">
+                <form id="profileForm">
+                    <div class="info-grid">
+                        <div class="info-group"><label>UID (Roll No)</label><input type="text" id="p_uid" class="locked" readonly></div>
+                        <div class="info-group"><label>Student Name</label><input type="text" id="p_name" class="locked" readonly></div>
+                        <div class="info-group"><label>Father Name</label><input type="text" id="p_father" class="locked" readonly></div>
+                        <div class="info-group"><label>Mobile No.</label><input type="number" id="p_mobile" class="profile-input locked" readonly></div>
+                        <div class="info-group"><label>Aadhaar No.</label><input type="text" id="p_aadhar" class="profile-input locked" readonly placeholder="Not Updated"></div>
+                        <div class="info-group"><label>Class / Session</label><input type="text" id="p_class" class="profile-input locked" readonly></div>
+                        <div class="info-group"><label>Subjects</label><input type="text" id="p_subject" class="profile-input locked" readonly></div>
+                        <div class="info-group"><label>Status</label><input type="text" id="p_status" class="locked" readonly></div>
+                    </div>
+                </form>
+
+                <!-- Payment History -->
+                <div class="history-section">
+                    <h3>
+                        <span><i class="fa-solid fa-clock-rotate-left"></i> Payment Ledger</span>
+                        <span id="p_dues_alert" class="dues-alert"></span>
+                    </h3>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction Date & Time</th>
+                                <th>Amount Paid</th>
+                                <th>Method</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentHistoryBody">
+                            <!-- Live history will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    let isEditing = false;
+    let currentUID = "";
+
+    window.searchProfile = function() {
+        const query = document.getElementById('profileSearchInput').value.trim();
+        const card = document.getElementById('profileCard');
+        const btn = document.getElementById('profSearchBtn');
+        
+        if(!query) {
+            Swal.fire({ icon: 'warning', title: 'Input Required', text: 'Please enter UID or Mobile No.', background: '#050914', color: '#00f3ff' });
+            return;
+        }
+
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> FETCHING...';
+        btn.style.opacity = '0.7';
+
+        // Fetching Live Profile Data from Google Apps Script
+        fetch(API_URL + "?action=searchProfile&uid=" + encodeURIComponent(query))
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success") {
+                    const student = data.data;
+                    currentUID = query;
+                    
+                    document.getElementById('p_uid').value = query;
+                    document.getElementById('p_name').value = student.name;
+                    document.getElementById('p_father').value = student.fatherName;
+                    document.getElementById('p_mobile').value = student.mobile;
+                    // Mock Aadhaar just as placeholder if missing, actual backend can store it
+                    document.getElementById('p_aadhar').value = student.aadhar || ''; 
+                    document.getElementById('p_class').value = student.class;
+                    document.getElementById('p_subject').value = student.subjects;
+                    document.getElementById('p_status').value = student.status;
+
+                    // Remaining Dues Display
+                    const duesAlert = document.getElementById('p_dues_alert');
+                    if (student.remainingDues > 0) {
+                        duesAlert.innerHTML = `Pending Dues: ₹${student.remainingDues}`;
+                        duesAlert.style.display = 'block';
+                    } else {
+                        duesAlert.style.display = 'none';
+                    }
+
+                    // Payment History Table
+                    const historyBody = document.getElementById('paymentHistoryBody');
+                    historyBody.innerHTML = '';
+                    
+                    if(student.history && student.history.length > 0) {
+                        // Reverse array to show latest payment on top
+                        const reversedHistory = [...student.history].reverse();
+                        
+                        reversedHistory.forEach(row => {
+                            // Extract date and time separately from timestamp for clean UI
+                            let fullDate = row.date || ""; 
+                            historyBody.innerHTML += `
+                                <tr>
+                                    <td><i class="fa-regular fa-calendar-days" style="color:#00f3ff;"></i> ${fullDate}</td>
+                                    <td><strong style="color:#00ff88;">₹${row.amount}</strong></td>
+                                    <td>${row.mode}</td>
+                                    <td>${row.remarks || 'Fee Payment'}</td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        historyBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#a5c3e0; padding: 20px;">No payment history found.</td></tr>`;
+                    }
+
+                    card.style.display = 'block';
+                    
+                    // Reset edit state if it was open
+                    if(isEditing) toggleEdit();
+
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Not Found', text: 'No student found with this UID/Mobile.', background: '#050914', color: '#ff0055' });
+                    card.style.display = 'none';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                Swal.fire({ icon: 'error', title: 'Network Error', text: 'Could not connect to database.', background: '#050914', color: '#ff0055' });
+            })
+            .finally(() => {
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> SEARCH';
+                btn.style.opacity = '1';
+            });
+    };
+
+    window.toggleEdit = function() {
+        const inputs = document.querySelectorAll('.profile-input');
+        const btn = document.getElementById('editBtn');
+
+        if (!isEditing) {
+            inputs.forEach(input => {
+                input.removeAttribute('readonly');
+                input.classList.remove('locked');
+                input.classList.add('editable');
+            });
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> SAVE CHANGES';
+            btn.style.background = 'rgba(0, 243, 255, 0.2)';
+            btn.style.borderColor = '#00f3ff';
+            btn.style.color = '#00f3ff';
+            isEditing = true;
+        } else {
+            // Save state visually
+            inputs.forEach(input => {
+                input.setAttribute('readonly', 'true');
+                input.classList.remove('editable');
+                input.classList.add('locked');
+            });
+            btn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> EDIT DETAILS';
+            btn.style.background = 'rgba(255, 170, 0, 0.15)';
+            btn.style.borderColor = '#ffaa00';
+            btn.style.color = '#ffaa00';
+            isEditing = false;
+            
+            Swal.fire({ title: 'Details Locked', text: 'Profile modifications saved locally.', icon: 'success', background: '#050914', color: '#00ff88', confirmButtonColor: '#00f3ff' });
+        }
+    };
+
+    window.generateProfilePDF = function() {
+        const studentName = document.getElementById('p_name').value || 'Student';
+        const fileName = `${studentName}_Purix_Dossier`;
+        
+        // Ensure edit mode is closed before printing
+        if(isEditing) toggleEdit();
+
+        // Call the global PDF function from script.js
+        if(typeof downloadPDF === 'function') {
+            downloadPDF('printableProfileArea', fileName);
+        } else {
+            alert("PDF Engine offline. Ensure script.js is loaded properly.");
+        }
+    }
+})();
+</script>

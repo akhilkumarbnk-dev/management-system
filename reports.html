@@ -1,0 +1,492 @@
+<style>
+    .reports-wrapper { padding: 10px; }
+
+    .module-header { 
+        color: #00f3ff; font-family: 'Orbitron', sans-serif; margin-bottom: 25px; 
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); border-bottom: 1px solid rgba(0, 243, 255, 0.2); 
+        padding-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .module-header h2 { margin: 0; color: #00f3ff; font-size: 20px; font-family: 'Orbitron', sans-serif; }
+
+    .reports-container {
+        background: rgba(11, 16, 33, 0.8); padding: 30px; border-radius: 12px;
+        border: 1px solid rgba(0, 243, 255, 0.2); box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.05);
+        max-width: 1200px; margin: 0 auto; position: relative; backdrop-filter: blur(5px);
+    }
+    
+    /* Summary Cards */
+    .summary-cards { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+    
+    .summary-card {
+        flex: 1; min-width: 220px; padding: 20px; border-radius: 10px; text-align: center;
+        color: white; font-weight: bold; position: relative; overflow: hidden; backdrop-filter: blur(5px);
+        transition: 0.3s;
+    }
+    .card-collection { background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.4); box-shadow: 0 0 15px rgba(0, 255, 136, 0.15); }
+    .card-collection h2 { color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.5); }
+
+    .card-dues { background: rgba(255, 0, 85, 0.1); border: 1px solid rgba(255, 0, 85, 0.4); box-shadow: 0 0 15px rgba(255, 0, 85, 0.15); }
+    .card-dues h2 { color: #ff0055; text-shadow: 0 0 10px rgba(255,0,85,0.5); }
+    
+    .card-inactive { background: rgba(100, 116, 139, 0.15); border: 1px solid rgba(148, 163, 184, 0.3); cursor: pointer; box-shadow: 0 0 15px rgba(100,116,139,0.1); }
+    .card-inactive h2 { color: #cbd5e1; text-shadow: 0 0 10px rgba(203,213,225,0.4); }
+    .card-inactive:hover { transform: translateY(-3px); border-color: #00f3ff; box-shadow: 0 0 20px rgba(0, 243, 255, 0.3); background: rgba(0, 243, 255, 0.05); }
+    
+    .summary-card h3 { font-size: 13px; margin-bottom: 8px; text-transform: uppercase; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; color: #a5c3e0; }
+    .summary-card h2 { font-size: 24px; margin: 0; font-family: 'Orbitron', sans-serif; }
+
+    /* Advance Filter Section */
+    .filter-section {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 25px;
+        background: rgba(0, 0, 0, 0.5); padding: 18px; border-radius: 8px; border: 1px solid rgba(0, 243, 255, 0.2);
+    }
+    .filter-section select, .filter-section input {
+        width: 100%; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(0, 243, 255, 0.3); padding: 10px 12px;
+        border-radius: 6px; color: #00f3ff; font-family: 'Poppins', sans-serif; outline: none; transition: 0.3s;
+    }
+    .filter-section select option { background: #050914; color: #00f3ff; }
+    .filter-section select:focus, .filter-section input:focus { border-color: #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
+    
+    .filter-controls { display: flex; justify-content: flex-end; gap: 10px; margin-top: 5px; grid-column: 1 / -1; }
+
+    .btn-download {
+        background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; color: #00f3ff;
+        padding: 10px 22px; border-radius: 6px; cursor: pointer; font-weight: bold;
+        font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 1px; transition: 0.3s;
+        box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); display: flex; align-items: center; gap: 8px; justify-content: center;
+    }
+    .btn-download:hover { background: #00f3ff; color: #050914; box-shadow: 0 0 20px rgba(0, 243, 255, 0.6); }
+
+    .btn-csv { background: rgba(0, 255, 136, 0.1); border-color: #00ff88; color: #00ff88; box-shadow: 0 0 10px rgba(0, 255, 136, 0.2); }
+    .btn-csv:hover { background: #00ff88; color: #050914; box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); }
+
+    /* Sortable Reports Table */
+    .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid rgba(0, 243, 255, 0.2); }
+    .reports-table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.4); }
+    .reports-table th, .reports-table td {
+        padding: 14px 15px; text-align: left; border-bottom: 1px solid rgba(0, 243, 255, 0.15);
+        font-family: 'Poppins', sans-serif; color: #a5c3e0; font-size: 13px;
+    }
+    .reports-table th {
+        background: rgba(0, 243, 255, 0.1); color: #00f3ff; font-weight: 500; cursor: pointer;
+        font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 1px; white-space: nowrap; position: sticky; top:0;
+    }
+    .reports-table th:hover { background: rgba(0, 243, 255, 0.2); }
+    .reports-table tr:hover td { background-color: rgba(0, 243, 255, 0.05); }
+    
+    .action-btns { display: flex; gap: 10px; }
+    .btn-icon {
+        border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer;
+        color: white; font-size: 12px; transition: 0.2s; display: flex; align-items: center; gap: 5px;
+    }
+    .btn-whatsapp { background: rgba(37, 211, 102, 0.15); border: 1px solid #25D366; color: #25D366; }
+    .btn-whatsapp:hover { background: #25D366; color: #fff; box-shadow: 0 0 10px #25D366; }
+    
+    .btn-inactive { background: rgba(255, 170, 0, 0.15); border: 1px solid #ffaa00; color: #ffaa00; }
+    .btn-inactive:hover { background: #ffaa00; color: #050914; box-shadow: 0 0 10px #ffaa00; }
+    
+    .btn-active { background: rgba(0, 255, 136, 0.15); border: 1px solid #00ff88; color: #00ff88; }
+    .btn-active:hover { background: #00ff88; color: #050914; box-shadow: 0 0 10px #00ff88; }
+
+    /* Modal Styling */
+    .modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.7); display: none; justify-content: center;
+        align-items: center; z-index: 1000; backdrop-filter: blur(5px);
+    }
+    .modal-box {
+        background: #0b1021; width: 90%; max-width: 600px; border-radius: 12px;
+        padding: 25px; border: 1px solid rgba(255, 0, 85, 0.4); box-shadow: 0 0 30px rgba(255, 0, 85, 0.2);
+        max-height: 80vh; overflow-y: auto;
+    }
+    .modal-header-box {
+        display: flex; justify-content: space-between; align-items: center;
+        border-bottom: 1px solid rgba(255, 0, 85, 0.3); padding-bottom: 12px; margin-bottom: 15px;
+    }
+    .modal-header-box h3 { color: #ff0055; margin: 0; font-family: 'Orbitron', sans-serif; font-size: 16px; }
+    .close-modal-btn { background: none; border: none; font-size: 20px; color: #a5c3e0; cursor: pointer; }
+    .close-modal-btn:hover { color: #ff0055; }
+
+    /* Print Styles (For Clean PDF/Print Export) */
+    @media print {
+        body * { visibility: hidden; }
+        .reports-container, .reports-container * { visibility: visible; }
+        .reports-container { position: absolute; left: 0; top: 0; width: 100%; background: #fff !important; color: #000 !important; box-shadow: none; border: none; }
+        
+        .report-header-pdf { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px;}
+        .report-header-pdf h1 { margin: 0; font-family: 'Times New Roman', serif !important; font-size: 26px; color: #000 !important; font-weight: bold;}
+        .report-header-pdf p { margin: 5px 0 0; font-family: 'Arial', sans-serif; font-size: 13px; color: #444 !important;}
+        #printFilterInfo { font-size: 12px; color: #666 !important; font-style: italic; margin-top: 8px;}
+
+        .filter-section, .action-btns, th.no-print, td.no-print, .no-print { display: none !important; }
+        .table-responsive { border: none !important; }
+        .reports-table th { background: #e2e8f0 !important; color: #000 !important; border-bottom: 2px solid #000 !important; font-weight: bold;}
+        .reports-table td { color: #000 !important; border-bottom: 1px solid #ccc !important; }
+        .summary-card { background: #f8fafc !important; color: #000 !important; border: 1px solid #cbd5e1 !important; box-shadow: none !important;}
+        .summary-card h2, .summary-card h3 { color: #000 !important; text-shadow: none !important; }
+        .modal-overlay { display: none !important; } 
+    }
+</style>
+
+<div class="reports-wrapper">
+    <div class="reports-container" id="printableReportArea">
+        
+        <!-- Header visible only in PDF / Print -->
+        <div class="report-header-pdf no-print" style="display: none;">
+            <h1>PURIX ACADEMY</h1>
+            <p>Management Financial Report | Generated on: <span id="reportDateTxt"></span></p>
+            <p id="printFilterInfo"></p> <!-- Dinamically shows active filters -->
+        </div>
+
+        <div class="reports-header no-print">
+            <h2 class="module-header"><i class="fa-solid fa-chart-pie"></i> COLLECTION & DUES REPORT</h2>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card card-collection">
+                <h3>Active Collection</h3>
+                <h2 id="totalCollectionText">₹0</h2>
+            </div>
+            <div class="summary-card card-dues">
+                <h3>Active Dues</h3>
+                <h2 id="totalDuesText">₹0</h2>
+            </div>
+            <div class="summary-card card-inactive no-print" onclick="openInactiveModal()" title="Click to view Inactive Students">
+                <h3>Inactive Students <i class="fa-solid fa-hand-pointer"></i></h3>
+                <h2 id="inactiveCountText">0</h2>
+                <p style="font-size: 10px; margin-top: 5px; opacity: 0.8; font-family: Poppins;">(Click to reactivate)</p>
+            </div>
+        </div>
+
+        <!-- SUPER ADVANCED FILTERS SECTION -->
+        <div class="filter-section no-print">
+            <input type="text" id="filterSearch" placeholder="Search UID or Name..." oninput="filterReports()">
+            
+            <select id="filterSession" onchange="filterReports()">
+                <option value="All">All Sessions</option>
+            </select>
+            
+            <select id="filterClass" onchange="filterReports()">
+                <option value="All">All Classes</option>
+                <option value="8th">8th</option>
+                <option value="9th">9th</option>
+                <option value="10th">10th</option>
+                <option value="11th">11th</option>
+                <option value="12th">12th</option>
+            </select>
+            
+            <select id="filterSubject" onchange="filterReports()">
+                <option value="All">All Subjects</option>
+                <option value="Math">Math</option>
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Biology">Biology</option>
+                <option value="SST">SST</option>
+                <option value="Hindi">Hindi</option>
+                <option value="English">English</option>
+            </select>
+            
+            <select id="filterPlan" onchange="filterReports()">
+                <option value="All">All Fee Plans</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Installment">Installment</option>
+            </select>
+
+            <select id="filterStatus" onchange="filterReports()">
+                <option value="Active">Active Students</option>
+                <option value="Inactive">Inactive (Defaulters)</option>
+                <option value="All">All Status</option>
+            </select>
+
+            <!-- Export Buttons -->
+            <div class="filter-controls">
+                <button class="btn-download btn-csv" onclick="exportToCSV()"><i class="fa-solid fa-file-csv"></i> EXPORT CSV</button>
+                <button class="btn-download" onclick="generateManagementPDF()"><i class="fa-solid fa-file-pdf"></i> EXPORT PDF</button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="reports-table" id="reportsTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable('uid')">UID <i class="fa-solid fa-sort"></i></th>
+                        <th onclick="sortTable('name')">Name <i class="fa-solid fa-sort"></i></th>
+                        <th onclick="sortTable('class')">Class <i class="fa-solid fa-sort"></i></th>
+                        <th>Subjects</th>
+                        <th onclick="sortTable('paid')">Total Paid <i class="fa-solid fa-sort"></i></th>
+                        <th onclick="sortTable('dues')">Dues <i class="fa-solid fa-sort"></i></th>
+                        <th class="no-print">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reportsBody">
+                    <tr><td colspan="7" style="text-align:center;">Fetching Database...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- INACTIVE STUDENTS MODAL -->
+        <div id="inactiveModal" class="modal-overlay no-print">
+            <div class="modal-box">
+                <div class="modal-header-box">
+                    <h3><i class="fa-solid fa-users-slash"></i> INACTIVE STUDENTS REGISTRY</h3>
+                    <button class="close-modal-btn" onclick="closeInactiveModal()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="table-responsive">
+                    <table class="reports-table">
+                        <thead>
+                            <tr>
+                                <th>UID</th>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Dues Fasa Hai</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalInactiveBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    let reportData = []; 
+    let currentDisplayedData = []; // To keep track of filtered data for CSV & Sorting
+    let sortDirection = true; // true = ascending
+
+    document.getElementById('reportDateTxt').innerText = new Date().toLocaleDateString('en-GB');
+
+    fetchReportData();
+
+    function fetchReportData() {
+        fetch(API_URL + "?action=getReports")
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success") {
+                    reportData = data.data;
+                    filterReports();
+                } else {
+                    document.getElementById('reportsBody').innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ff0055;">Failed to load data.</td></tr>`;
+                }
+            })
+            .catch(err => {
+                document.getElementById('reportsBody').innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ff0055;">Network Error.</td></tr>`;
+            });
+    }
+
+    function setupDynamicFilters() {
+        const sessionDropdown = document.getElementById('filterSession');
+        if(!sessionDropdown) return;
+        sessionDropdown.innerHTML = '<option value="All">All Sessions</option>';
+        let year = new Date().getFullYear(); 
+        let startYear = (new Date().getMonth() < 3) ? year - 1 : year;
+        for (let i = startYear; i >= startYear - 2; i--) {
+            let sessionText = `${i}-${(i+1).toString().substring(2)}`; 
+            let isSelected = (i === startYear) ? "selected" : "";
+            sessionDropdown.innerHTML += `<option value="${sessionText}" ${isSelected}>${sessionText}</option>`;
+        }
+    }
+
+    // Money Formatting for UI
+    function formatMoney(amount) {
+        return '₹' + parseFloat(amount).toLocaleString('en-IN');
+    }
+
+    window.filterReports = function() {
+        const searchTxt = document.getElementById('filterSearch').value.toLowerCase();
+        const sessionFilter = document.getElementById('filterSession').value;
+        const classFilter = document.getElementById('filterClass').value;
+        const subjectFilter = document.getElementById('filterSubject').value;
+        const planFilter = document.getElementById('filterPlan').value;
+        const statusFilter = document.getElementById('filterStatus').value;
+
+        // Update PDF Header text to show active filters
+        let filterStr = [];
+        if(sessionFilter !== 'All') filterStr.push(`Session: ${sessionFilter}`);
+        if(classFilter !== 'All') filterStr.push(`Class: ${classFilter}`);
+        if(subjectFilter !== 'All') filterStr.push(`Subject: ${subjectFilter}`);
+        if(planFilter !== 'All') filterStr.push(`Plan: ${planFilter}`);
+        if(statusFilter !== 'All') filterStr.push(`Status: ${statusFilter}`);
+        document.getElementById('printFilterInfo').innerText = filterStr.length > 0 ? "Filters applied: " + filterStr.join(" | ") : "Viewing: All Records";
+
+        // Filtering Logic
+        let baseFiltered = reportData.filter(student => {
+            const matchesSearch = !searchTxt || (student.name && student.name.toLowerCase().includes(searchTxt)) || (student.uid && String(student.uid).toLowerCase().includes(searchTxt));
+            const matchesSession = sessionFilter === "All" || student.session === sessionFilter;
+            const matchesClass = classFilter === "All" || student.class === classFilter;
+            const matchesPlan = planFilter === "All" || student.feePlan === planFilter;
+            const stdSubjects = student.subject || student.subjects || ""; 
+            const matchesSubject = subjectFilter === "All" || stdSubjects.includes(subjectFilter);
+            return matchesSearch && matchesSession && matchesClass && matchesPlan && matchesSubject;
+        });
+
+        // Summary Calculations (Based on filtered data)
+        let totalColl = 0, totalDues = 0, inactiveCount = 0;
+        baseFiltered.forEach(student => {
+            if (student.status === "Active") {
+                totalColl += parseFloat(student.paid) || 0;
+                totalDues += parseFloat(student.dues) || 0;
+            } else if (student.status === "Inactive") {
+                inactiveCount++; 
+            }
+        });
+
+        document.getElementById('totalCollectionText').innerText = formatMoney(totalColl);
+        document.getElementById('totalDuesText').innerText = formatMoney(totalDues);
+        document.getElementById('inactiveCountText').innerText = inactiveCount;
+
+        currentDisplayedData = baseFiltered.filter(student => (statusFilter === "All" || student.status === statusFilter));
+        renderTable(currentDisplayedData);
+    };
+
+    window.sortTable = function(key) {
+        sortDirection = !sortDirection; // Toggle asc/desc
+        currentDisplayedData.sort((a, b) => {
+            let valA = a[key]; let valB = b[key];
+            if (key === 'paid' || key === 'dues') {
+                valA = parseFloat(valA) || 0; valB = parseFloat(valB) || 0;
+            } else {
+                valA = String(valA).toLowerCase(); valB = String(valB).toLowerCase();
+            }
+            if (valA < valB) return sortDirection ? -1 : 1;
+            if (valA > valB) return sortDirection ? 1 : -1;
+            return 0;
+        });
+        renderTable(currentDisplayedData);
+    };
+
+    function renderTable(data) {
+        const tbody = document.getElementById('reportsBody');
+        tbody.innerHTML = '';
+        if(data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#a5c3e0;">No records match your filters.</td></tr>`;
+            return;
+        }
+
+        data.forEach((student) => {
+            let actionBtn = student.status === "Active" 
+                ? `<button class="btn-icon btn-inactive" onclick="toggleStatus('${student.uid}', 'Inactive')" title="Make Inactive"><i class="fa-solid fa-user-xmark"></i></button>` 
+                : `<button class="btn-icon btn-active" onclick="toggleStatus('${student.uid}', 'Active')" title="Make Active"><i class="fa-solid fa-user-check"></i></button>`;
+            
+            let stdSubs = student.subject || student.subjects || "-";
+            let shortSubs = stdSubs.length > 20 ? stdSubs.substring(0, 18) + "..." : stdSubs;
+
+            tbody.innerHTML += `
+                <tr style="${student.status === 'Inactive' ? 'background: rgba(255,0,85,0.08); color: #ff0055;' : ''}">
+                    <td><strong>${student.uid}</strong></td>
+                    <td>${student.name}</td>
+                    <td>${student.class}</td>
+                    <td title="${stdSubs}" style="font-size: 11px;">${shortSubs}</td>
+                    <td style="color: #00ff88; font-weight: bold;">${formatMoney(student.paid)}</td>
+                    <td style="color: #ff0055; font-weight: bold;">${formatMoney(student.dues)}</td>
+                    <td class="action-btns no-print">
+                        <button class="btn-icon btn-whatsapp" onclick="sendWhatsAppAlert('${student.mobile}', '${student.name}', ${student.dues})" title="WhatsApp Reminder">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </button>
+                        ${actionBtn}
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    // CSV Export Logic (Management Request)
+    window.exportToCSV = function() {
+        if(currentDisplayedData.length === 0) {
+            Swal.fire('Empty Data', 'No data to export based on current filters.', 'warning'); return;
+        }
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "UID,Student Name,Class,Session,Subjects,Fee Plan,Total Paid,Pending Dues,Status\n";
+        
+        currentDisplayedData.forEach(s => {
+            let row = [
+                s.uid, `"${s.name}"`, s.class, s.session, `"${s.subject || s.subjects || ''}"`, 
+                s.feePlan, s.paid || 0, s.dues || 0, s.status
+            ].join(",");
+            csvContent += row + "\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Purix_Report_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    window.toggleStatus = function(uid, newStatus) {
+        let msg = newStatus === 'Inactive' ? "Are you sure you want to mark this student as INACTIVE?" : "Are you sure you want to RE-ACTIVATE this student?";
+        Swal.fire({
+            title: 'Confirm Action', text: msg, icon: 'warning', showCancelButton: true,
+            confirmButtonColor: '#00f3ff', cancelButtonColor: '#ff0055', confirmButtonText: 'Yes, proceed',
+            background: '#050914', color: '#fff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(API_URL, { method: "POST", body: JSON.stringify({ action: 'toggleStatus', uid: uid, status: newStatus }) })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'success') {
+                        Swal.fire({ title: 'Updated!', text: `Status changed to ${newStatus}.`, icon: 'success', background: '#050914', color: '#00ff88' });
+                        fetchReportData(); 
+                    } else { Swal.fire('Error', data.message, 'error'); }
+                });
+            }
+        });
+    };
+
+    window.openInactiveModal = function() {
+        const modal = document.getElementById('inactiveModal');
+        const tbody = document.getElementById('modalInactiveBody');
+        tbody.innerHTML = '';
+        const inactiveStudents = reportData.filter(s => s.status === 'Inactive');
+        if(inactiveStudents.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px; color: #a5c3e0;">No inactive students found.</td></tr>`;
+        } else {
+            inactiveStudents.forEach(student => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${student.uid}</strong></td>
+                        <td>${student.name}</td>
+                        <td>${student.class}</td>
+                        <td style="color: #ff0055; font-weight: bold;">₹${student.dues || 0}</td>
+                        <td>
+                            <button class="btn-icon btn-active" onclick="toggleStatus('${student.uid}', 'Active')"><i class="fa-solid fa-user-check"></i> Reactivate</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        modal.style.display = 'flex'; 
+    };
+
+    window.closeInactiveModal = function() { document.getElementById('inactiveModal').style.display = 'none'; };
+
+    window.sendWhatsAppAlert = function(mobile, name, dues) {
+        if(dues <= 0) {
+            Swal.fire({ icon: 'info', title: 'No Dues', text: `${name} has no pending dues.`, background: '#050914', color: '#00f3ff' }); return;
+        }
+        let message = `Hello, this is a reminder from Purix Academy.\n\nYour pending fee dues for ${name} are ₹${dues}. Please clear them at the earliest.\n\nThank you.`;
+        window.open(`https://wa.me/91${mobile}?text=${encodeURIComponent(message)}`, '_blank');
+    };
+
+    window.generateManagementPDF = function() {
+        const fileName = `Purix_Financial_Report_${new Date().toLocaleDateString('en-GB').replace(/\//g, '-')}`;
+        const pdfHeader = document.querySelector('.report-header-pdf');
+        pdfHeader.style.display = 'block';
+
+        if(typeof downloadPDF === 'function') {
+            downloadPDF('printableReportArea', fileName);
+        } else {
+            window.print();
+        }
+        setTimeout(() => { pdfHeader.style.display = 'none'; }, 2000);
+    }
+
+    setupDynamicFilters(); 
+})();
+</script>

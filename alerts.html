@@ -1,0 +1,235 @@
+<style>
+    .alerts-wrapper { padding: 10px; }
+
+    .module-header { 
+        color: #00f3ff; font-family: 'Orbitron', sans-serif; margin-bottom: 25px; 
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); border-bottom: 1px solid rgba(0, 243, 255, 0.2); 
+        padding-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .module-header h2 { margin: 0; color: #00f3ff; font-size: 20px; font-family: 'Orbitron', sans-serif; }
+
+    .alerts-container {
+        background: rgba(11, 16, 33, 0.8); padding: 30px; border-radius: 12px;
+        border: 1px solid rgba(0, 243, 255, 0.2); box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.05);
+        max-width: 1000px; margin: 0 auto; backdrop-filter: blur(5px);
+    }
+
+    /* Alert Sections */
+    .alert-section { margin-bottom: 30px; }
+    
+    .alert-section-title {
+        padding: 12px 20px; border-radius: 8px; color: white; font-weight: 600;
+        margin-bottom: 15px; display: flex; align-items: center; gap: 12px;
+        font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 1px;
+    }
+    .title-failed { 
+        background: rgba(255, 0, 85, 0.15); border: 1px solid #ff0055; color: #ff0055; 
+        box-shadow: 0 0 15px rgba(255, 0, 85, 0.2); text-shadow: 0 0 8px rgba(255,0,85,0.4);
+    } 
+    .title-today { 
+        background: rgba(0, 243, 255, 0.15); border: 1px solid #00f3ff; color: #00f3ff; 
+        box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); text-shadow: 0 0 8px rgba(0,243,255,0.4);
+    }  
+    .title-upcoming { 
+        background: rgba(255, 170, 0, 0.15); border: 1px solid #ffaa00; color: #ffaa00; 
+        box-shadow: 0 0 15px rgba(255, 170, 0, 0.2); text-shadow: 0 0 8px rgba(255,170,0,0.4);
+    } 
+
+    .alert-list { display: flex; flex-direction: column; gap: 12px; }
+    
+    .alert-card {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 18px 20px; background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; transition: 0.3s;
+    }
+    .alert-card:hover { box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); transform: translateX(5px); background: rgba(0, 243, 255, 0.03); }
+    
+    .student-info h4 { margin: 0; font-size: 16px; color: #00f3ff; font-family: 'Orbitron', sans-serif; letter-spacing: 0.5px; }
+    .student-info p { margin: 5px 0 0; font-size: 13px; color: #a5c3e0; font-family: 'Poppins', sans-serif; }
+
+    /* Action Buttons */
+    .alert-actions { display: flex; gap: 12px; align-items: center; }
+    
+    .btn-notify {
+        background: rgba(37, 211, 102, 0.15); color: #25D366; border: 1px solid #25D366;
+        padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;
+        font-family: 'Orbitron', sans-serif; transition: 0.3s; display: flex; align-items: center; gap: 6px;
+    }
+    .btn-notify:hover { background: #25D366; color: #fff; box-shadow: 0 0 15px #25D366; }
+
+    .btn-critical-inactive {
+        background: rgba(255, 0, 85, 0.15); color: #ff0055; border: 1px solid #ff0055;
+        padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;
+        animation: pulseRed 2s infinite; transition: 0.3s;
+    }
+    .btn-critical-inactive:hover { background: #ff0055; color: #fff; box-shadow: 0 0 20px #ff0055; }
+    
+    @keyframes pulseRed {
+        0% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(255, 0, 85, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); }
+    }
+
+    .empty-msg {
+        color: #a5c3e0; font-style: italic; padding: 12px; font-family: 'Poppins', sans-serif; font-size: 13px;
+    }
+</style>
+
+<div class="alerts-wrapper">
+    <div class="alerts-container">
+        <div class="alerts-header">
+            <h2 class="module-header"><i class="fa-solid fa-bell"></i> PAYMENT ALERTS SYSTEM</h2>
+            <span id="currentDateDisplay" style="color: #a5c3e0; font-weight: 500; font-family: 'Orbitron', sans-serif; font-size: 12px;"></span>
+        </div>
+
+        <!-- Failed Payments Section -->
+        <div class="alert-section">
+            <div class="alert-section-title title-failed">
+                <i class="fa-solid fa-triangle-exclamation"></i> Failed / Overdue Payments
+            </div>
+            <div class="alert-list" id="failedList">
+                <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Scanning database...</div>
+            </div>
+        </div>
+
+        <!-- Today Payments Section -->
+        <div class="alert-section">
+            <div class="alert-section-title title-today">
+                <i class="fa-solid fa-calendar-day"></i> Today's Payment Due
+            </div>
+            <div class="alert-list" id="todayList">
+                <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Scanning database...</div>
+            </div>
+        </div>
+
+        <!-- Upcoming Payments Section (Next 5 Days) -->
+        <div class="alert-section">
+            <div class="alert-section-title title-upcoming">
+                <i class="fa-solid fa-clock-rotate-left"></i> Upcoming Payments (Next 5 Days)
+            </div>
+            <div class="alert-list" id="upcomingList">
+                <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Scanning database...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const today = new Date();
+    const dateDisplay = document.getElementById('currentDateDisplay');
+    if(dateDisplay) {
+        dateDisplay.innerText = `SYSTEM DATE: ${today.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()}`;
+    }
+
+    function calculateDaysDifference(dueDateStr) {
+        const dueDate = new Date(dueDateStr);
+        if (isNaN(dueDate.getTime())) return null; // Handle empty or invalid dates
+        
+        dueDate.setHours(0,0,0,0);
+        const todayMidnight = new Date();
+        todayMidnight.setHours(0,0,0,0);
+        
+        const diffTime = dueDate.getTime() - todayMidnight.getTime();
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    }
+
+    window.directInactive = function(uid, name) {
+        Swal.fire({
+            title: 'WARNING: 2 Months Default',
+            text: `${name} (UID: ${uid}) has defaulted payment. Mark INACTIVE?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff0055',
+            cancelButtonColor: '#334155',
+            confirmButtonText: 'Yes, Deactivate',
+            background: '#050914', color: '#fff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: 'toggleStatus', uid: uid, status: 'Inactive' })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'success') {
+                        Swal.fire({ title: 'Deactivated!', text: 'Student moved to defaulter list.', icon: 'success', background: '#050914', color: '#00ff88' });
+                        document.getElementById(`alert-card-${uid}`).style.display = 'none'; // Hide from current alert list
+                    }
+                });
+            }
+        });
+    };
+
+    window.sendWhatsAppAlert = function(mobile, name, dues) {
+        let message = `Important Alert from Purix Academy: Hello ${name}, your fee payment of Rs. ${dues} is due. Kindly clear it soon to avoid any interruption.`;
+        window.open(`https://wa.me/91${mobile}?text=${encodeURIComponent(message)}`, '_blank');
+    };
+
+    function fetchAndGenerateAlerts() {
+        const failedList = document.getElementById('failedList');
+        const todayList = document.getElementById('todayList');
+        const upcomingList = document.getElementById('upcomingList');
+
+        fetch(API_URL + "?action=getAlerts")
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success") {
+                    failedList.innerHTML = ''; todayList.innerHTML = ''; upcomingList.innerHTML = '';
+                    let fCount = 0, tCount = 0, uCount = 0;
+
+                    data.data.forEach(student => {
+                        let daysDiff = calculateDaysDifference(student.dueDate);
+                        
+                        if (daysDiff === null) return; // Skip if date is invalid
+
+                        let borderColor = daysDiff < 0 ? '#ff0055' : (daysDiff === 0 ? '#00f3ff' : '#ffaa00');
+                        
+                        // Convert internal date to readable format for UI
+                        let readableDate = new Date(student.dueDate).toLocaleDateString('en-GB');
+
+                        let cardHtml = `
+                            <div class="alert-card" id="alert-card-${student.uid}" style="border-left: 5px solid ${borderColor}">
+                                <div class="student-info">
+                                    <h4>${student.name} (UID: ${student.uid})</h4>
+                                    <p>Class: ${student.class} | Due Date: <strong>${readableDate}</strong> | Amt: <span style="color:#ff0055; font-weight:bold; text-shadow: 0 0 5px rgba(255,0,85,0.4);">₹${student.dues}</span></p>
+                                </div>
+                                <div class="alert-actions">
+                                    <button class="btn-notify" onclick="sendWhatsAppAlert('${student.mobile}', '${student.name}', ${student.dues})">
+                                        <i class="fa-brands fa-whatsapp"></i> NOTIFY
+                                    </button>
+                                    ${daysDiff <= -60 ? `
+                                    <button class="btn-critical-inactive" onclick="directInactive('${student.uid}', '${student.name}')" title="2 Months Default">
+                                        <i class="fa-solid fa-user-slash"></i> DEACTIVATE
+                                    </button>` : ''}
+                                </div>
+                            </div>
+                        `;
+
+                        if (daysDiff < 0) {
+                            failedList.innerHTML += cardHtml; fCount++;
+                        } else if (daysDiff === 0) {
+                            todayList.innerHTML += cardHtml; tCount++;
+                        } else if (daysDiff > 0 && daysDiff <= 5) {
+                            upcomingList.innerHTML += cardHtml; uCount++;
+                        }
+                    });
+
+                    if(fCount === 0) failedList.innerHTML = `<div class="empty-msg">No failed payments detected. (System secure)</div>`;
+                    if(tCount === 0) todayList.innerHTML = `<div class="empty-msg">No payments due today.</div>`;
+                    if(uCount === 0) upcomingList.innerHTML = `<div class="empty-msg">No upcoming payments in next 5 days.</div>`;
+                } else {
+                    failedList.innerHTML = `<div class="empty-msg" style="color:#ff0055;">Failed to load alerts.</div>`;
+                    todayList.innerHTML = ''; upcomingList.innerHTML = '';
+                }
+            })
+            .catch(err => {
+                console.error("Alerts Error:", err);
+                failedList.innerHTML = `<div class="empty-msg" style="color:#ff0055;">Database connection error.</div>`;
+                todayList.innerHTML = ''; upcomingList.innerHTML = '';
+            });
+    }
+
+    fetchAndGenerateAlerts();
+})();
+</script>

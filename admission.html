@@ -1,0 +1,228 @@
+<style>
+    .admission-wrapper { padding: 10px; }
+    .module-header { 
+        color: #00f3ff; font-family: 'Orbitron', sans-serif; margin-bottom: 25px; 
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); border-bottom: 1px solid rgba(0, 243, 255, 0.2); 
+        padding-bottom: 10px; display: flex; align-items: center; gap: 15px;
+    }
+    .cyber-form { 
+        background: rgba(11, 16, 33, 0.8); padding: 30px; border-radius: 12px; 
+        border: 1px solid rgba(0, 243, 255, 0.2); box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.05); 
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; 
+    }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label { 
+        color: #a5c3e0; font-size: 13px; font-weight: 500; 
+        font-family: 'Orbitron', sans-serif; letter-spacing: 1px; 
+    }
+    .cyber-input { 
+        background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(0, 243, 255, 0.3); 
+        padding: 12px 15px; border-radius: 6px; color: #fff; 
+        font-family: 'Poppins', sans-serif; transition: 0.3s; outline: none; 
+    }
+    .cyber-input:focus { 
+        border-color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); 
+        background: rgba(0, 243, 255, 0.05); 
+    }
+    .cyber-input option { background: #050914; color: #00f3ff; }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1); cursor: pointer;
+    }
+    .cyber-input:disabled { 
+        background-color: rgba(255, 255, 255, 0.05) !important; cursor: not-allowed; border-color: rgba(255, 255, 255, 0.1); color: #647b9e;
+    }
+    .checkbox-list {
+        display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+        background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 6px; border: 1px solid rgba(0, 243, 255, 0.15);
+    }
+    .checkbox-list label { font-family: 'Poppins', sans-serif; color: #a5c3e0; display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 0; font-size: 13px;}
+    .checkbox-list input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: #00f3ff;}
+    .full-width { grid-column: 1 / -1; margin-top: 15px; }
+    .cyber-btn { 
+        background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; color: #00f3ff; 
+        padding: 15px 40px; font-family: 'Orbitron', sans-serif; font-size: 16px; 
+        font-weight: bold; letter-spacing: 2px; border-radius: 8px; cursor: pointer; 
+        transition: 0.3s; text-transform: uppercase; box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); width: 100%;
+    }
+    .cyber-btn:hover { 
+        background: #00f3ff; color: #050914; 
+        box-shadow: 0 0 30px rgba(0, 243, 255, 0.6); transform: translateY(-3px); 
+    }
+</style>
+
+<div class="admission-wrapper">
+    <h2 class="module-header"><i class="fa-solid fa-user-plus"></i> INITIALIZE NEW ENROLLMENT</h2>
+
+    <form id="admissionForm">
+        <div class="cyber-form">
+            <div class="form-group"><label>UID (Roll No)</label><input type="text" class="cyber-input" id="uid" required placeholder="Assign UID"></div>
+            <div class="form-group"><label>Student Name</label><input type="text" class="cyber-input" id="name" required placeholder="Full Name"></div>
+            <div class="form-group"><label>Father Name</label><input type="text" class="cyber-input" id="fatherName" required placeholder="Father's Name"></div>
+            <div class="form-group"><label>DOB</label><input type="date" class="cyber-input" id="dob" required></div>
+            <div class="form-group"><label>Gender</label>
+                <select class="cyber-input" id="gender" required>
+                    <option value="">Select Gender</option><option value="Male">Male</option><option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Mobile No.</label><input type="number" class="cyber-input" id="mobile" required placeholder="Student Mobile"></div>
+            <div class="form-group"><label>Parents Mobile No.</label><input type="number" class="cyber-input" id="parentMobile" placeholder="Parents Mobile"></div>
+            <div class="form-group"><label>District</label><input type="text" class="cyber-input" id="district" required placeholder="District"></div>
+            <div class="form-group"><label>Branch</label><input type="text" class="cyber-input" id="branch" required placeholder="Branch Name"></div>
+            
+            <div class="form-group"><label>Class</label>
+                <select class="cyber-input" id="class" required>
+                    <option value="">Select Class</option>
+                    <option value="8th">8th</option><option value="9th">9th</option>
+                    <option value="10th">10th</option><option value="11th">11th</option><option value="12th">12th</option>
+                </select>
+            </div>
+            
+            <div class="form-group"><label>School Name</label><input type="text" class="cyber-input" id="schoolName" placeholder="School Name"></div>
+            <div class="form-group"><label>Session</label><input type="text" class="cyber-input" id="session" value="2026-27" required></div>
+            <div class="form-group"><label>Study Material</label>
+                <select class="cyber-input" id="studyMaterial"><option value="No">No</option><option value="Yes">Yes</option></select>
+            </div>
+            
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label>Subjects Opted</label>
+                <div class="checkbox-list">
+                    <label><input type="checkbox" name="subject" value="Math"> Math</label>
+                    <label><input type="checkbox" name="subject" value="Physics"> Physics</label>
+                    <label><input type="checkbox" name="subject" value="Chemistry"> Chemistry</label>
+                    <label><input type="checkbox" name="subject" value="Biology"> Biology</label>
+                    <label><input type="checkbox" name="subject" value="SST"> SST</label>
+                    <label><input type="checkbox" name="subject" value="Hindi"> Hindi</label>
+                    <label><input type="checkbox" name="subject" value="English"> English</label>
+                </div>
+            </div>
+
+            <div class="form-group"><label>Admission Date</label><input type="date" class="cyber-input" id="admissionDate" required></div>
+            <div class="form-group"><label>Status</label>
+                <select class="cyber-input" id="status"><option value="Active">Active</option><option value="Inactive">Inactive</option></select>
+            </div>
+
+            <!-- ONLY FEE DECISION, NO PAYMENT -->
+            <div class="form-group">
+                <label>Fee Plan</label>
+                <select class="cyber-input" id="feePlan" required>
+                    <option value="">-- Select Fee Plan --</option>
+                    <option value="Monthly">Month-wise</option>
+                    <option value="Installment">Installment (Full Course)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label id="totalFeeLabel">Fee Amount</label>
+                <input type="number" class="cyber-input" id="totalFee" required placeholder="Select Fee Plan First" disabled>
+            </div>
+            
+            <div class="full-width">
+                <button type="submit" class="cyber-btn" id="submitBtn">Save Admission Data</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    const dateInput = document.getElementById('admissionDate');
+    if (dateInput) dateInput.valueAsDate = new Date();
+
+    const feePlanSelect = document.getElementById('feePlan');
+    const totalFeeInput = document.getElementById('totalFee');
+    const totalFeeLabel = document.getElementById('totalFeeLabel');
+    const form = document.getElementById('admissionForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    if (feePlanSelect) {
+        feePlanSelect.addEventListener('change', function() {
+            const feePlan = this.value;
+            if (feePlan === "") {
+                totalFeeInput.setAttribute('disabled', 'true');
+                totalFeeInput.value = '';
+                totalFeeInput.placeholder = "Select Fee Plan First";
+            } 
+            else if (feePlan === 'Monthly') {
+                totalFeeInput.removeAttribute('disabled');
+                totalFeeLabel.innerText = 'Per Month Fee (₹)'; 
+                totalFeeInput.placeholder = "Enter Monthly Fee";
+            } 
+            else if (feePlan === 'Installment') {
+                totalFeeInput.removeAttribute('disabled');
+                totalFeeLabel.innerText = 'Total Course Fee (₹)'; 
+                totalFeeInput.placeholder = "Enter Total Fee";
+            }
+        });
+    }
+
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let selectedSubjects = [];
+            document.querySelectorAll('input[name="subject"]:checked').forEach((checkbox) => {
+                selectedSubjects.push(checkbox.value);
+            });
+
+            if(selectedSubjects.length === 0) {
+                Swal.fire({ icon: 'warning', title: 'Subject Required', text: 'Please select at least one Subject!', background: '#050914', color: '#00f3ff' });
+                return;
+            }
+
+            submitBtn.innerText = "Processing Protocol...";
+            submitBtn.style.opacity = "0.7";
+            submitBtn.disabled = true;
+
+            const admissionData = {
+                action: 'addAdmission',
+                uid: document.getElementById('uid').value,
+                name: document.getElementById('name').value,
+                fatherName: document.getElementById('fatherName').value,
+                dob: document.getElementById('dob').value,
+                gender: document.getElementById('gender').value,
+                mobile: document.getElementById('mobile').value,
+                parentMobile: document.getElementById('parentMobile').value,
+                district: document.getElementById('district').value,
+                branch: document.getElementById('branch').value,
+                studentClass: document.getElementById('class').value,
+                schoolName: document.getElementById('schoolName').value,
+                session: document.getElementById('session').value,
+                studyMaterial: document.getElementById('studyMaterial').value,
+                subjects: selectedSubjects.join(', '),
+                admissionDate: document.getElementById('admissionDate').value,
+                status: document.getElementById('status').value,
+                feePlan: document.getElementById('feePlan').value,
+                totalFee: document.getElementById('totalFee').value,
+                todayPayment: 0 // Sent as 0 automatically
+            };
+
+            fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify(admissionData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success") {
+                    Swal.fire({
+                        title: 'Enrollment Successful!',
+                        html: `<p>Student <b>${admissionData.name}</b> registered.</p><p style="color:var(--success-neon)">Next Due Date: ${data.nextDuesDate}</p>`,
+                        icon: 'success', background: '#050914', color: '#00f3ff', confirmButtonColor: '#00f3ff'
+                    });
+                    
+                    form.reset();
+                    if(dateInput) dateInput.valueAsDate = new Date();
+                    feePlanSelect.dispatchEvent(new Event('change')); 
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Error', text: data.message, background: '#050914', color: '#ff0055' });
+                }
+            })
+            .catch(err => {
+                Swal.fire({ icon: 'error', title: 'Network Error', text: 'Failed to save data.', background: '#050914', color: '#ff0055' });
+            })
+            .finally(() => {
+                submitBtn.innerText = "Save Admission Data";
+                submitBtn.style.opacity = "1";
+                submitBtn.disabled = false;
+            });
+        });
+    }
+</script>

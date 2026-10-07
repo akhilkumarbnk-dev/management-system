@@ -1,0 +1,291 @@
+<style>
+    .payment-wrapper { padding: 10px; }
+    
+    .module-header { 
+        color: #00f3ff; font-family: 'Orbitron', sans-serif; margin-bottom: 25px; 
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); border-bottom: 1px solid rgba(0, 243, 255, 0.2); 
+        padding-bottom: 10px; display: flex; align-items: center; gap: 15px;
+    }
+
+    .payment-container {
+        background: rgba(11, 16, 33, 0.8); padding: 30px; border-radius: 12px;
+        border: 1px solid rgba(0, 243, 255, 0.2); box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.05);
+        max-width: 900px; margin: 0 auto; backdrop-filter: blur(5px);
+    }
+    
+    /* Cyber Search Section */
+    .search-section {
+        display: flex; gap: 15px; margin-bottom: 30px;
+    }
+    .search-section input {
+        flex: 1; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(0, 243, 255, 0.3);
+        padding: 12px 18px; border-radius: 8px; color: #fff; font-size: 15px;
+        font-family: 'Poppins', sans-serif; outline: none; transition: 0.3s;
+    }
+    .search-section input:focus {
+        border-color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        background: rgba(0, 243, 255, 0.05);
+    }
+    .cyber-search-btn {
+        background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; color: #00f3ff;
+        padding: 0 30px; border-radius: 8px; cursor: pointer; font-family: 'Orbitron', sans-serif;
+        font-weight: bold; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    }
+    .cyber-search-btn:hover {
+        background: #00f3ff; color: #050914; box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+        transform: translateY(-2px);
+    }
+
+    /* Search Results - Student Cards */
+    .results-container { display: flex; flex-direction: column; gap: 15px; }
+    
+    .student-card {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 18px 22px; background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; cursor: pointer; transition: 0.3s;
+    }
+    .student-card:hover {
+        border-color: #00f3ff; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        background: rgba(0, 243, 255, 0.05); transform: translateY(-3px);
+    }
+    .student-info h4 { color: #00f3ff; margin-bottom: 5px; font-size: 18px; font-family: 'Orbitron', sans-serif; }
+    .student-info p { color: #a5c3e0; font-size: 14px; margin: 3px 0; font-family: 'Poppins', sans-serif; }
+    
+    /* Add Payment Box */
+    .add-payment-box {
+        display: none; background: rgba(0, 255, 136, 0.03);
+        border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 12px;
+        padding: 25px; margin-top: 25px; box-shadow: inset 0 0 15px rgba(0, 255, 136, 0.05);
+        animation: fadeIn 0.4s ease-in-out;
+    }
+    .selected-student-details {
+        margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+    }
+    .selected-student-details h3 { color: #00ff88; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 10px rgba(0,255,136,0.3); }
+    .selected-student-details p { color: #a5c3e0; font-family: 'Poppins', sans-serif; }
+    
+    .payment-form-group { display: flex; gap: 20px; align-items: flex-end; }
+    .payment-form-group div { flex: 1; }
+    .payment-form-group label {
+        display: block; margin-bottom: 8px; font-family: 'Orbitron', sans-serif;
+        font-size: 13px; color: #a5c3e0; letter-spacing: 1px;
+    }
+    .payment-form-group input {
+        width: 100%; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(0, 255, 136, 0.4);
+        padding: 12px 15px; border-radius: 6px; color: #fff; font-size: 16px; outline: none;
+        font-family: 'Poppins', sans-serif; transition: 0.3s;
+    }
+    .payment-form-group input:focus {
+        border-color: #00ff88; box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+    }
+    
+    .cyber-pay-btn {
+        background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; color: #00ff88;
+        padding: 12px 30px; border-radius: 8px; cursor: pointer; font-family: 'Orbitron', sans-serif;
+        font-size: 15px; font-weight: bold; letter-spacing: 1px; height: 48px; transition: 0.3s;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+    }
+    .cyber-pay-btn:hover {
+        background: #00ff88; color: #050914; box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+        transform: translateY(-2px);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="payment-wrapper">
+    <h2 class="module-header"><i class="fa-solid fa-indian-rupee-sign"></i> COLLECT FEE PAYMENT</h2>
+
+    <div class="payment-container">
+        <!-- Search Box -->
+        <div class="search-section">
+            <input type="text" id="searchInput" placeholder="Enter UID or Mobile No.">
+            <button class="cyber-search-btn" id="searchBtn" onclick="searchStudent()"><i class="fa-solid fa-magnifying-glass"></i> SEARCH</button>
+        </div>
+
+        <!-- Search Results List -->
+        <div id="resultsContainer" class="results-container">
+            <!-- Student cards will appear here -->
+        </div>
+
+        <!-- Add Payment Box (Hidden until student is selected) -->
+        <div id="addPaymentBox" class="add-payment-box">
+            <div class="selected-student-details">
+                <h3 id="selectedName">Student Name</h3>
+                <p><strong>Father:</strong> <span id="selectedFather">Father Name</span> | <strong>UID:</strong> <span id="selectedUID">---</span></p>
+                <p><strong>Mobile:</strong> <span id="selectedMobile">---</span> | <strong>Class:</strong> <span id="selectedClass">---</span></p>
+                <p style="color: #ff0055; font-weight: bold; margin-top: 8px; text-shadow: 0 0 8px rgba(255,0,85,0.4);">
+                    Current Dynamic Dues: ₹<span id="selectedDues">0</span>
+                </p>
+            </div>
+            
+            <div class="payment-form-group">
+                <div>
+                    <label>ENTER AMOUNT (₹)</label>
+                    <input type="number" id="paymentAmount" placeholder="Amount to pay">
+                </div>
+                <button class="cyber-pay-btn" id="payBtn" onclick="submitPayment()">SUBMIT PAYMENT</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    window.searchStudent = function() {
+        const query = document.getElementById('searchInput').value.trim();
+        const resultsContainer = document.getElementById('resultsContainer');
+        const addPaymentBox = document.getElementById('addPaymentBox');
+        const searchBtn = document.getElementById('searchBtn');
+        
+        resultsContainer.innerHTML = '';
+        addPaymentBox.style.display = 'none';
+
+        if(query === '') {
+            resultsContainer.innerHTML = '<p style="color:#ff0055; font-family: Orbitron; font-size: 13px;">PLEASE ENTER UID OR MOBILE NO.</p>';
+            return;
+        }
+
+        // Add loading state
+        searchBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SCANNING...';
+        searchBtn.style.opacity = '0.7';
+
+        // Fetching Data from Google Sheet Backend
+        fetch(API_URL + "?action=getReports") // getReports returns all students with their dues and mobile numbers
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success" && data.data.length > 0) {
+                    
+                    // Filter by Exact UID OR Mobile Number containing the query
+                    const filteredStudents = data.data.filter(student => 
+                        String(student.uid).toLowerCase() === query.toLowerCase() || 
+                        String(student.mobile).includes(query)
+                    );
+
+                    if(filteredStudents.length === 0) {
+                        resultsContainer.innerHTML = '<p style="color:#a5c3e0; font-family: Poppins;">No records match this UID or Mobile Number.</p>';
+                    } else {
+                        // Display Sibling Cards or Single Card
+                        filteredStudents.forEach(student => {
+                            const card = document.createElement('div');
+                            card.className = 'student-card';
+                            
+                            // Prevent JS errors by properly escaping strings in onclick
+                            const safeName = student.name.replace(/'/g, "\\'");
+                            const safeFather = student.father.replace(/'/g, "\\'");
+                            const safeMobile = student.mobile;
+                            
+                            card.setAttribute('onclick', `openPaymentBox('${student.uid}', '${safeName}', '${safeFather}', ${student.dues}, '${safeMobile}', '${student.class}')`);
+                            
+                            card.innerHTML = `
+                                <div class="student-info">
+                                    <h4>${student.name}</h4>
+                                    <p>Father: ${student.father} | Class: ${student.class}</p>
+                                    <p><strong>UID: ${student.uid}</strong> | Mobile: ${student.mobile}</p>
+                                </div>
+                                <div>
+                                    <i class="fa-solid fa-chevron-right" style="color:#00f3ff; text-shadow: 0 0 10px #00f3ff;"></i>
+                                </div>
+                            `;
+                            resultsContainer.appendChild(card);
+                        });
+                    }
+                } else {
+                    resultsContainer.innerHTML = '<p style="color:#a5c3e0; font-family: Poppins;">Database is empty or could not be reached.</p>';
+                }
+            })
+            .catch(err => {
+                console.error("Search Error:", err);
+                resultsContainer.innerHTML = '<p style="color:#ff0055; font-family: Orbitron; font-size: 13px;">NETWORK ERROR: CANNOT REACH DATABASE</p>';
+            })
+            .finally(() => {
+                searchBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> SEARCH';
+                searchBtn.style.opacity = '1';
+            });
+    };
+
+    window.openPaymentBox = function(uid, name, father, dues, mobile, stdClass) {
+        document.getElementById('selectedName').innerText = name;
+        document.getElementById('selectedFather').innerText = father;
+        document.getElementById('selectedUID').innerText = uid;
+        document.getElementById('selectedMobile').innerText = mobile;
+        document.getElementById('selectedClass').innerText = stdClass;
+        
+        // Ensure dues is treated as a number
+        const formattedDues = parseFloat(dues) || 0;
+        document.getElementById('selectedDues').innerText = formattedDues;
+        
+        document.getElementById('paymentAmount').value = formattedDues > 0 ? formattedDues : '';
+
+        document.getElementById('resultsContainer').innerHTML = '';
+        document.getElementById('addPaymentBox').style.display = 'block';
+    };
+
+    window.submitPayment = function() {
+        const amount = parseFloat(document.getElementById('paymentAmount').value);
+        const name = document.getElementById('selectedName').innerText;
+        const uid = document.getElementById('selectedUID').innerText;
+        const mobile = document.getElementById('selectedMobile').innerText;
+        const currentDues = parseFloat(document.getElementById('selectedDues').innerText) || 0;
+        const payBtn = document.getElementById('payBtn');
+        
+        if(!amount || amount <= 0) {
+            Swal.fire({ icon: 'warning', title: 'Invalid Amount', text: 'Please enter a valid payment amount.', background: '#050914', color: '#00f3ff' });
+            return;
+        }
+
+        payBtn.innerText = "PROCESSING...";
+        payBtn.style.opacity = '0.7';
+        payBtn.disabled = true;
+
+        const payload = {
+            action: 'addPayment',
+            uid: uid,
+            amount: amount,
+            mode: 'Cash', // Default to cash for now
+            remarks: 'Fee Payment via Terminal'
+        };
+
+        fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === "success") {
+                // Calculate remaining dues for the WhatsApp receipt logic
+                let newDues = currentDues - amount;
+                if(newDues < 0) newDues = 0;
+
+                document.getElementById('addPaymentBox').style.display = 'none';
+                document.getElementById('searchInput').value = '';
+                
+                // CALL GLOBAL FUNCTION FROM SCRIPT.JS (WhatsApp Receipt)
+                if (typeof showPaymentSuccess === "function") {
+                    showPaymentSuccess(name, amount, newDues, mobile);
+                } else {
+                    Swal.fire('Success!', `Amount ₹${amount} collected for ${name}.`, 'success');
+                }
+                
+                // Update Home Dashboard stats if available
+                if (typeof fetchHomeStats === "function") fetchHomeStats();
+
+            } else {
+                Swal.fire({ icon: 'error', title: 'Transaction Failed', text: data.message, background: '#050914', color: '#ff0055' });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire({ icon: 'error', title: 'Network Error', text: 'Failed to process payment.', background: '#050914', color: '#ff0055' });
+        })
+        .finally(() => {
+            payBtn.innerText = "SUBMIT PAYMENT";
+            payBtn.style.opacity = '1';
+            payBtn.disabled = false;
+        });
+    };
+})();
+</script>
