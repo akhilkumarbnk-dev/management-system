@@ -168,10 +168,6 @@
                 return;
             }
 
-            submitBtn.innerText = "Processing Protocol...";
-            submitBtn.style.opacity = "0.7";
-            submitBtn.disabled = true;
-
             const admissionData = {
                 action: 'addAdmission',
                 uid: document.getElementById('uid').value,
@@ -192,8 +188,18 @@
                 status: document.getElementById('status').value,
                 feePlan: document.getElementById('feePlan').value,
                 totalFee: document.getElementById('totalFee').value,
-                todayPayment: 0 // Sent as 0 automatically
+                todayPayment: 0 // Payment 0 hi jayegi
             };
+
+            // 🔥 SMART LOADING POPUP
+            Swal.fire({
+                title: 'Processing...',
+                text: 'Enrolling student in Purix System',
+                allowOutsideClick: false,
+                background: '#050914',
+                color: '#00f3ff',
+                didOpen: () => Swal.showLoading()
+            });
 
             fetch(API_URL, {
                 method: "POST",
@@ -202,10 +208,15 @@
             .then(res => res.json())
             .then(data => {
                 if(data.status === "success") {
+                    // 🔥 SUCCESS POPUP W/ BACKEND DATE
                     Swal.fire({
                         title: 'Enrollment Successful!',
-                        html: `<p>Student <b>${admissionData.name}</b> registered.</p><p style="color:var(--success-neon)">Next Due Date: ${data.nextDuesDate}</p>`,
-                        icon: 'success', background: '#050914', color: '#00f3ff', confirmButtonColor: '#00f3ff'
+                        html: `<p style="color: #a5c3e0;">Student <b style="color: #fff;">${admissionData.name}</b> registered.</p>
+                               <p style="color: #00ff88; font-size: 18px; margin-top: 10px; font-weight: bold;">Next Due Date: ${data.nextDuesDate}</p>`,
+                        icon: 'success', 
+                        background: '#050914', 
+                        color: '#00f3ff', 
+                        confirmButtonColor: '#00f3ff'
                     });
                     
                     form.reset();
@@ -217,11 +228,6 @@
             })
             .catch(err => {
                 Swal.fire({ icon: 'error', title: 'Network Error', text: 'Failed to save data.', background: '#050914', color: '#ff0055' });
-            })
-            .finally(() => {
-                submitBtn.innerText = "Save Admission Data";
-                submitBtn.style.opacity = "1";
-                submitBtn.disabled = false;
             });
         });
     }
