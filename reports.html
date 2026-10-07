@@ -118,13 +118,14 @@
         .report-header-pdf p { margin: 5px 0 0; font-family: 'Arial', sans-serif; font-size: 13px; color: #444 !important;}
         #printFilterInfo { font-size: 12px; color: #666 !important; font-style: italic; margin-top: 8px;}
 
-        .filter-section, .action-btns, th.no-print, td.no-print, .no-print { display: none !important; }
+        /* FIX: Hiding elements strictly for print without using the no-print class */
+        .filter-section, .reports-header, .card-inactive, .action-th, .action-btns, .modal-overlay { display: none !important; }
+        
         .table-responsive { border: none !important; }
         .reports-table th { background: #e2e8f0 !important; color: #000 !important; border-bottom: 2px solid #000 !important; font-weight: bold;}
         .reports-table td { color: #000 !important; border-bottom: 1px solid #ccc !important; }
         .summary-card { background: #f8fafc !important; color: #000 !important; border: 1px solid #cbd5e1 !important; box-shadow: none !important;}
         .summary-card h2, .summary-card h3 { color: #000 !important; text-shadow: none !important; }
-        .modal-overlay { display: none !important; } 
     }
 </style>
 
@@ -132,13 +133,14 @@
     <div class="reports-container" id="printableReportArea">
         
         <!-- Header visible only in PDF / Print -->
-        <div class="report-header-pdf no-print" style="display: none;">
+        <div class="report-header-pdf" style="display: none;">
             <h1>PURIX ACADEMY</h1>
             <p>Management Financial Report | Generated on: <span id="reportDateTxt"></span></p>
-            <p id="printFilterInfo"></p> <!-- Dinamically shows active filters -->
+            <p id="printFilterInfo"></p> 
         </div>
 
-        <div class="reports-header no-print">
+        <!-- REMOVED no-print CLASS -->
+        <div class="reports-header">
             <h2 class="module-header"><i class="fa-solid fa-chart-pie"></i> COLLECTION & DUES REPORT</h2>
         </div>
 
@@ -152,15 +154,16 @@
                 <h3>Active Dues</h3>
                 <h2 id="totalDuesText">₹0</h2>
             </div>
-            <div class="summary-card card-inactive no-print" onclick="openInactiveModal()" title="Click to view Inactive Students">
+            <!-- REMOVED no-print CLASS -->
+            <div class="summary-card card-inactive" onclick="openInactiveModal()" title="Click to view Inactive Students">
                 <h3>Inactive Students <i class="fa-solid fa-hand-pointer"></i></h3>
                 <h2 id="inactiveCountText">0</h2>
                 <p style="font-size: 10px; margin-top: 5px; opacity: 0.8; font-family: Poppins;">(Click to reactivate)</p>
             </div>
         </div>
 
-        <!-- SUPER ADVANCED FILTERS SECTION -->
-        <div class="filter-section no-print">
+        <!-- SUPER ADVANCED FILTERS SECTION (REMOVED no-print CLASS) -->
+        <div class="filter-section">
             <input type="text" id="filterSearch" placeholder="Search UID or Name..." oninput="filterReports()">
             
             <select id="filterSession" onchange="filterReports()">
@@ -216,7 +219,8 @@
                         <th>Subjects</th>
                         <th onclick="sortTable('paid')">Total Paid <i class="fa-solid fa-sort"></i></th>
                         <th onclick="sortTable('dues')">Dues <i class="fa-solid fa-sort"></i></th>
-                        <th class="no-print">Actions</th>
+                        <!-- ADDED action-th CLASS INSTEAD OF no-print -->
+                        <th class="action-th">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="reportsBody">
@@ -225,8 +229,8 @@
             </table>
         </div>
 
-        <!-- INACTIVE STUDENTS MODAL -->
-        <div id="inactiveModal" class="modal-overlay no-print">
+        <!-- INACTIVE STUDENTS MODAL (REMOVED no-print CLASS) -->
+        <div id="inactiveModal" class="modal-overlay">
             <div class="modal-box">
                 <div class="modal-header-box">
                     <h3><i class="fa-solid fa-users-slash"></i> INACTIVE STUDENTS REGISTRY</h3>
@@ -255,8 +259,8 @@
 <script>
 (function() {
     let reportData = []; 
-    let currentDisplayedData = []; // To keep track of filtered data for CSV & Sorting
-    let sortDirection = true; // true = ascending
+    let currentDisplayedData = []; 
+    let sortDirection = true; 
 
     document.getElementById('reportDateTxt').innerText = new Date().toLocaleDateString('en-GB');
 
@@ -291,7 +295,6 @@
         }
     }
 
-    // Money Formatting for UI
     function formatMoney(amount) {
         return '₹' + parseFloat(amount).toLocaleString('en-IN');
     }
@@ -304,7 +307,6 @@
         const planFilter = document.getElementById('filterPlan').value;
         const statusFilter = document.getElementById('filterStatus').value;
 
-        // Update PDF Header text to show active filters
         let filterStr = [];
         if(sessionFilter !== 'All') filterStr.push(`Session: ${sessionFilter}`);
         if(classFilter !== 'All') filterStr.push(`Class: ${classFilter}`);
@@ -313,7 +315,6 @@
         if(statusFilter !== 'All') filterStr.push(`Status: ${statusFilter}`);
         document.getElementById('printFilterInfo').innerText = filterStr.length > 0 ? "Filters applied: " + filterStr.join(" | ") : "Viewing: All Records";
 
-        // Filtering Logic
         let baseFiltered = reportData.filter(student => {
             const matchesSearch = !searchTxt || (student.name && student.name.toLowerCase().includes(searchTxt)) || (student.uid && String(student.uid).toLowerCase().includes(searchTxt));
             const matchesSession = sessionFilter === "All" || student.session === sessionFilter;
@@ -324,7 +325,6 @@
             return matchesSearch && matchesSession && matchesClass && matchesPlan && matchesSubject;
         });
 
-        // Summary Calculations (Based on filtered data)
         let totalColl = 0, totalDues = 0, inactiveCount = 0;
         baseFiltered.forEach(student => {
             if (student.status === "Active") {
@@ -344,7 +344,7 @@
     };
 
     window.sortTable = function(key) {
-        sortDirection = !sortDirection; // Toggle asc/desc
+        sortDirection = !sortDirection; 
         currentDisplayedData.sort((a, b) => {
             let valA = a[key]; let valB = b[key];
             if (key === 'paid' || key === 'dues') {
@@ -383,7 +383,7 @@
                     <td title="${stdSubs}" style="font-size: 11px;">${shortSubs}</td>
                     <td style="color: #00ff88; font-weight: bold;">${formatMoney(student.paid)}</td>
                     <td style="color: #ff0055; font-weight: bold;">${formatMoney(student.dues)}</td>
-                    <td class="action-btns no-print">
+                    <td class="action-btns">
                         <button class="btn-icon btn-whatsapp" onclick="sendWhatsAppAlert('${student.mobile}', '${student.name}', ${student.dues})" title="WhatsApp Reminder">
                             <i class="fa-brands fa-whatsapp"></i>
                         </button>
@@ -394,7 +394,6 @@
         });
     }
 
-    // CSV Export Logic (Management Request)
     window.exportToCSV = function() {
         if(currentDisplayedData.length === 0) {
             Swal.fire('Empty Data', 'No data to export based on current filters.', 'warning'); return;
