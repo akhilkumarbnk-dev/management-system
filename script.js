@@ -20,7 +20,7 @@ function loadModule(moduleName) {
     console.log("System Initializing Module: " + moduleName);
     
     // YAHAN FIX KIYA GAYA HAI: Direct HTML file load karna bina kisi folder ke
-    fetch(moduleName + '.html')
+    fetch(moduleName + '.html?nocache=' + new Date().getTime())
         .then(response => {
             if (!response.ok) throw new Error('Module not found: ' + moduleName);
             return response.text();
