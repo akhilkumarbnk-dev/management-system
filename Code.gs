@@ -1,3 +1,7 @@
+// ==========================================
+// 🚀 PURIX ACADEMY BACKEND SYSTEM (CODE.GS)
+// ==========================================
+
 // SHEET NAMES
 const ADMISSION_SHEET = "Admission Sheet"; 
 const PAYMENT_SHEET = "Payement History";
@@ -11,23 +15,19 @@ function getExactTimestamp() {
 // Helper 2: Dynamically calculate total expected fee based on time passed
 function calculateTotalExpected(admDateStr, feePlan, monthlyAmt, totalAmt) {
   if (feePlan !== "Monthly") {
-    // Agar kist (Installment/Total) hai, toh full total amount expected hoga
     return parseFloat(totalAmt) || 0; 
   }
   
-  // Agar Monthly hai, toh mahine calculate karo
   let admDate = new Date(admDateStr);
   if (isNaN(admDate.getTime())) return parseFloat(monthlyAmt) || 0;
   
   let now = new Date();
   let monthsPassed = (now.getFullYear() - admDate.getFullYear()) * 12 + (now.getMonth() - admDate.getMonth());
   
-  // Agar aaj ki tareekh admission ki tareekh ya usse aage hai, toh naya mahina due ho gaya
   if (now.getDate() >= admDate.getDate()) {
     monthsPassed += 1;
   }
   
-  // Admission ke time kam se kam 1 mahine ka fee toh due hota hi hai
   if (monthsPassed < 1) monthsPassed = 1; 
   
   return monthsPassed * (parseFloat(monthlyAmt) || 0);
@@ -44,7 +44,6 @@ function calculateNextDueDate(admDateStr, feePlan, monthlyAmt, totalPaid) {
   }
   
   if (feePlan === "Monthly") {
-    // Kitne mahine ki payment ho chuki hai?
     let monthsPaid = (monthlyAmt > 0) ? Math.floor(totalPaid / monthlyAmt) : 0;
     admDate.setMonth(admDate.getMonth() + monthsPaid);
     return Utilities.formatDate(admDate, Session.getScriptTimeZone(), "yyyy-MM-dd");
@@ -59,7 +58,7 @@ function doPost(e) {
     let ss = SpreadsheetApp.getActiveSpreadsheet();
     let action = data.action;
     
-    // --- 1. NAYA ADMISSION ---
+    // --- 1. NAYA ADMISSION (COLUMNS ALIGNED FIX) ---
     if (action === "addAdmission") {
       let admSheet = ss.getSheetByName(ADMISSION_SHEET);
       
@@ -75,6 +74,7 @@ function doPost(e) {
       
       let calculatedNextDues = calculateNextDueDate(data.admissionDate, feePlan, monthlyFeeVal, todayPay);
       
+      // ✅ FIX: Data sheet ke exactly column indexes ke hisaab se align kar diya gaya hai
       admSheet.appendRow([
         data.uid,            // A
         data.name,           // B
@@ -91,10 +91,10 @@ function doPost(e) {
         feePlan,             // M 
         monthlyFeeVal,       // N 
         totalFeeVal,         // O 
-        todayPay,            // P 
-        initialDues,         // Q 
-        data.status || "Active", // R 
-        data.session || "2026-27" // S
+        data.gender || "",   // P (Gender)
+        data.studyMaterial || "", // Q (Study Material)
+        data.status || "Active",  // R (Status)
+        data.session || "2026-27" // S (Session)
       ]);
       
       if (todayPay > 0) {
@@ -113,7 +113,7 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({"status": "success", "nextDuesDate": calculatedNextDues})).setMimeType(ContentService.MimeType.JSON);
     }
     
-    // --- 2. PAYMENT COLLECT ---
+    // --- 2. PAYMENT COLLECT (OVERWRITE FIX) ---
     if (action === "addPayment") {
       let admSheet = ss.getSheetByName(ADMISSION_SHEET);
       let paySheet = ss.getSheetByName(PAYMENT_SHEET);
@@ -136,7 +136,6 @@ function doPost(e) {
         }
       }
 
-      // Pehle ki total paid amount nikalo
       let totalPaidTillNow = 0;
       if (paySheet && paySheet.getLastRow() > 1) {
         let pData = paySheet.getDataRange().getValues();
@@ -150,15 +149,11 @@ function doPost(e) {
       let newlyPaid = parseFloat(data.amount) || 0;
       let grandTotalPaid = totalPaidTillNow + newlyPaid;
       
-      // Calculate dynamic dues
       let expected = calculateTotalExpected(admDate, feePlan, monthlyAmt, totalAmt);
       let remainingDues = expected - grandTotalPaid;
       if (remainingDues < 0) remainingDues = 0;
       
-      // Column Q ko real-time due se update karenge
-      if (rowFound !== -1) {
-        admSheet.getRange(rowFound, 17).setValue(remainingDues);
-      }
+      // ✅ FIX: Column Q me ab remaining dues overwrite nahi hoga (kyuki waha Study Material hai)
 
       let txnId = "TXN" + new Date().getTime();
       let timestamp = getExactTimestamp(); 
@@ -179,7 +174,7 @@ function doPost(e) {
       let dataRows = admSheet.getDataRange().getValues();
       for(let i = 1; i < dataRows.length; i++) {
         if(String(dataRows[i][0]).trim() === String(data.uid).trim()) {
-          admSheet.getRange(i + 1, 18).setValue(data.status); // Status Column R
+          admSheet.getRange(i + 1, 18).setValue(data.status); // Status is in Column R (18)
           return ContentService.createTextOutput(JSON.stringify({"status": "success"})).setMimeType(ContentService.MimeType.JSON);
         }
       }
@@ -216,6 +211,48 @@ function doGet(e) {
       return { totalPaid, realDues: realDues > 0 ? realDues : 0, history };
     }
 
+    // --- 🟢 NEW FIX: GET STATS FOR HOME PAGE (SPINNERS PROBLEM) ---
+    if (action === "getStats") {
+      let rows = admSheet.getDataRange().getValues();
+      let activeCount = 0;
+      let totalStudents = 0;
+
+      for (let i = 1; i < rows.length; i++) {
+        if (rows[i][0] !== "") { 
+          totalStudents++;
+          let status = rows[i][17] || "Active"; // Status column
+          if (String(status).trim() === "Active") {
+            activeCount++;
+          }
+        }
+      }
+
+      let todayColl = 0;
+      if (paySheet && paySheet.getLastRow() > 1) {
+        let pData = paySheet.getDataRange().getValues();
+        let todayStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd");
+        for (let j = 1; j < pData.length; j++) {
+          let rowDate = pData[j][2]; // Timestamp Column C
+          if (rowDate) {
+            let rowDateStr = Utilities.formatDate(new Date(rowDate), Session.getScriptTimeZone(), "yyyy-MM-dd");
+            if (rowDateStr === todayStr) {
+              todayColl += parseFloat(pData[j][3]) || 0; 
+            }
+          }
+        }
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        data: {
+          activeStudents: activeCount,
+          monthAdmission: totalStudents,
+          todayCollection: todayColl
+        }
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // --- SEARCH PROFILE ---
     if (action === "searchProfile") {
       let uid = e.parameter.uid;
       let data = admSheet.getDataRange().getValues();
@@ -243,6 +280,7 @@ function doGet(e) {
       return ContentService.createTextOutput(JSON.stringify({"status": "error", "message": "UID nahi mila!"})).setMimeType(ContentService.MimeType.JSON);
     }
 
+    // --- GET REPORTS & ALERTS ---
     if (action === "getReports" || action === "getAlerts") {
       let rows = admSheet.getDataRange().getValues();
       let resultsList = [];
@@ -251,7 +289,7 @@ function doGet(e) {
         let uid = rows[i][0];
         let status = rows[i][17] || "Active";
         
-        if(action === "getAlerts" && String(status).trim() !== "Active") continue; // Skip inactive for alerts
+        if(action === "getAlerts" && String(status).trim() !== "Active") continue; 
 
         let admDate = rows[i][11];
         let feePlan = rows[i][12];
@@ -261,7 +299,8 @@ function doGet(e) {
         let financial = calculateStudentDues(uid, admDate, feePlan, monthlyAmt, totalAmt);
         let nextDueDate = calculateNextDueDate(admDate, feePlan, monthlyAmt, financial.totalPaid);
 
-        if(action === "getAlerts" && financial.realDues <= 0 && feePlan === "Installment") continue;
+        // ✅ FIX: STRICT ALERT FILTER - Agar due 0 ya negative hai, toh alert nahi aayega (Sabhi plans ke liye)
+        if(action === "getAlerts" && financial.realDues <= 0) continue;
 
         resultsList.push({
           uid: uid, name: rows[i][1], father: rows[i][2], class: rows[i][6], session: rows[i][18],
