@@ -98,11 +98,6 @@
         font-family: 'Poppins', sans-serif; color: #a5c3e0; font-size: 14px;
     }
     .history-table th { background: rgba(0, 0, 0, 0.6); color: #00f3ff; font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 1px; }
-    .status-badge {
-        padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
-        background: rgba(0, 255, 136, 0.15); color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.3);
-        text-shadow: 0 0 5px rgba(0,255,136,0.4);
-    }
     
     .dues-alert { color: #ff0055; font-weight: bold; background: rgba(255,0,85,0.1); padding: 4px 10px; border-radius: 4px; font-size: 13px; }
 
@@ -117,14 +112,14 @@
         
         <!-- Search Section (Hides in PDF) -->
         <div class="search-section no-print">
-            <input type="text" id="profileSearchInput" placeholder="Enter UID or Mobile No.">
+            <input type="text" id="profileSearchInput" placeholder="Enter Student UID (e.g. 1400)">
             <button class="cyber-search-btn" id="profSearchBtn" onclick="searchProfile()"><i class="fa-solid fa-magnifying-glass"></i> SEARCH</button>
         </div>
 
         <div id="profileCard">
             <!-- Header for PDF Export -->
             <div class="profile-header">
-                <h2><img src="logo.png" style="width: 40px; border-radius:50%; margin-right: 10px;"> PURIX ACADEMY</h2>
+                <h2><i class="fa-solid fa-graduation-cap"></i> PURIX ACADEMY</h2>
                 <p>Student Academic & Financial Dossier</p>
             </div>
 
@@ -146,7 +141,7 @@
                         <div class="info-group"><label>Student Name</label><input type="text" id="p_name" class="locked" readonly></div>
                         <div class="info-group"><label>Father Name</label><input type="text" id="p_father" class="locked" readonly></div>
                         <div class="info-group"><label>Mobile No.</label><input type="number" id="p_mobile" class="profile-input locked" readonly></div>
-                        <div class="info-group"><label>Aadhaar No.</label><input type="text" id="p_aadhar" class="profile-input locked" readonly placeholder="Not Updated"></div>
+                        <div class="info-group"><label>ID No.</label><input type="text" id="p_aadhar" class="profile-input locked" readonly placeholder="[Aadhaar Redacted]"></div>
                         <div class="info-group"><label>Class / Session</label><input type="text" id="p_class" class="profile-input locked" readonly></div>
                         <div class="info-group"><label>Subjects</label><input type="text" id="p_subject" class="profile-input locked" readonly></div>
                         <div class="info-group"><label>Status</label><input type="text" id="p_status" class="locked" readonly></div>
@@ -183,88 +178,101 @@
     let isEditing = false;
     let currentUID = "";
 
+    // 💡 FIX 1: ENTER Button se Search Enable Kar Diya
+    const searchInput = document.getElementById('profileSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProfile();
+            }
+        });
+    }
+
     window.searchProfile = function() {
-        const query = document.getElementById('profileSearchInput').value.trim();
+        const query = searchInput.value.trim();
         const card = document.getElementById('profileCard');
         const btn = document.getElementById('profSearchBtn');
         
         if(!query) {
-            Swal.fire({ icon: 'warning', title: 'Input Required', text: 'Please enter UID or Mobile No.', background: '#050914', color: '#00f3ff' });
+            Swal.fire({ icon: 'warning', title: 'Input Required', text: 'Please enter Student UID!', background: '#050914', color: '#00f3ff' });
             return;
         }
 
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> FETCHING...';
         btn.style.opacity = '0.7';
 
-        // Fetching Live Profile Data from Google Apps Script
-        fetch(API_URL + "?action=searchProfile&uid=" + encodeURIComponent(query))
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === "success") {
-                    const student = data.data;
-                    currentUID = query;
-                    
-                    document.getElementById('p_uid').value = query;
-                    document.getElementById('p_name').value = student.name;
-                    document.getElementById('p_father').value = student.fatherName;
-                    document.getElementById('p_mobile').value = student.mobile;
-                    // Mock Aadhaar just as placeholder if missing, actual backend can store it
-                    document.getElementById('p_aadhar').value = student.aadhar || ''; 
-                    document.getElementById('p_class').value = student.class;
-                    document.getElementById('p_subject').value = student.subjects;
-                    document.getElementById('p_status').value = student.status;
+        // 💡 FIX 2: GET method ke sath 'redirect: follow' laga diya CORS error bypass karne ke liye
+        fetch(API_URL + "?action=searchProfile&uid=" + encodeURIComponent(query), {
+            method: 'GET',
+            redirect: 'follow' 
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === "success") {
+                const student = data.data;
+                currentUID = query;
+                
+                document.getElementById('p_uid').value = query;
+                document.getElementById('p_name').value = student.name;
+                document.getElementById('p_father').value = student.fatherName;
+                document.getElementById('p_mobile').value = student.mobile;
+                document.getElementById('p_aadhar').value = student.aadhar || ''; 
+                document.getElementById('p_class').value = student.class;
+                document.getElementById('p_subject').value = student.subjects;
+                document.getElementById('p_status').value = student.status;
 
-                    // Remaining Dues Display
-                    const duesAlert = document.getElementById('p_dues_alert');
-                    if (student.remainingDues > 0) {
-                        duesAlert.innerHTML = `Pending Dues: ₹${student.remainingDues}`;
-                        duesAlert.style.display = 'block';
-                    } else {
-                        duesAlert.style.display = 'none';
-                    }
-
-                    // Payment History Table
-                    const historyBody = document.getElementById('paymentHistoryBody');
-                    historyBody.innerHTML = '';
-                    
-                    if(student.history && student.history.length > 0) {
-                        // Reverse array to show latest payment on top
-                        const reversedHistory = [...student.history].reverse();
-                        
-                        reversedHistory.forEach(row => {
-                            // Extract date and time separately from timestamp for clean UI
-                            let fullDate = row.date || ""; 
-                            historyBody.innerHTML += `
-                                <tr>
-                                    <td><i class="fa-regular fa-calendar-days" style="color:#00f3ff;"></i> ${fullDate}</td>
-                                    <td><strong style="color:#00ff88;">₹${row.amount}</strong></td>
-                                    <td>${row.mode}</td>
-                                    <td>${row.remarks || 'Fee Payment'}</td>
-                                </tr>
-                            `;
-                        });
-                    } else {
-                        historyBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#a5c3e0; padding: 20px;">No payment history found.</td></tr>`;
-                    }
-
-                    card.style.display = 'block';
-                    
-                    // Reset edit state if it was open
-                    if(isEditing) toggleEdit();
-
+                // Remaining Dues Display
+                const duesAlert = document.getElementById('p_dues_alert');
+                if (student.remainingDues > 0) {
+                    duesAlert.innerHTML = `Pending Dues: ₹${student.remainingDues}`;
+                    duesAlert.style.display = 'block';
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Not Found', text: 'No student found with this UID/Mobile.', background: '#050914', color: '#ff0055' });
-                    card.style.display = 'none';
+                    duesAlert.style.display = 'none';
                 }
-            })
-            .catch(err => {
-                console.error(err);
-                Swal.fire({ icon: 'error', title: 'Network Error', text: 'Could not connect to database.', background: '#050914', color: '#ff0055' });
-            })
-            .finally(() => {
-                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> SEARCH';
-                btn.style.opacity = '1';
-            });
+
+                // Payment History Table
+                const historyBody = document.getElementById('paymentHistoryBody');
+                historyBody.innerHTML = '';
+                
+                if(student.history && student.history.length > 0) {
+                    const reversedHistory = [...student.history].reverse();
+                    
+                    reversedHistory.forEach(row => {
+                        // 💡 FIX 3: Date formatting ko beautiful bana diya
+                        let dateObj = new Date(row.date);
+                        let formattedDate = !isNaN(dateObj.getTime()) ? dateObj.toLocaleString('en-IN', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}) : row.date;
+                        
+                        historyBody.innerHTML += `
+                            <tr>
+                                <td><i class="fa-regular fa-calendar-days" style="color:#00f3ff;"></i> ${formattedDate}</td>
+                                <td><strong style="color:#00ff88;">₹${row.amount}</strong></td>
+                                <td>${row.mode}</td>
+                                <td>${row.remarks || 'Fee Payment'}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    historyBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#a5c3e0; padding: 20px;">No payment history found.</td></tr>`;
+                }
+
+                card.style.display = 'block';
+                
+                // Reset edit state if it was open
+                if(isEditing) toggleEdit();
+
+            } else {
+                Swal.fire({ icon: 'error', title: 'Not Found', text: 'No student found with this UID.', background: '#050914', color: '#ff0055' });
+                card.style.display = 'none';
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire({ icon: 'error', title: 'Network Error', text: 'Could not connect to database.', background: '#050914', color: '#ff0055' });
+        })
+        .finally(() => {
+            btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> SEARCH';
+            btn.style.opacity = '1';
+        });
     };
 
     window.toggleEdit = function() {
@@ -283,7 +291,6 @@
             btn.style.color = '#00f3ff';
             isEditing = true;
         } else {
-            // Save state visually
             inputs.forEach(input => {
                 input.setAttribute('readonly', 'true');
                 input.classList.remove('editable');
@@ -303,10 +310,8 @@
         const studentName = document.getElementById('p_name').value || 'Student';
         const fileName = `${studentName}_Purix_Dossier`;
         
-        // Ensure edit mode is closed before printing
         if(isEditing) toggleEdit();
 
-        // Call the global PDF function from script.js
         if(typeof downloadPDF === 'function') {
             downloadPDF('printableProfileArea', fileName);
         } else {
