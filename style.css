@@ -221,3 +221,72 @@ body {
 
 /* Hide UI elements from the PDF (Search bars, Action buttons, etc) */
 .no-print { display: none !important; }
+/* =========================================
+   🖨️ SMART PRINT MODE (FOR A4 WHITE PDF DOSSIER)
+   Ye code sirf "SAVE AS PDF" dabane par active hoga, screen par nahi.
+   ========================================= */
+@media print {
+    /* 1. Unwanted cheezein hide karo (Sidebar, Header, Buttons) */
+    .sidebar, .top-header, .no-print, .profile-actions, .search-section, button {
+        display: none !important;
+    }
+
+    /* 2. Background ko poora White aur text ko Black karo */
+    body, .app-container, .main-content, #module-container {
+        background: #ffffff !important;
+        background-image: none !important;
+        color: #000000 !important;
+        height: auto !important;
+        overflow: visible !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* 3. Cards aur Box Shadow ko clean A4 paper style me badlo */
+    .profile-container, .sci-fi-card, #profileCard, .cyber-form {
+        background: #ffffff !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+    }
+
+    /* 4. Headings aur normal text ka glow hata kar dark ink karo */
+    h1, h2, h3, h4, p, label, td, th {
+        color: #000000 !important;
+        text-shadow: none !important;
+    }
+
+    /* 5. Profile Header aur Inputs ko clean document style do */
+    .profile-header {
+        background: transparent !important;
+        border-bottom: 2px solid #333 !important;
+        padding: 10px 0 !important;
+    }
+    .profile-header h2, .profile-header p { color: #000000 !important; }
+    
+    input, select, .sci-fi-input, .profile-input, .info-group input {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 1px solid #ccc !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        padding-left: 0 !important;
+        border-radius: 0 !important;
+    }
+
+    /* 6. Tables ko professional Invoice/Ledger format me badlo */
+    .sci-fi-table th, .history-table th {
+        background: #f4f4f4 !important;
+        color: #000000 !important;
+        border-bottom: 2px solid #000 !important;
+    }
+    .sci-fi-table td, .history-table td {
+        border-bottom: 1px solid #ccc !important;
+        color: #000000 !important;
+    }
+    .history-section h3 { border-bottom: none !important; }
+}
