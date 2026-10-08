@@ -307,17 +307,15 @@
         }
     };
 
-    window.generateProfilePDF = function() {
-        const studentName = document.getElementById('p_name').value || 'Student';
-        const fileName = `${studentName}_Purix_Dossier`;
-        
+   window.generateProfilePDF = function() {
+        // Agar edit mode open hai toh usko pehle lock/band kar do
         if(isEditing) toggleEdit();
 
-        if(typeof downloadPDF === 'function') {
-            downloadPDF('printableProfileArea', fileName);
-        } else {
-            alert("PDF Engine offline. Ensure script.js is loaded properly.");
-        }
+        // 💡 FIX: Screenshot library ko hata kar Browser ka HD Print lagaya gaya hai.
+        // Ye CSS (@media print) ke sath milkar ekdum perfect white PDF banayega.
+        setTimeout(() => {
+            window.print();
+        }, 400); 
     }
 })();
 </script>
