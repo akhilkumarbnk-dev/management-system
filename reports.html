@@ -125,6 +125,7 @@
         .reports-table { width: 100% !important; border-collapse: collapse !important; }
         .reports-table th { background: #e2e8f0 !important; color: #000 !important; border-bottom: 2px solid #000 !important; font-weight: bold;}
         .reports-table td { color: #000 !important; border-bottom: 1px solid #ccc !important; }
+        .reports-table td span { border: none !important; background: transparent !important; color: #000 !important; padding: 0 !important; }
         .summary-card { background: #f8fafc !important; color: #000 !important; border: 1px solid #cbd5e1 !important; box-shadow: none !important;}
         .summary-card h2, .summary-card h3 { color: #000 !important; text-shadow: none !important; }
     }
@@ -215,7 +216,8 @@
                         <th onclick="sortTable('uid')">UID <i class="fa-solid fa-sort"></i></th>
                         <th onclick="sortTable('name')">Name <i class="fa-solid fa-sort"></i></th>
                         <th onclick="sortTable('class')">Class <i class="fa-solid fa-sort"></i></th>
-                        <th>Subjects</th>
+                        <!-- CHANGED: Subjects is now Fee Plan -->
+                        <th onclick="sortTable('feePlan')">Fee Plan <i class="fa-solid fa-sort"></i></th>
                         <th onclick="sortTable('paid')">Total Paid <i class="fa-solid fa-sort"></i></th>
                         <th onclick="sortTable('dues')">Dues <i class="fa-solid fa-sort"></i></th>
                         <th class="action-th">Actions</th>
@@ -319,7 +321,6 @@
             const matchesClass = classFilter === "All" || student.class === classFilter;
             const matchesPlan = planFilter === "All" || student.feePlan === planFilter;
             
-            // FIX: Made subject matching case-insensitive
             const stdSubjects = student.subject || student.subjects || ""; 
             const matchesSubject = subjectFilter === "All" || stdSubjects.toLowerCase().includes(subjectFilter.toLowerCase());
             
@@ -373,15 +374,17 @@
                 ? `<button class="btn-icon btn-inactive" onclick="toggleStatus('${student.uid}', 'Inactive')" title="Make Inactive"><i class="fa-solid fa-user-xmark"></i></button>` 
                 : `<button class="btn-icon btn-active" onclick="toggleStatus('${student.uid}', 'Active')" title="Make Active"><i class="fa-solid fa-user-check"></i></button>`;
             
-            let stdSubs = student.subject || student.subjects || "-";
-            let shortSubs = stdSubs.length > 20 ? stdSubs.substring(0, 18) + "..." : stdSubs;
+            // Fee Plan Badge UI
+            let planBadgeColor = student.feePlan === "Monthly" ? "rgba(0, 243, 255, 0.15)" : "rgba(179, 102, 255, 0.15)";
+            let planTextColor = student.feePlan === "Monthly" ? "#00f3ff" : "#b366ff";
+            let planBorder = student.feePlan === "Monthly" ? "rgba(0, 243, 255, 0.3)" : "rgba(179, 102, 255, 0.3)";
 
             tbody.innerHTML += `
                 <tr style="${student.status === 'Inactive' ? 'background: rgba(255,0,85,0.08); color: #ff0055;' : ''}">
                     <td><strong>${student.uid}</strong></td>
                     <td>${student.name}</td>
                     <td>${student.class}</td>
-                    <td title="${stdSubs}" style="font-size: 11px;">${shortSubs}</td>
+                    <td><span style="background: ${planBadgeColor}; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: ${planTextColor}; border: 1px solid ${planBorder}; font-weight: 500;">${student.feePlan || 'Monthly'}</span></td>
                     <td style="color: #00ff88; font-weight: bold;">${formatMoney(student.paid)}</td>
                     <td style="color: #ff0055; font-weight: bold;">${formatMoney(student.dues)}</td>
                     <td class="action-btns action-th">
@@ -400,12 +403,13 @@
             Swal.fire('Empty Data', 'No data to export based on current filters.', 'warning'); return;
         }
         let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += "UID,Student Name,Class,Session,Subjects,Fee Plan,Total Paid,Pending Dues,Status\n";
+        
+        // CHANGED: Subject removed from CSV for clean data
+        csvContent += "UID,Student Name,Class,Session,Fee Plan,Total Paid,Pending Dues,Status\n";
         
         currentDisplayedData.forEach(s => {
             let row = [
-                s.uid, `"${s.name}"`, s.class, s.session, `"${s.subject || s.subjects || ''}"`, 
-                s.feePlan, s.paid || 0, s.dues || 0, s.status
+                s.uid, `"${s.name}"`, s.class, s.session, s.feePlan, s.paid || 0, s.dues || 0, s.status
             ].join(",");
             csvContent += row + "\n";
         });
@@ -474,15 +478,13 @@
         window.open(`https://wa.me/91${mobile}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
-    // FIX: Switched to pure native print for A4 White PDF
     window.generateManagementPDF = function() {
         const originalTitle = document.title;
         const fileName = `Purix_Financial_Report_${new Date().toLocaleDateString('en-GB').replace(/\//g, '-')}`;
-        document.title = fileName; // Save karte time Purix ka naam aayega
+        document.title = fileName; 
         
         window.print();
         
-        // Print ke baad original title wapas set kar do
         setTimeout(() => { document.title = originalTitle; }, 1000);
     }
 
