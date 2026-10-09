@@ -228,10 +228,13 @@
 
         // --- LIVE CLOCK ---
         function updateClock() {
+            const clockElement = document.getElementById('realtimeClock');
+            if (!clockElement) return; // Agar clock screen par nahi hai, toh error mat do
+
             const now = new Date();
             const timeString = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
             const dateString = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-            document.getElementById('realtimeClock').innerText = `${dateString} | ${timeString}`;
+            clockElement.innerText = `${dateString} | ${timeString}`;
         }
         setInterval(updateClock, 1000);
         updateClock();
@@ -299,5 +302,6 @@
         }
 
         loadDashboardData();
+        setInterval(loadDashboardData, 60000);
     })();
 </script>
