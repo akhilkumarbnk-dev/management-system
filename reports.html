@@ -216,7 +216,6 @@
                         <th onclick="sortTable('uid')">UID <i class="fa-solid fa-sort"></i></th>
                         <th onclick="sortTable('name')">Name <i class="fa-solid fa-sort"></i></th>
                         <th onclick="sortTable('class')">Class <i class="fa-solid fa-sort"></i></th>
-                        <!-- CHANGED: Subjects is now Fee Plan -->
                         <th onclick="sortTable('feePlan')">Fee Plan <i class="fa-solid fa-sort"></i></th>
                         <th onclick="sortTable('paid')">Total Paid <i class="fa-solid fa-sort"></i></th>
                         <th onclick="sortTable('dues')">Dues <i class="fa-solid fa-sort"></i></th>
@@ -316,6 +315,11 @@
         document.getElementById('printFilterInfo').innerText = filterStr.length > 0 ? "Filters applied: " + filterStr.join(" | ") : "Viewing: All Records";
 
         let baseFiltered = reportData.filter(student => {
+            // 🔥 NAYA FIX: Google Sheet ki Extra Heading Row ya Empty Rows ko yahan direct hata diya
+            if (!student.uid || String(student.uid).trim() === "" || String(student.uid).toLowerCase().includes("uid")) {
+                return false; 
+            }
+
             const matchesSearch = !searchTxt || (student.name && student.name.toLowerCase().includes(searchTxt)) || (student.uid && String(student.uid).toLowerCase().includes(searchTxt));
             const matchesSession = sessionFilter === "All" || student.session === sessionFilter;
             const matchesClass = classFilter === "All" || student.class === classFilter;
@@ -374,7 +378,6 @@
                 ? `<button class="btn-icon btn-inactive" onclick="toggleStatus('${student.uid}', 'Inactive')" title="Make Inactive"><i class="fa-solid fa-user-xmark"></i></button>` 
                 : `<button class="btn-icon btn-active" onclick="toggleStatus('${student.uid}', 'Active')" title="Make Active"><i class="fa-solid fa-user-check"></i></button>`;
             
-            // Fee Plan Badge UI
             let planBadgeColor = student.feePlan === "Monthly" ? "rgba(0, 243, 255, 0.15)" : "rgba(179, 102, 255, 0.15)";
             let planTextColor = student.feePlan === "Monthly" ? "#00f3ff" : "#b366ff";
             let planBorder = student.feePlan === "Monthly" ? "rgba(0, 243, 255, 0.3)" : "rgba(179, 102, 255, 0.3)";
@@ -404,7 +407,6 @@
         }
         let csvContent = "data:text/csv;charset=utf-8,";
         
-        // CHANGED: Subject removed from CSV for clean data
         csvContent += "UID,Student Name,Class,Session,Fee Plan,Total Paid,Pending Dues,Status\n";
         
         currentDisplayedData.forEach(s => {
