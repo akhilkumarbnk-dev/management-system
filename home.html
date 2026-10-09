@@ -1,177 +1,177 @@
 <style>
-    .home-wrapper { display: flex; flex-direction: column; gap: 25px; padding: 20px; animation: fadeIn 0.5s ease-in-out; }
-
-    /* Premium Glassmorphic Welcome Banner */
-    .welcome-banner {
-        background: linear-gradient(135deg, rgba(11, 16, 33, 0.9) 0%, rgba(18, 25, 43, 0.9) 100%);
-        border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 20px; padding: 35px 40px;
-        display: flex; align-items: center; gap: 30px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 243, 255, 0.05);
-        color: #fff; position: relative; overflow: hidden; backdrop-filter: blur(10px);
+    /* MASTER WRAPPER - Ye poore dashboard ko hamesha screen ke CENTER me rakhega */
+    .home-master-center {
+        display: flex; align-items: center; justify-content: center;
+        min-height: calc(100vh - 100px); /* Adjusts to screen height */
+        padding: 20px; animation: scaleUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .welcome-banner::before {
-        content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-        background: radial-gradient(circle, rgba(0,243,255,0.05) 0%, transparent 60%);
-        z-index: 0; animation: rotateGlow 15s linear infinite;
+    @keyframes scaleUp { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+
+    /* BENTO GRID SYSTEM */
+    .bento-dashboard {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+        width: 100%; max-width: 1150px;
     }
-    @keyframes rotateGlow { 100% { transform: rotate(360deg); } }
 
-    /* Logo Design */
-    .banner-logo {
-        width: 90px; height: 90px; border-radius: 50%; z-index: 1;
-        border: 2px solid #00f3ff; box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
-        padding: 4px; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
+    /* Common Card Style */
+    .bento-card {
+        background: rgba(11, 16, 33, 0.6); border-radius: 20px; padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        position: relative; overflow: hidden; backdrop-filter: blur(12px);
+        transition: 0.4s ease; display: flex; flex-direction: column; justify-content: center;
     }
-    .banner-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-
-    .welcome-text { z-index: 1; }
-    .welcome-text h1 { margin: 0 0 8px 0; font-size: 32px; color: #fff; font-family: 'Orbitron', sans-serif; letter-spacing: 2px; text-shadow: 0 0 15px rgba(0, 243, 255, 0.5); }
-    .welcome-text p { margin: 0; font-size: 15px; color: #a5c3e0; font-family: 'Poppins', sans-serif; letter-spacing: 1px; }
-
-    /* Clean Modern Stat Cards */
-    .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+    .bento-card:hover { transform: translateY(-5px); border-color: rgba(0, 243, 255, 0.3); box-shadow: 0 20px 40px rgba(0, 243, 255, 0.1); }
     
-    .stat-card {
-        background: rgba(11, 16, 33, 0.7); padding: 25px 30px; border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        display: flex; align-items: center; gap: 25px; transition: 0.4s ease; position: relative; overflow: hidden;
-        backdrop-filter: blur(8px);
+    .bento-bg-icon {
+        position: absolute; right: -15px; bottom: -20px; font-size: 130px; 
+        opacity: 0.03; transition: 0.4s ease;
     }
-    .stat-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.3); }
+    .bento-card:hover .bento-bg-icon { transform: scale(1.1) rotate(-10deg); opacity: 0.06; }
+
+    /* Specific Grid Placements */
+    .welcome-bento {
+        grid-column: span 2; background: linear-gradient(135deg, rgba(0, 243, 255, 0.08), rgba(11, 16, 33, 0.9));
+        display: flex; flex-direction: row; align-items: center; gap: 30px; justify-content: flex-start;
+    }
+    .collection-bento { grid-column: span 1; border-bottom: 4px solid #00ff88; }
+    .students-bento { border-bottom: 4px solid #00f3ff; }
+    .admissions-bento { border-bottom: 4px solid #b366ff; }
+    .alert-bento { border-bottom: 4px solid #ff0055; cursor: pointer; }
     
-    .stat-card::after { content: ''; position: absolute; right: -20px; bottom: -20px; font-size: 120px; opacity: 0.03; font-family: "Font Awesome 6 Free"; font-weight: 900; transition: 0.4s; }
-    .stat-card:hover::after { transform: scale(1.1) rotate(-10deg); opacity: 0.06; }
-
-    .icon-box { 
-        width: 65px; height: 65px; border-radius: 14px; display: flex; align-items: center; justify-content: center; 
-        font-size: 28px; z-index: 1; box-shadow: inset 0 0 15px rgba(255,255,255,0.1);
+    /* Logo & Welcome Text */
+    .bento-logo {
+        width: 110px; height: 110px; border-radius: 50%; border: 2px solid #00f3ff;
+        box-shadow: 0 0 25px rgba(0, 243, 255, 0.4); padding: 5px; background: rgba(0,0,0,0.5);
+        object-fit: cover;
     }
+    .welcome-info h1 { margin: 0 0 5px 0; font-size: 32px; color: #fff; font-family: 'Orbitron', sans-serif; letter-spacing: 2px; text-shadow: 0 0 15px rgba(0, 243, 255, 0.5); }
+    .welcome-info p { margin: 0; color: #a5c3e0; font-size: 15px; font-family: 'Poppins', sans-serif; letter-spacing: 1px; }
     
-    /* Individual Card Styling */
-    .card-students { border-bottom: 4px solid #00f3ff; }
-    .card-students .icon-box { background: rgba(0, 243, 255, 0.1); color: #00f3ff; border: 1px solid rgba(0,243,255,0.3); }
-    .card-students::after { content: '\f0c0'; color: #00f3ff; } /* users icon */
-    .card-students:hover { box-shadow: 0 10px 30px rgba(0, 243, 255, 0.15); }
-
-    .card-admission { border-bottom: 4px solid #b366ff; }
-    .card-admission .icon-box { background: rgba(179, 102, 255, 0.1); color: #b366ff; border: 1px solid rgba(179,102,255,0.3); }
-    .card-admission::after { content: '\f234'; color: #b366ff; } /* user-plus icon */
-    .card-admission:hover { box-shadow: 0 10px 30px rgba(179, 102, 255, 0.15); }
-
-    .card-collection { border-bottom: 4px solid #00ff88; }
-    .card-collection .icon-box { background: rgba(0, 255, 136, 0.1); color: #00ff88; border: 1px solid rgba(0,255,136,0.3); }
-    .card-collection::after { content: '\f156'; color: #00ff88; } /* rupee icon */
-    .card-collection:hover { box-shadow: 0 10px 30px rgba(0, 255, 136, 0.15); }
-
-    .stat-details { z-index: 1; }
-    .stat-details h4 { margin: 0 0 8px 0; font-size: 13px; color: #a5c3e0; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; font-weight: 600; text-transform: uppercase; }
-    .stat-details h2 { margin: 0; font-size: 28px; color: #fff; font-family: 'Poppins', sans-serif; font-weight: 700; }
-
-    /* Quick Action Matrix */
-    .quick-actions-section { 
-        background: rgba(11, 16, 33, 0.6); padding: 30px; border-radius: 20px; 
-        border: 1px solid rgba(255, 255, 255, 0.05); margin-top: 10px;
+    /* Live Clock */
+    .live-clock-badge {
+        display: inline-flex; align-items: center; gap: 8px; margin-top: 15px;
+        background: rgba(0, 243, 255, 0.1); padding: 6px 15px; border-radius: 20px;
+        border: 1px solid rgba(0, 243, 255, 0.3); color: #00f3ff; font-family: 'Orbitron', sans-serif; font-size: 13px;
     }
-    .quick-actions-section h3 { margin: 0 0 25px 0; color: #fff; font-size: 18px; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 10px; }
-    .quick-actions-section h3 i { color: #00f3ff; }
+
+    /* Stat Details */
+    .stat-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: #a5c3e0; font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 1px; }
+    .stat-header i { font-size: 18px; }
+    .stat-value { margin: 0; font-size: 38px; color: #fff; font-family: 'Poppins', sans-serif; font-weight: 700; z-index: 2; }
     
-    .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-    .action-btn { 
-        background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(0, 243, 255, 0.2); padding: 20px; 
-        border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; 
-        display: flex; flex-direction: column; align-items: center; gap: 12px; 
-        font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #a5c3e0; 
+    .collection-bento .stat-header i, .collection-bento .stat-value { color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.3); }
+    .students-bento .stat-header i, .students-bento .stat-value { color: #00f3ff; text-shadow: 0 0 20px rgba(0,243,255,0.3); }
+    .admissions-bento .stat-header i, .admissions-bento .stat-value { color: #b366ff; text-shadow: 0 0 20px rgba(179,102,255,0.3); }
+    .alert-bento .stat-header i, .alert-bento .stat-value { color: #ff0055; text-shadow: 0 0 20px rgba(255,0,85,0.3); }
+    
+    .alert-bento:hover { background: rgba(255, 0, 85, 0.05); border-color: #ff0055; box-shadow: 0 10px 30px rgba(255, 0, 85, 0.2); }
+
+    /* Actions Matrix (Bottom Row) */
+    .actions-bento {
+        grid-column: span 3; display: flex; gap: 20px; padding: 20px;
+        background: transparent; border: none; box-shadow: none; flex-wrap: wrap; justify-content: center;
     }
-    .action-btn i { font-size: 26px; color: #00f3ff; transition: 0.3s; }
-    .action-btn:hover { 
-        background: rgba(0, 243, 255, 0.05); border-color: #00f3ff; color: #fff; 
-        transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,243,255,0.1); 
+    .action-btn {
+        flex: 1; min-width: 200px; background: rgba(0, 0, 0, 0.5); padding: 20px;
+        border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 16px; cursor: pointer;
+        display: flex; flex-direction: column; align-items: center; gap: 12px;
+        color: #a5c3e0; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+        transition: 0.3s; backdrop-filter: blur(5px);
+    }
+    .action-btn i { font-size: 28px; color: #00f3ff; transition: 0.3s; }
+    .action-btn:hover {
+        background: rgba(0, 243, 255, 0.1); border-color: #00f3ff; color: #fff;
+        transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,243,255,0.15);
     }
     .action-btn:hover i { transform: scale(1.1); text-shadow: 0 0 15px #00f3ff; }
 
-    /* Smart Floating Alert */
-    .home-floating-alert { 
-        position: absolute; top: 15px; right: 15px; background: rgba(255, 0, 85, 0.15); 
-        color: #ff0055; padding: 8px 20px; border-radius: 8px; border: 1px solid #ff0055; 
-        font-size: 13px; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px rgba(255, 0, 85, 0.3); 
-        animation: pulseAlert 2s infinite; z-index: 10; display: none; align-items: center; gap: 10px; 
-        font-family: 'Orbitron', sans-serif; letter-spacing: 1px; transition: 0.3s; backdrop-filter: blur(5px);
+    /* Responsive */
+    @media (max-width: 992px) {
+        .bento-dashboard { grid-template-columns: 1fr 1fr; }
+        .welcome-bento { grid-column: span 2; }
+        .collection-bento { grid-column: span 2; }
+        .actions-bento { grid-column: span 2; }
     }
-    .home-floating-alert:hover { background: #ff0055; color: #fff; box-shadow: 0 0 30px rgba(255, 0, 85, 0.6); }
-    @keyframes pulseAlert { 0% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.5); } 70% { box-shadow: 0 0 0 10px rgba(255, 0, 85, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); } }
+    @media (max-width: 768px) {
+        .bento-dashboard { grid-template-columns: 1fr; }
+        .welcome-bento, .collection-bento, .students-bento, .admissions-bento, .alert-bento, .actions-bento { grid-column: span 1; }
+        .welcome-bento { flex-direction: column; text-align: center; }
+    }
 </style>
 
-<div class="home-wrapper">
-    <!-- Floating Cyber Alert (Hidden by default, shows only if dues exist) -->
-    <div id="home-side-alert" class="home-floating-alert" onclick="loadModule('alerts')">
-        <i class="fa-solid fa-triangle-exclamation"></i> <span id="alertCount">0</span> OVERDUE ALERTS
-    </div>
-
-    <!-- Premium Header Banner -->
-    <div class="welcome-banner">
-        <div class="banner-logo">
-            <img src="logo.png" alt="Purix Academy Logo">
-        </div>
-        <div class="welcome-text">
-            <h1>Purix Academy</h1>
-            <p>Advanced Academic & Financial Management System</p>
-        </div>
-    </div>
-
-    <!-- Clean Stat Cards -->
-    <div class="stats-container">
-        <div class="stat-card card-students">
-            <div class="icon-box"><i class="fa-solid fa-users"></i></div>
-            <div class="stat-details">
-                <h4>ACTIVE STUDENTS</h4>
-                <h2 id="homeActiveStudents"><i class="fa-solid fa-spinner fa-spin" style="font-size: 18px;"></i></h2>
+<div class="home-master-center">
+    <div class="bento-dashboard">
+        
+        <!-- Row 1: Welcome & Revenue -->
+        <div class="bento-card welcome-bento">
+            <img src="logo.png" class="bento-logo" alt="Purix Academy">
+            <div class="welcome-info">
+                <h1>Purix Academy</h1>
+                <p>Central Command Node & Academic Database</p>
+                <div class="live-clock-badge">
+                    <i class="fa-solid fa-clock"></i> <span id="realtimeClock">Loading Time...</span>
+                </div>
             </div>
         </div>
         
-        <div class="stat-card card-admission">
-            <div class="icon-box"><i class="fa-solid fa-user-plus"></i></div>
-            <div class="stat-details">
-                <h4>TODAY'S ADMISSIONS</h4>
-                <h2 id="homeMonthAdmission"><i class="fa-solid fa-spinner fa-spin" style="font-size: 18px;"></i></h2>
-            </div>
+        <div class="bento-card collection-bento">
+            <i class="fa-solid fa-wallet bento-bg-icon"></i>
+            <div class="stat-header"><i class="fa-solid fa-indian-rupee-sign"></i> TODAY'S COLLECTION</div>
+            <h2 class="stat-value" id="homeTodayCollection"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
         </div>
 
-        <div class="stat-card card-collection">
-            <div class="icon-box"><i class="fa-solid fa-wallet"></i></div>
-            <div class="stat-details">
-                <h4>TODAY'S COLLECTION</h4>
-                <h2 id="homeTodayCollection"><i class="fa-solid fa-spinner fa-spin" style="font-size: 18px;"></i></h2>
-            </div>
+        <!-- Row 2: Operations Data -->
+        <div class="bento-card students-bento">
+            <i class="fa-solid fa-users-viewfinder bento-bg-icon"></i>
+            <div class="stat-header"><i class="fa-solid fa-users"></i> ACTIVE STUDENTS</div>
+            <h2 class="stat-value" id="homeActiveStudents"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
         </div>
-    </div>
 
-    <!-- Quick Action Matrix -->
-    <div class="quick-actions-section">
-        <h3><i class="fa-solid fa-layer-group"></i> Quick Actions</h3>
-        <div class="actions-grid">
+        <div class="bento-card admissions-bento">
+            <i class="fa-solid fa-user-astronaut bento-bg-icon"></i>
+            <div class="stat-header"><i class="fa-solid fa-user-plus"></i> TODAY'S ADMISSIONS</div>
+            <h2 class="stat-value" id="homeMonthAdmission"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
+        </div>
+
+        <!-- Alerts Integrated into Grid smoothly -->
+        <div class="bento-card alert-bento" onclick="loadModule('alerts')">
+            <i class="fa-solid fa-triangle-exclamation bento-bg-icon"></i>
+            <div class="stat-header"><i class="fa-solid fa-bell"></i> OVERDUE ALERTS</div>
+            <h2 class="stat-value" id="alertCount"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
+        </div>
+
+        <!-- Row 3: Action Buttons Matrix -->
+        <div class="actions-bento">
             <div class="action-btn" onclick="loadModule('admission')">
-                <i class="fa-solid fa-id-card-clip"></i>
-                <span>New Admission</span>
+                <i class="fa-solid fa-id-card-clip"></i><span>New Admission</span>
             </div>
             <div class="action-btn" onclick="loadModule('payment')">
-                <i class="fa-solid fa-hand-holding-dollar"></i>
-                <span>Collect Fee</span>
+                <i class="fa-solid fa-hand-holding-dollar"></i><span>Collect Fee</span>
             </div>
             <div class="action-btn" onclick="loadModule('profile')">
-                <i class="fa-solid fa-magnifying-glass-chart"></i>
-                <span>Search Profile</span>
+                <i class="fa-solid fa-magnifying-glass-chart"></i><span>Search Profile</span>
             </div>
             <div class="action-btn" onclick="loadModule('reports')">
-                <i class="fa-solid fa-file-invoice"></i>
-                <span>View Reports</span>
+                <i class="fa-solid fa-file-invoice"></i><span>View Reports</span>
             </div>
         </div>
+
     </div>
 </div>
 
 <script>
     (function() {
-        // 1. Fetch Core Dashboard Stats Independently (Bulletproof method)
+        // Live Clock Function
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            const dateString = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+            document.getElementById('realtimeClock').innerText = `${dateString} | ${timeString}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Fetch Core Dashboard Stats
         fetch(API_URL + "?action=getStats")
             .then(res => res.json())
             .then(data => {
@@ -183,7 +183,7 @@
             })
             .catch(e => console.log("Stats fetch error:", e));
 
-        // 2. Smart Alerts Fetch (Using Local Storage Cache to prevent lag & double loads)
+        // Alerts Fetch (Cached Logic from previous step)
         const todayStr = new Date().toDateString();
         const cachedDate = localStorage.getItem('purix_alerts_date');
         const cachedData = localStorage.getItem('purix_alerts_data');
@@ -196,33 +196,22 @@
                     due.setHours(0,0,0,0);
                     let today = new Date(); today.setHours(0,0,0,0);
                     let diff = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-                    if (diff < 0) criticalCount++; // Sirf fase hue (overdue) paise ginega
+                    if (diff < 0) criticalCount++; 
                 }
             });
             return criticalCount;
         }
 
-        function updateAlertUI(count) {
-            if (count > 0) {
-                document.getElementById('alertCount').innerText = count;
-                document.getElementById('home-side-alert').style.display = 'flex';
-            } else {
-                document.getElementById('home-side-alert').style.display = 'none';
-            }
-        }
-
         if (cachedDate === todayStr && cachedData) {
-            // Already fetched today, load from fast memory
-            updateAlertUI(countRealOverdueAlerts(JSON.parse(cachedData)));
+            document.getElementById('alertCount').innerText = countRealOverdueAlerts(JSON.parse(cachedData));
         } else {
-            // Fetch fresh from Google Sheets
             fetch(API_URL + "?action=getAlerts")
                 .then(res => res.json())
                 .then(data => {
                     if(data.status === "success") {
                         localStorage.setItem('purix_alerts_date', todayStr);
                         localStorage.setItem('purix_alerts_data', JSON.stringify(data.data));
-                        updateAlertUI(countRealOverdueAlerts(data.data));
+                        document.getElementById('alertCount').innerText = countRealOverdueAlerts(data.data);
                     }
                 })
                 .catch(e => console.log("Alert fetching silent fail", e));
