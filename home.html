@@ -22,9 +22,20 @@
     }
     .bento-card:hover { transform: translateY(-5px); border-color: rgba(0, 243, 255, 0.3); box-shadow: 0 20px 40px rgba(0, 243, 255, 0.1); }
     
+    /* Animated Background Particles / Pulses */
+    .bento-card::before {
+        content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 50%);
+        z-index: 0; animation: gentlePulse 8s infinite alternate ease-in-out;
+    }
+    @keyframes gentlePulse {
+        0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
+        100% { transform: scale(1.2) translate(5%, 5%); opacity: 1; }
+    }
+
     .bento-bg-icon {
         position: absolute; right: -15px; bottom: -20px; font-size: 130px; 
-        opacity: 0.03; transition: 0.4s ease;
+        opacity: 0.03; transition: 0.4s ease; z-index: 0;
     }
     .bento-card:hover .bento-bg-icon { transform: scale(1.1) rotate(-10deg); opacity: 0.06; }
 
@@ -32,7 +43,19 @@
     .welcome-bento {
         grid-column: span 2; background: linear-gradient(135deg, rgba(0, 243, 255, 0.08), rgba(11, 16, 33, 0.9));
         display: flex; flex-direction: row; align-items: center; gap: 30px; justify-content: flex-start;
+        overflow: hidden;
     }
+    /* Matrix-style subtle sweeping line for the banner */
+    .welcome-bento::after {
+        content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+        background: linear-gradient(to right, transparent, rgba(0, 243, 255, 0.1), transparent);
+        transform: skewX(-20deg); animation: sweepLine 6s infinite; z-index: 0;
+    }
+    @keyframes sweepLine {
+        0% { left: -100%; }
+        100% { left: 200%; }
+    }
+
     .collection-bento { grid-column: span 1; border-bottom: 4px solid #00ff88; }
     .students-bento { border-bottom: 4px solid #00f3ff; }
     .admissions-bento { border-bottom: 4px solid #b366ff; }
@@ -42,8 +65,9 @@
     .bento-logo {
         width: 110px; height: 110px; border-radius: 50%; border: 2px solid #00f3ff;
         box-shadow: 0 0 25px rgba(0, 243, 255, 0.4); padding: 5px; background: rgba(0,0,0,0.5);
-        object-fit: cover;
+        object-fit: cover; z-index: 1;
     }
+    .welcome-info { z-index: 1; }
     .welcome-info h1 { margin: 0 0 5px 0; font-size: 32px; color: #fff; font-family: 'Orbitron', sans-serif; letter-spacing: 2px; text-shadow: 0 0 15px rgba(0, 243, 255, 0.5); }
     .welcome-info p { margin: 0; color: #a5c3e0; font-size: 15px; font-family: 'Poppins', sans-serif; letter-spacing: 1px; }
     
@@ -55,7 +79,7 @@
     }
 
     /* Stat Details */
-    .stat-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: #a5c3e0; font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 1px; }
+    .stat-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: #a5c3e0; font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 1px; z-index: 1; }
     .stat-header i { font-size: 18px; }
     .stat-value { margin: 0; font-size: 38px; color: #fff; font-family: 'Poppins', sans-serif; font-weight: 700; z-index: 2; }
     
@@ -76,9 +100,20 @@
         border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 16px; cursor: pointer;
         display: flex; flex-direction: column; align-items: center; gap: 12px;
         color: #a5c3e0; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
-        transition: 0.3s; backdrop-filter: blur(5px);
+        transition: 0.3s; backdrop-filter: blur(5px); position: relative; overflow: hidden;
     }
-    .action-btn i { font-size: 28px; color: #00f3ff; transition: 0.3s; }
+    
+    /* Action button hover sweep */
+    .action-btn::before {
+        content: ''; position: absolute; top: -100%; left: -100%; width: 50%; height: 300%;
+        background: linear-gradient(to right, transparent, rgba(0, 243, 255, 0.2), transparent);
+        transform: rotate(45deg); transition: 0.5s; z-index: 0;
+    }
+    .action-btn:hover::before { top: -50%; left: 150%; }
+
+    .action-btn i { font-size: 28px; color: #00f3ff; transition: 0.3s; z-index: 1; }
+    .action-btn span { z-index: 1; }
+    
     .action-btn:hover {
         background: rgba(0, 243, 255, 0.1); border-color: #00f3ff; color: #fff;
         transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,243,255,0.15);
@@ -171,22 +206,71 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Fetch Core Dashboard Stats
-        fetch(API_URL + "?action=getStats")
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === "success") {
-                    document.getElementById('homeActiveStudents').innerText = data.data.activeStudents;
-                    document.getElementById('homeMonthAdmission').innerText = data.data.todayAdmissions;
-                    document.getElementById('homeTodayCollection').innerText = "₹" + data.data.todayCollection;
-                }
-            })
-            .catch(e => console.log("Stats fetch error:", e));
+        // Data Caching Logic to prevent 20k API limit exhaustion!
+        // We will cache the dashboard stats for 5 minutes.
+        const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 
-        // Alerts Fetch (Cached Logic from previous step)
-        const todayStr = new Date().toDateString();
-        const cachedDate = localStorage.getItem('purix_alerts_date');
-        const cachedData = localStorage.getItem('purix_alerts_data');
+        function loadDashboardData() {
+            const now = new Date().getTime();
+            const cachedStatsString = localStorage.getItem('purix_home_stats');
+            let cachedStats = null;
+            
+            if (cachedStatsString) {
+                try {
+                    cachedStats = JSON.parse(cachedStatsString);
+                } catch (e) {
+                    console.error("Cache parsing error", e);
+                }
+            }
+
+            // Check if we have valid, unexpired cached data
+            if (cachedStats && cachedStats.timestamp && (now - cachedStats.timestamp < CACHE_DURATION_MS)) {
+                console.log("Loading dashboard stats from local cache...");
+                updateStatsUI(cachedStats.data);
+            } else {
+                console.log("Fetching fresh dashboard stats from server...");
+                fetch(API_URL + "?action=getStats")
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.status === "success") {
+                            // Update UI
+                            updateStatsUI(data.data);
+                            // Save to cache with timestamp
+                            localStorage.setItem('purix_home_stats', JSON.stringify({
+                                timestamp: now,
+                                data: data.data
+                            }));
+                        }
+                    })
+                    .catch(e => console.log("Stats fetch error:", e));
+            }
+
+            // Alerts Fetch (Using Daily Cache Logic)
+            const todayStr = new Date().toDateString();
+            const cachedAlertsDate = localStorage.getItem('purix_alerts_date');
+            const cachedAlertsData = localStorage.getItem('purix_alerts_data');
+
+            if (cachedAlertsDate === todayStr && cachedAlertsData) {
+                document.getElementById('alertCount').innerText = countRealOverdueAlerts(JSON.parse(cachedAlertsData));
+            } else {
+                fetch(API_URL + "?action=getAlerts")
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.status === "success") {
+                            localStorage.setItem('purix_alerts_date', todayStr);
+                            localStorage.setItem('purix_alerts_data', JSON.stringify(data.data));
+                            document.getElementById('alertCount').innerText = countRealOverdueAlerts(data.data);
+                        }
+                    })
+                    .catch(e => console.log("Alert fetching silent fail", e));
+            }
+        }
+
+        function updateStatsUI(data) {
+            document.getElementById('homeActiveStudents').innerText = data.activeStudents;
+            document.getElementById('homeMonthAdmission').innerText = data.todayAdmissions;
+            document.getElementById('homeTodayCollection').innerText = "₹" + data.todayCollection;
+        }
 
         function countRealOverdueAlerts(alertsList) {
             let criticalCount = 0;
@@ -202,19 +286,6 @@
             return criticalCount;
         }
 
-        if (cachedDate === todayStr && cachedData) {
-            document.getElementById('alertCount').innerText = countRealOverdueAlerts(JSON.parse(cachedData));
-        } else {
-            fetch(API_URL + "?action=getAlerts")
-                .then(res => res.json())
-                .then(data => {
-                    if(data.status === "success") {
-                        localStorage.setItem('purix_alerts_date', todayStr);
-                        localStorage.setItem('purix_alerts_data', JSON.stringify(data.data));
-                        document.getElementById('alertCount').innerText = countRealOverdueAlerts(data.data);
-                    }
-                })
-                .catch(e => console.log("Alert fetching silent fail", e));
-        }
+        loadDashboardData();
     })();
 </script>
