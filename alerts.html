@@ -88,7 +88,7 @@
                 <i class="fa-solid fa-triangle-exclamation"></i> Failed / Overdue Payments
             </div>
             <div class="alert-list" id="failedList">
-                <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Scanning database...</div>
+                <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading Data...</div>
             </div>
         </div>
 
@@ -98,7 +98,7 @@
                 <i class="fa-solid fa-calendar-day"></i> Today's Payment Due
             </div>
             <div class="alert-list" id="todayList">
-                <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Scanning database...</div>
+                <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading Data...</div>
             </div>
         </div>
 
@@ -108,7 +108,7 @@
                 <i class="fa-solid fa-clock-rotate-left"></i> Upcoming Payments (Next 5 Days)
             </div>
             <div class="alert-list" id="upcomingList">
-                <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Scanning database...</div>
+                <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading Data...</div>
             </div>
         </div>
     </div>
@@ -124,7 +124,7 @@
 
     function calculateDaysDifference(dueDateStr) {
         const dueDate = new Date(dueDateStr);
-        if (isNaN(dueDate.getTime())) return null; // Handle empty or invalid dates
+        if (isNaN(dueDate.getTime())) return null; 
         
         dueDate.setHours(0,0,0,0);
         const todayMidnight = new Date();
@@ -132,6 +132,26 @@
         
         const diffTime = dueDate.getTime() - todayMidnight.getTime();
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    }
+
+    // Function to calculate exact month names for Monthly plan
+    function getPendingMonthsText(dueDateStr) {
+        let due = new Date(dueDateStr);
+        let now = new Date();
+        let months = [];
+        let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        let current = new Date(due);
+        // Loop from due month to current month
+        while(current <= now || (current.getMonth() === now.getMonth() && current.getFullYear() === now.getFullYear())) {
+            months.push(monthNames[current.getMonth()]);
+            current.setMonth(current.getMonth() + 1);
+        }
+        
+        if(months.length === 0) return monthNames[due.getMonth()]; 
+        if(months.length === 1) return months[0];
+        if(months.length === 2) return months.join(" aur ");
+        return months.slice(0, -1).join(", ") + " aur " + months[months.length - 1];
     }
 
     window.directInactive = function(uid, name) {
@@ -154,80 +174,113 @@
                 .then(data => {
                     if(data.status === 'success') {
                         Swal.fire({ title: 'Deactivated!', text: 'Student moved to defaulter list.', icon: 'success', background: '#050914', color: '#00ff88' });
-                        document.getElementById(`alert-card-${uid}`).style.display = 'none'; // Hide from current alert list
+                        document.getElementById(`alert-card-${uid}`).style.display = 'none'; 
+                        // Clear cache so it updates on next reload
+                        localStorage.removeItem('purix_alerts_data'); 
                     }
                 });
             }
         });
     };
 
-    window.sendWhatsAppAlert = function(mobile, name, dues) {
-        let message = `Important Alert from Purix Academy: Hello ${name}, your fee payment of Rs. ${dues} is due. Kindly clear it soon to avoid any interruption.`;
+    // SMART WHATSAPP NOTIFICATION ENGINE
+    window.sendWhatsAppAlert = function(mobile, name, dues, feePlan, dueDateStr) {
+        let message = "";
+        
+        if (feePlan === "Monthly") {
+            let monthsText = getPendingMonthsText(dueDateStr);
+            message = `Dear ${name}, aapka ${monthsText} mahine ka fee dues (Rs. ${dues}) baki hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.`;
+        } else {
+            // Installment Plan
+            message = `Dear ${name}, aapki aagami Installment (kist) Rs. ${dues} due hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.`;
+        }
+        
         window.open(`https://wa.me/91${mobile}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
-    function fetchAndGenerateAlerts() {
+    function renderAlerts(alertData) {
         const failedList = document.getElementById('failedList');
         const todayList = document.getElementById('todayList');
         const upcomingList = document.getElementById('upcomingList');
+        
+        failedList.innerHTML = ''; todayList.innerHTML = ''; upcomingList.innerHTML = '';
+        let fCount = 0, tCount = 0, uCount = 0;
 
+        alertData.forEach(student => {
+            let daysDiff = calculateDaysDifference(student.dueDate);
+            if (daysDiff === null) return; 
+
+            let borderColor = daysDiff < 0 ? '#ff0055' : (daysDiff === 0 ? '#00f3ff' : '#ffaa00');
+            let readableDate = new Date(student.dueDate).toLocaleDateString('en-GB');
+            let planText = student.feePlan || 'Monthly';
+
+            let cardHtml = `
+                <div class="alert-card" id="alert-card-${student.uid}" style="border-left: 5px solid ${borderColor}">
+                    <div class="student-info">
+                        <h4>${student.name} <span style="font-size:12px; color:#a5c3e0;">(UID: ${student.uid})</span></h4>
+                        <p>Class: ${student.class} | Plan: <strong style="color:${planText==='Monthly'?'#00f3ff':'#b366ff'}">${planText}</strong> | Due Date: <strong>${readableDate}</strong> | Amt: <span style="color:#ff0055; font-weight:bold; text-shadow: 0 0 5px rgba(255,0,85,0.4);">₹${student.dues}</span></p>
+                    </div>
+                    <div class="alert-actions">
+                        <button class="btn-notify" onclick="sendWhatsAppAlert('${student.mobile}', '${student.name}', ${student.dues}, '${planText}', '${student.dueDate}')">
+                            <i class="fa-brands fa-whatsapp"></i> NOTIFY
+                        </button>
+                        ${daysDiff <= -60 ? `
+                        <button class="btn-critical-inactive" onclick="directInactive('${student.uid}', '${student.name}')" title="2 Months Default">
+                            <i class="fa-solid fa-user-slash"></i> DEACTIVATE
+                        </button>` : ''}
+                    </div>
+                </div>
+            `;
+
+            if (daysDiff < 0) {
+                failedList.innerHTML += cardHtml; fCount++;
+            } else if (daysDiff === 0) {
+                todayList.innerHTML += cardHtml; tCount++;
+            } else if (daysDiff > 0 && daysDiff <= 5) {
+                upcomingList.innerHTML += cardHtml; uCount++;
+            }
+        });
+
+        if(fCount === 0) failedList.innerHTML = `<div class="empty-msg">No failed payments detected. (System secure)</div>`;
+        if(tCount === 0) todayList.innerHTML = `<div class="empty-msg">No payments due today.</div>`;
+        if(uCount === 0) upcomingList.innerHTML = `<div class="empty-msg">No upcoming payments in next 5 days.</div>`;
+    }
+
+    function fetchAndGenerateAlerts() {
+        const todayStr = new Date().toDateString(); // Gives format like "Fri Oct 09 2026"
+        const cachedDate = localStorage.getItem('purix_alerts_date');
+        const cachedData = localStorage.getItem('purix_alerts_data');
+
+        // MIDNIGHT CACHE LOGIC: Agar date match karti hai aur data hai, toh bina load kiye render kar do
+        if (cachedDate === todayStr && cachedData) {
+            console.log("Loading alerts from fast Local Cache...");
+            renderAlerts(JSON.parse(cachedData));
+            return;
+        }
+
+        console.log("Fetching fresh alerts from database...");
         fetch(API_URL + "?action=getAlerts")
             .then(res => res.json())
             .then(data => {
                 if(data.status === "success") {
-                    failedList.innerHTML = ''; todayList.innerHTML = ''; upcomingList.innerHTML = '';
-                    let fCount = 0, tCount = 0, uCount = 0;
-
-                    data.data.forEach(student => {
-                        let daysDiff = calculateDaysDifference(student.dueDate);
-                        
-                        if (daysDiff === null) return; // Skip if date is invalid
-
-                        let borderColor = daysDiff < 0 ? '#ff0055' : (daysDiff === 0 ? '#00f3ff' : '#ffaa00');
-                        
-                        // Convert internal date to readable format for UI
-                        let readableDate = new Date(student.dueDate).toLocaleDateString('en-GB');
-
-                        let cardHtml = `
-                            <div class="alert-card" id="alert-card-${student.uid}" style="border-left: 5px solid ${borderColor}">
-                                <div class="student-info">
-                                    <h4>${student.name} (UID: ${student.uid})</h4>
-                                    <p>Class: ${student.class} | Due Date: <strong>${readableDate}</strong> | Amt: <span style="color:#ff0055; font-weight:bold; text-shadow: 0 0 5px rgba(255,0,85,0.4);">₹${student.dues}</span></p>
-                                </div>
-                                <div class="alert-actions">
-                                    <button class="btn-notify" onclick="sendWhatsAppAlert('${student.mobile}', '${student.name}', ${student.dues})">
-                                        <i class="fa-brands fa-whatsapp"></i> NOTIFY
-                                    </button>
-                                    ${daysDiff <= -60 ? `
-                                    <button class="btn-critical-inactive" onclick="directInactive('${student.uid}', '${student.name}')" title="2 Months Default">
-                                        <i class="fa-solid fa-user-slash"></i> DEACTIVATE
-                                    </button>` : ''}
-                                </div>
-                            </div>
-                        `;
-
-                        if (daysDiff < 0) {
-                            failedList.innerHTML += cardHtml; fCount++;
-                        } else if (daysDiff === 0) {
-                            todayList.innerHTML += cardHtml; tCount++;
-                        } else if (daysDiff > 0 && daysDiff <= 5) {
-                            upcomingList.innerHTML += cardHtml; uCount++;
-                        }
-                    });
-
-                    if(fCount === 0) failedList.innerHTML = `<div class="empty-msg">No failed payments detected. (System secure)</div>`;
-                    if(tCount === 0) todayList.innerHTML = `<div class="empty-msg">No payments due today.</div>`;
-                    if(uCount === 0) upcomingList.innerHTML = `<div class="empty-msg">No upcoming payments in next 5 days.</div>`;
+                    // Save to memory for the rest of the day
+                    localStorage.setItem('purix_alerts_date', todayStr);
+                    localStorage.setItem('purix_alerts_data', JSON.stringify(data.data));
+                    renderAlerts(data.data);
                 } else {
-                    failedList.innerHTML = `<div class="empty-msg" style="color:#ff0055;">Failed to load alerts.</div>`;
-                    todayList.innerHTML = ''; upcomingList.innerHTML = '';
+                    showErrorState();
                 }
             })
             .catch(err => {
                 console.error("Alerts Error:", err);
-                failedList.innerHTML = `<div class="empty-msg" style="color:#ff0055;">Database connection error.</div>`;
-                todayList.innerHTML = ''; upcomingList.innerHTML = '';
+                showErrorState();
             });
+    }
+
+    function showErrorState() {
+        document.getElementById('failedList').innerHTML = `<div class="empty-msg" style="color:#ff0055;">Database connection error.</div>`;
+        document.getElementById('todayList').innerHTML = '';
+        document.getElementById('upcomingList').innerHTML = '';
     }
 
     fetchAndGenerateAlerts();
