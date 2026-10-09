@@ -109,19 +109,20 @@
 
     /* Print Styles (For Clean PDF/Print Export) */
     @media print {
+        body, html { background: #ffffff !important; }
         body * { visibility: hidden; }
         .reports-container, .reports-container * { visibility: visible; }
-        .reports-container { position: absolute; left: 0; top: 0; width: 100%; background: #fff !important; color: #000 !important; box-shadow: none; border: none; }
+        .reports-container { position: absolute; left: 0; top: 0; width: 100%; background: #fff !important; color: #000 !important; box-shadow: none; border: none; padding: 0 !important; }
         
         .report-header-pdf { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px;}
-        .report-header-pdf h1 { margin: 0; font-family: 'Times New Roman', serif !important; font-size: 26px; color: #000 !important; font-weight: bold;}
+        .report-header-pdf h1 { margin: 0; font-family: 'Times New Roman', serif !important; font-size: 26px; color: #000 !important; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 15px;}
         .report-header-pdf p { margin: 5px 0 0; font-family: 'Arial', sans-serif; font-size: 13px; color: #444 !important;}
         #printFilterInfo { font-size: 12px; color: #666 !important; font-style: italic; margin-top: 8px;}
 
-        /* FIX: Hiding elements strictly for print without using the no-print class */
         .filter-section, .reports-header, .card-inactive, .action-th, .action-btns, .modal-overlay { display: none !important; }
         
-        .table-responsive { border: none !important; }
+        .table-responsive { border: none !important; overflow: visible !important; }
+        .reports-table { width: 100% !important; border-collapse: collapse !important; }
         .reports-table th { background: #e2e8f0 !important; color: #000 !important; border-bottom: 2px solid #000 !important; font-weight: bold;}
         .reports-table td { color: #000 !important; border-bottom: 1px solid #ccc !important; }
         .summary-card { background: #f8fafc !important; color: #000 !important; border: 1px solid #cbd5e1 !important; box-shadow: none !important;}
@@ -134,12 +135,11 @@
         
         <!-- Header visible only in PDF / Print -->
         <div class="report-header-pdf" style="display: none;">
-            <h1>PURIX ACADEMY</h1>
+            <h1><img src="logo.png" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;"> PURIX ACADEMY</h1>
             <p>Management Financial Report | Generated on: <span id="reportDateTxt"></span></p>
             <p id="printFilterInfo"></p> 
         </div>
 
-        <!-- REMOVED no-print CLASS -->
         <div class="reports-header">
             <h2 class="module-header"><i class="fa-solid fa-chart-pie"></i> COLLECTION & DUES REPORT</h2>
         </div>
@@ -154,7 +154,6 @@
                 <h3>Active Dues</h3>
                 <h2 id="totalDuesText">₹0</h2>
             </div>
-            <!-- REMOVED no-print CLASS -->
             <div class="summary-card card-inactive" onclick="openInactiveModal()" title="Click to view Inactive Students">
                 <h3>Inactive Students <i class="fa-solid fa-hand-pointer"></i></h3>
                 <h2 id="inactiveCountText">0</h2>
@@ -162,7 +161,7 @@
             </div>
         </div>
 
-        <!-- SUPER ADVANCED FILTERS SECTION (REMOVED no-print CLASS) -->
+        <!-- SUPER ADVANCED FILTERS SECTION -->
         <div class="filter-section">
             <input type="text" id="filterSearch" placeholder="Search UID or Name..." oninput="filterReports()">
             
@@ -219,7 +218,6 @@
                         <th>Subjects</th>
                         <th onclick="sortTable('paid')">Total Paid <i class="fa-solid fa-sort"></i></th>
                         <th onclick="sortTable('dues')">Dues <i class="fa-solid fa-sort"></i></th>
-                        <!-- ADDED action-th CLASS INSTEAD OF no-print -->
                         <th class="action-th">Actions</th>
                     </tr>
                 </thead>
@@ -229,7 +227,7 @@
             </table>
         </div>
 
-        <!-- INACTIVE STUDENTS MODAL (REMOVED no-print CLASS) -->
+        <!-- INACTIVE STUDENTS MODAL -->
         <div id="inactiveModal" class="modal-overlay">
             <div class="modal-box">
                 <div class="modal-header-box">
@@ -320,8 +318,11 @@
             const matchesSession = sessionFilter === "All" || student.session === sessionFilter;
             const matchesClass = classFilter === "All" || student.class === classFilter;
             const matchesPlan = planFilter === "All" || student.feePlan === planFilter;
+            
+            // FIX: Made subject matching case-insensitive
             const stdSubjects = student.subject || student.subjects || ""; 
-            const matchesSubject = subjectFilter === "All" || stdSubjects.includes(subjectFilter);
+            const matchesSubject = subjectFilter === "All" || stdSubjects.toLowerCase().includes(subjectFilter.toLowerCase());
+            
             return matchesSearch && matchesSession && matchesClass && matchesPlan && matchesSubject;
         });
 
@@ -383,7 +384,7 @@
                     <td title="${stdSubs}" style="font-size: 11px;">${shortSubs}</td>
                     <td style="color: #00ff88; font-weight: bold;">${formatMoney(student.paid)}</td>
                     <td style="color: #ff0055; font-weight: bold;">${formatMoney(student.dues)}</td>
-                    <td class="action-btns">
+                    <td class="action-btns action-th">
                         <button class="btn-icon btn-whatsapp" onclick="sendWhatsAppAlert('${student.mobile}', '${student.name}', ${student.dues})" title="WhatsApp Reminder">
                             <i class="fa-brands fa-whatsapp"></i>
                         </button>
@@ -473,17 +474,16 @@
         window.open(`https://wa.me/91${mobile}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
+    // FIX: Switched to pure native print for A4 White PDF
     window.generateManagementPDF = function() {
+        const originalTitle = document.title;
         const fileName = `Purix_Financial_Report_${new Date().toLocaleDateString('en-GB').replace(/\//g, '-')}`;
-        const pdfHeader = document.querySelector('.report-header-pdf');
-        pdfHeader.style.display = 'block';
-
-        if(typeof downloadPDF === 'function') {
-            downloadPDF('printableReportArea', fileName);
-        } else {
-            window.print();
-        }
-        setTimeout(() => { pdfHeader.style.display = 'none'; }, 2000);
+        document.title = fileName; // Save karte time Purix ka naam aayega
+        
+        window.print();
+        
+        // Print ke baad original title wapas set kar do
+        setTimeout(() => { document.title = originalTitle; }, 1000);
     }
 
     setupDynamicFilters(); 
