@@ -1,33 +1,47 @@
 <style>
-    /* 1. 3D MOVING BACKGROUND (CYBER FLOOR) */
+    /* 1. CINEMATIC DEEP SPACE & FLOATING DUST BACKGROUND */
     .home-bg-3d {
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        background: radial-gradient(circle at top, #0b1021 0%, #02050a 100%);
-        z-index: -1; overflow: hidden; perspective: 1000px;
-    }
-    .cyber-floor {
-        position: absolute; bottom: -60%; left: -50%; width: 200%; height: 200%;
-        background-image: 
-            linear-gradient(rgba(0, 243, 255, 0.15) 2px, transparent 2px),
-            linear-gradient(90deg, rgba(0, 243, 255, 0.15) 2px, transparent 2px);
-        background-size: 80px 80px;
-        transform: rotateX(75deg);
-        animation: moveFloor 5s linear infinite;
-        box-shadow: inset 0 0 100px #02050a;
-    }
-    /* Floor movement animation */
-    @keyframes moveFloor {
-        0% { background-position: 0 0; }
-        100% { background-position: 0 80px; }
+        background: radial-gradient(circle at bottom right, #0a0f1d 0%, #020307 100%);
+        z-index: -1; overflow: hidden;
     }
 
-    /* Floating Dust Particles */
-    .dust {
-        position: absolute; width: 100%; height: 100%; top: 0; left: 0;
-        background: radial-gradient(circle, rgba(0,243,255,0.05) 1px, transparent 1px);
-        background-size: 50px 50px; animation: floatUp 15s linear infinite;
+    /* Soft Glowing Nebulas */
+    .nebula { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.5; animation: breathe 10s infinite alternate ease-in-out; }
+    .nebula-1 { top: -20%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(0, 243, 255, 0.12) 0%, transparent 70%); }
+    .nebula-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(179, 102, 255, 0.1) 0%, transparent 70%); animation-delay: -5s; }
+    @keyframes breathe { 0% { transform: scale(1); opacity: 0.3; } 100% { transform: scale(1.1); opacity: 0.7; } }
+
+    /* Cinematic Floating Dust / Stars */
+    .space-dust {
+        position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+        background-repeat: repeat; pointer-events: none;
     }
-    @keyframes floatUp { 0% { transform: translateY(0); } 100% { transform: translateY(-100vh); } }
+    /* Distant clear dust particles */
+    .dust-layer-1 {
+        background-image: 
+            radial-gradient(2px 2px at 40px 60px, rgba(255,255,255,0.8), transparent),
+            radial-gradient(2px 2px at 150px 180px, rgba(0,243,255,0.6), transparent),
+            radial-gradient(3px 3px at 250px 90px, rgba(179,102,255,0.5), transparent),
+            radial-gradient(1px 1px at 320px 220px, rgba(255,255,255,0.4), transparent);
+        background-size: 350px 350px;
+        animation: floatDust1 120s linear infinite;
+        opacity: 0.7;
+    }
+    /* Closer out-of-focus dust particles (Bokeh effect) */
+    .dust-layer-2 {
+        background-image: 
+            radial-gradient(4px 4px at 80px 120px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(5px 5px at 200px 300px, rgba(0,243,255,0.2), transparent),
+            radial-gradient(6px 6px at 350px 50px, rgba(255,255,255,0.1), transparent);
+        background-size: 450px 450px;
+        filter: blur(3px); 
+        animation: floatDust2 80s linear infinite;
+        opacity: 0.9;
+    }
+
+    @keyframes floatDust1 { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(-350px) rotate(3deg); } }
+    @keyframes floatDust2 { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(-450px) rotate(-3deg); } }
 
     /* MASTER WRAPPER */
     .home-master-center {
@@ -39,57 +53,65 @@
     .bento-dashboard {
         display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px;
         width: 100%; max-width: 1200px;
-        perspective: 1500px; /* 3D Perspective activated for the whole grid */
+        perspective: 1500px; /* 3D Perspective */
     }
 
-    /* 2. 3D CARDS STYLING */
+    /* 2. LIQUID GLASS 3D CARDS STYLING */
     .bento-card, .action-btn {
-        background: rgba(11, 16, 33, 0.65); border-radius: 20px; 
-        border: 1px solid rgba(0, 243, 255, 0.15); box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        position: relative; backdrop-filter: blur(10px);
-        transform-style: preserve-3d; /* Allows child elements to pop out in 3D */
-        transition: transform 0.1s ease-out, box-shadow 0.3s ease; /* Super fast transition for mouse tracking */
+        background: rgba(15, 23, 42, 0.35); 
+        border-radius: 20px; 
+        border: 1px solid rgba(0, 243, 255, 0.15); 
+        border-top: 1px solid rgba(255, 255, 255, 0.25); 
+        border-left: 1px solid rgba(255, 255, 255, 0.1); 
+        box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 243, 255, 0.05);
+        position: relative; 
+        backdrop-filter: blur(16px); 
+        -webkit-backdrop-filter: blur(16px);
+        transform-style: preserve-3d; 
+        transition: transform 0.1s ease-out, box-shadow 0.3s ease, background 0.3s ease; 
         will-change: transform;
     }
     
     .bento-card { padding: 30px; display: flex; flex-direction: column; justify-content: center; }
     
-    /* Pop-out Effect for ALL contents inside the card */
+    /* Pop-out Effect */
     .bento-card > *, .action-btn > * {
-        transform: translateZ(40px); /* 40px hawa me tairta hua text! */
+        transform: translateZ(45px); 
         transition: transform 0.3s ease;
-        pointer-events: none; /* Mouse effect smooth rakhega */
+        pointer-events: none; 
     }
 
     /* Glowing borders on hover */
     .bento-card:hover, .action-btn:hover {
-        border-color: rgba(0, 243, 255, 0.6);
-        box-shadow: 0 20px 50px rgba(0, 243, 255, 0.15), inset 0 0 20px rgba(0, 243, 255, 0.05);
+        border-color: rgba(0, 243, 255, 0.7);
+        background: rgba(15, 23, 42, 0.45);
+        box-shadow: 0 20px 50px rgba(0, 243, 255, 0.2), inset 0 0 30px rgba(0, 243, 255, 0.1);
     }
 
-    /* Large Watermark Icons inside Cards */
+    /* Large Watermark Icons */
     .bento-bg-icon {
         position: absolute; right: -10px; bottom: -20px; font-size: 140px; 
-        opacity: 0.04; transform: translateZ(10px); /* Icon thoda peeche rahega */
+        opacity: 0.04; transform: translateZ(10px); 
     }
 
     /* Specific Grid Placements */
     .welcome-bento {
-        grid-column: span 2; background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(11, 16, 33, 0.9));
+        grid-column: span 2; 
+        background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(15, 23, 42, 0.3));
         display: flex; flex-direction: row; align-items: center; gap: 30px; justify-content: flex-start;
     }
     
     /* Neon Base Lines */
-    .collection-bento { border-bottom: 5px solid #00ff88; }
-    .students-bento { border-bottom: 5px solid #00f3ff; }
-    .admissions-bento { border-bottom: 5px solid #b366ff; }
-    .alert-bento { border-bottom: 5px solid #ff0055; cursor: pointer; }
+    .collection-bento { border-bottom: 5px solid rgba(0, 255, 136, 0.8); }
+    .students-bento { border-bottom: 5px solid rgba(0, 243, 255, 0.8); }
+    .admissions-bento { border-bottom: 5px solid rgba(179, 102, 255, 0.8); }
+    .alert-bento { border-bottom: 5px solid rgba(255, 0, 85, 0.8); cursor: pointer; }
 
     /* Logo & Text Styling */
     .bento-logo {
         width: 110px; height: 110px; border-radius: 50%; border: 2px solid #00f3ff;
-        box-shadow: 0 0 30px rgba(0, 243, 255, 0.5); padding: 5px; background: rgba(0,0,0,0.8);
-        object-fit: cover; transform: translateZ(60px); /* Sabse zyada bahar nikla hua */
+        box-shadow: 0 0 30px rgba(0, 243, 255, 0.5); padding: 5px; background: rgba(0,0,0,0.6);
+        object-fit: cover; transform: translateZ(60px); 
     }
     .welcome-info h1 { margin: 0 0 5px 0; font-size: 34px; color: #fff; font-family: 'Orbitron', sans-serif; letter-spacing: 2px; text-shadow: 0 0 15px rgba(0, 243, 255, 0.8); }
     .welcome-info p { margin: 0; color: #a5c3e0; font-size: 15px; font-family: 'Poppins', sans-serif; letter-spacing: 1px; }
@@ -97,8 +119,8 @@
     /* Live Clock */
     .live-clock-badge {
         display: inline-flex; align-items: center; gap: 8px; margin-top: 15px;
-        background: rgba(0, 243, 255, 0.15); padding: 6px 18px; border-radius: 20px;
-        border: 1px solid rgba(0, 243, 255, 0.4); color: #00f3ff; font-family: 'Orbitron', sans-serif; font-size: 13px;
+        background: rgba(0, 243, 255, 0.1); padding: 6px 18px; border-radius: 20px;
+        border: 1px solid rgba(0, 243, 255, 0.3); color: #00f3ff; font-family: 'Orbitron', sans-serif; font-size: 13px;
         box-shadow: 0 0 15px rgba(0,243,255,0.2);
     }
 
@@ -113,30 +135,33 @@
     .admissions-bento .stat-header i, .admissions-bento .stat-value { color: #b366ff; text-shadow: 0 0 20px rgba(179,102,255,0.5); }
     .alert-bento .stat-header i, .alert-bento .stat-value { color: #ff0055; text-shadow: 0 0 20px rgba(255,0,85,0.5); }
     
-    .alert-bento:hover { background: rgba(255, 0, 85, 0.1); border-color: #ff0055; box-shadow: 0 10px 40px rgba(255, 0, 85, 0.3); }
+    .alert-bento:hover { background: rgba(255, 0, 85, 0.15); border-color: #ff0055; box-shadow: 0 10px 40px rgba(255, 0, 85, 0.4); }
 
     /* Actions Matrix (Bottom Row) */
     .actions-bento {
         grid-column: span 3; display: flex; gap: 25px; padding: 10px 0;
         background: transparent; border: none; box-shadow: none; justify-content: space-between;
+        backdrop-filter: none; -webkit-backdrop-filter: none;
     }
     .action-btn {
         flex: 1; padding: 25px 20px; text-align: center; cursor: pointer;
         display: flex; flex-direction: column; align-items: center; gap: 15px;
         color: #a5c3e0; font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 600;
-        border-bottom: 3px solid rgba(0,243,255,0.3);
+        border-bottom: 3px solid rgba(0,243,255,0.4);
     }
-    .action-btn i { font-size: 34px; color: #00f3ff; text-shadow: 0 0 10px rgba(0,243,255,0.3); }
+    .action-btn i { font-size: 34px; color: #00f3ff; text-shadow: 0 0 10px rgba(0,243,255,0.4); }
 
     /* Responsive */
     @media (max-width: 992px) { .bento-dashboard { grid-template-columns: 1fr 1fr; } .welcome-bento, .collection-bento, .actions-bento { grid-column: span 2; } .actions-bento { flex-wrap: wrap; } .action-btn { min-width: 200px; } }
     @media (max-width: 768px) { .bento-dashboard { grid-template-columns: 1fr; } .welcome-bento, .collection-bento, .students-bento, .admissions-bento, .alert-bento, .actions-bento { grid-column: span 1; } .welcome-bento { flex-direction: column; text-align: center; } }
 </style>
 
-<!-- BACKGROUND 3D ELEMENTS -->
+<!-- BACKGROUND 3D ELEMENTS (New Space Dust) -->
 <div class="home-bg-3d">
-    <div class="dust"></div>
-    <div class="cyber-floor"></div>
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+    <div class="space-dust dust-layer-1"></div>
+    <div class="space-dust dust-layer-2"></div>
 </div>
 
 <div class="home-master-center">
@@ -206,30 +231,27 @@
         tiltElements.forEach(card => {
             card.addEventListener('mousemove', e => {
                 const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left; // x position within the element
-                const y = e.clientY - rect.top;  // y position within the element
+                const x = e.clientX - rect.left; 
+                const y = e.clientY - rect.top;  
                 
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
                 
-                // Calculate rotation based on mouse position (Max 15 degrees tilt)
                 const rotateX = ((y - centerY) / centerY) * -15; 
                 const rotateY = ((x - centerX) / centerX) * 15;
                 
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
             });
             
-            // Snap back to normal when mouse leaves
             card.addEventListener('mouseleave', () => {
                 card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
             });
         });
 
-
-        // --- LIVE CLOCK ---
+        // --- SAFE LIVE CLOCK ---
         function updateClock() {
             const clockElement = document.getElementById('realtimeClock');
-            if (!clockElement) return; // Agar clock screen par nahi hai, toh error mat do
+            if (!clockElement) return; 
 
             const now = new Date();
             const timeString = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
@@ -238,7 +260,6 @@
         }
         setInterval(updateClock, 1000);
         updateClock();
-
 
         // --- DATA CACHING & FETCH LOGIC ---
         const CACHE_DURATION_MS = 5 * 60 * 1000; 
@@ -281,10 +302,21 @@
             }
         }
 
+        // --- 🔥 BULLETPROOF SELF-HEALING UI UPDATE ---
         function updateStatsUI(data) {
-            document.getElementById('homeActiveStudents').innerText = data.activeStudents;
-            document.getElementById('homeMonthAdmission').innerText = data.todayAdmissions;
-            document.getElementById('homeTodayCollection').innerText = "₹" + data.todayCollection;
+            if (!data) return;
+
+            if (data.todayAdmissions === undefined && data.monthAdmission !== undefined) {
+                localStorage.removeItem('purix_home_stats'); 
+            }
+
+            let active = data.activeStudents !== undefined ? data.activeStudents : 0;
+            let admissions = data.todayAdmissions !== undefined ? data.todayAdmissions : (data.monthAdmission || 0);
+            let collection = data.todayCollection !== undefined ? data.todayCollection : 0;
+
+            document.getElementById('homeActiveStudents').innerText = active;
+            document.getElementById('homeMonthAdmission').innerText = admissions;
+            document.getElementById('homeTodayCollection').innerText = "₹" + collection;
         }
 
         function countRealOverdueAlerts(alertsList) {
@@ -301,7 +333,8 @@
             return criticalCount;
         }
 
+        // --- AUTO SYNC ---
         loadDashboardData();
-        setInterval(loadDashboardData, 60000);
+        setInterval(loadDashboardData, 60000); 
     })();
 </script>
