@@ -19,7 +19,7 @@
     overflow: hidden;
     isolation: isolate;
     color: var(--hud-white);
-    font-family: 'Orbitron', 'Arial', sans-serif;
+    font-family: 'Orbitron', 'Rajdhani', 'Arial', sans-serif;
 }
 
 /* Background grid and scanlines */
@@ -29,7 +29,7 @@
     inset: 0;
     z-index: -2;
     background:
-        radial-gradient(ellipse at center, rgba(0, 94, 160, .23), transparent 65%),
+        radial-gradient(ellipse at 50% 45%, rgba(10, 60, 110, .55), transparent 70%),
         repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(0, 150, 255, .075) 4px, transparent 5px),
         linear-gradient(135deg, #04172a, #010712 60%, #03182b);
 }
@@ -51,13 +51,24 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 1280px;
-    height: 720px;
-    transform: translate(-50%, -50%) scale(.95);
+    width: 1300px;
+    height: 900px;
+    transform: translate(-50%, -50%) scale(.9);
     transform-origin: center center;
-    transition: transform .15s ease-out;
 }
 
+.hud-master-container .hud-scaler svg {
+    display: block;
+    width: 1300px;
+    height: 900px;
+    overflow: visible;
+}
+
+.hud-master-container .hud-scaler text {
+    font-family: 'Orbitron', 'Rajdhani', 'Arial', sans-serif;
+}
+
+/* Corner brackets */
 .hud-master-container .hud-corner {
     position: absolute;
     width: 30px;
@@ -70,481 +81,397 @@
 .hud-master-container .hud-corner.bl { bottom: 12px; left: 12px; border-bottom: 2px solid var(--hud-blue); border-left: 2px solid var(--hud-blue); }
 .hud-master-container .hud-corner.br { bottom: 12px; right: 12px; border-bottom: 2px solid var(--hud-blue); border-right: 2px solid var(--hud-blue); }
 
-/* =====================================================
-   HEADER
-===================================================== */
-.hud-master-container .top-hud-header {
-    position: absolute;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px; 
-    z-index: 12;
-}
+/* Animation classes */
+.hud-master-container .hx-r { animation: hxSpin linear infinite; }
+.hud-master-container .hx-f { animation-direction: reverse; }
+.hud-master-container .hx-pulse { animation: hxPulse 3s ease-in-out infinite; }
+.hud-master-container .hx-float { animation: hxFloat 5s ease-in-out infinite; }
+.hud-master-container .hx-scan { animation: hxScan 7s linear infinite; }
+.hud-master-container .hx-blink { animation: hxPulse 1.2s steps(2) infinite; }
+.hud-master-container .hx-march { animation: hxMarch 1.2s linear infinite; }
 
-.hud-master-container .top-hud-header .satellite-icon {
-    color: var(--hud-blue);
-    font-size: 30px; 
-    filter: drop-shadow(0 0 12px var(--hud-blue));
-    animation: hudSatelliteFloat 4s ease-in-out infinite;
-}
+@keyframes hxSpin { to { transform: rotate(360deg); } }
+@keyframes hxPulse { 50% { opacity: .35; } }
+@keyframes hxFloat { 50% { transform: translateY(7px) rotate(2deg); } }
+@keyframes hxScan { from { transform: translateY(-60px); } to { transform: translateY(960px); } }
+@keyframes hxMarch { to { stroke-dashoffset: -6.3; } }
 
-.hud-master-container .top-hud-header h1 {
-    margin: 0; padding: 6px 45px 8px; 
-    color: #fff; font-size: 24px; font-weight: 800; letter-spacing: 4px; 
-    background: linear-gradient(180deg, rgba(0, 229, 255, .12), rgba(0, 0, 0, .65));
-    border-bottom: 2px solid var(--hud-blue);
-    clip-path: polygon(0 0, 100% 0, calc(100% - 20px) 100%, 20px 100%); 
-    text-shadow: 0 0 14px var(--hud-blue);
-}
-
-.hud-master-container .header-subtitle {
-    position: absolute; top: 69px; left: 50%; transform: translateX(-50%);
-    font-size: 8px; letter-spacing: 4px; white-space: nowrap; color: rgba(0, 229, 255, .65);
-}
-
-/* =====================================================
-   ANIMATION DEFINITIONS
-===================================================== */
-@keyframes hudSpinRight { to { transform: rotate(360deg); } }
-@keyframes hudSpinLeft { to { transform: rotate(-360deg); } }
-@keyframes hudPulse { 0%, 100% { opacity: .5; filter: brightness(.8); } 50% { opacity: 1; filter: brightness(1.6); } }
-@keyframes hudScan { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes hudSatelliteFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-@keyframes hudGlow { 0%, 100% { box-shadow: 0 0 10px rgba(0, 229, 255, .15), inset 0 0 10px rgba(0, 229, 255, .05); } 50% { box-shadow: 0 0 22px rgba(0, 229, 255, .35), inset 0 0 18px rgba(0, 229, 255, .12); } }
-@keyframes hudBarPulse { from { height: 18%; opacity: .5; } to { height: 95%; opacity: 1; } }
-@keyframes hudGlobeGridPan { 0% { background-position: 0px 0px; } 100% { background-position: 140px 0px; } }
-
-/* =====================================================
-   CENTER REACTOR
-===================================================== */
-.hud-master-container .center-reactor {
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 590px; height: 590px;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    background: radial-gradient(circle, rgba(0, 70, 125, .17) 0%, rgba(1, 10, 23, .94) 52%, rgba(0, 0, 0, .97) 72%);
-    box-shadow: 0 0 65px rgba(0, 0, 0, .85), inset 0 0 60px rgba(0, 100, 180, .10);
-    z-index: 3;
-}
-
-.hud-master-container .reactor-ring {
-    position: absolute;
-    top: 0; bottom: 0; left: 0; right: 0;
-    margin: auto;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    pointer-events: none;
-}
-
-.hud-master-container .ring-1-outer {
-    width: 570px; height: 570px;
-    border: 1px dashed rgba(0, 229, 255, .45); box-shadow: 0 0 15px rgba(0, 229, 255, .05);
-    animation: hudSpinRight 100s linear infinite;
-}
-
-.hud-master-container .ring-2-binary {
-    width: 535px; height: 535px;
-    border: 2px dotted rgba(0, 229, 255, .25);
-    animation: hudSpinLeft 85s linear infinite;
-}
-
-/* Removed the ::before and ::after pseudo-elements that generated the binary text for ring-2-binary */
-
-.hud-master-container .ring-3-ticks {
-    width: 490px; height: 490px;
-    background: conic-gradient(from 0deg, var(--hud-blue) 0deg 1deg, transparent 1deg 5deg, rgba(0, 120, 220, .8) 5deg 6deg, transparent 6deg 12deg);
-    -webkit-mask-image: radial-gradient(transparent 70%, #000 71%, #000 73%, transparent 74%);
-    mask-image: radial-gradient(transparent 70%, #000 71%, #000 73%, transparent 74%);
-    animation: hudSpinRight 45s linear infinite;
-}
-
-.hud-master-container .ring-4-thick {
-    width: 425px; height: 425px;
-    border: 13px solid rgba(0, 229, 255, .09); border-top-color: rgba(0, 229, 255, .9); border-bottom-color: rgba(0, 229, 255, .85);
-    box-shadow: 0 0 15px rgba(0, 229, 255, .12), inset 0 0 15px rgba(0, 229, 255, .08);
-    animation: hudSpinLeft 28s linear infinite;
-}
-
-.hud-master-container .ring-5-inner-dashed {
-    width: 355px; height: 355px;
-    border: 3px dashed rgba(0, 229, 255, .75); box-shadow: 0 0 15px rgba(0, 229, 255, .10);
-    animation: hudSpinRight 20s linear infinite;
-}
-
-.hud-master-container .ring-6-core {
-    width: 285px; height: 285px;
-    border: 2px solid var(--hud-blue);
-    background: radial-gradient(circle, rgba(0, 130, 220, .22), rgba(0, 30, 65, .25) 55%, transparent 75%);
-    box-shadow: 0 0 25px rgba(0, 229, 255, .38), inset 0 0 35px rgba(0, 229, 255, .20);
-}
-
-.hud-master-container .ring-7-core {
-    width: 225px; height: 225px;
-    border: 1px solid rgba(0, 229, 255, .45);
-    background: repeating-conic-gradient(from 0deg, rgba(0, 229, 255, .35) 0deg 1deg, transparent 1deg 10deg);
-    -webkit-mask-image: radial-gradient(transparent 85%, #000 87%); mask-image: radial-gradient(transparent 85%, #000 87%);
-    animation: hudSpinLeft 35s linear infinite;
-}
-
-.hud-master-container .core-logo {
-    position: relative; z-index: 8; width: 132px; height: 132px;
-    object-fit: contain; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .85);
-    background: #020b18; box-shadow: 0 0 15px rgba(0, 229, 255, .9), 0 0 45px rgba(0, 150, 255, .5);
-    animation: hudGlow 4s ease-in-out infinite;
-}
-
-/* =====================================================
-   TOP LEFT RADAR
-===================================================== */
-.hud-master-container .top-left-radar {
-    position: absolute; top: 35px; left: 30px;
-    width: 220px; height: 220px;
-    display: flex; align-items: center; justify-content: center;
-    border: 1px solid rgba(0, 229, 255, .65);
-    background: linear-gradient(135deg, rgba(0, 229, 255, .08), rgba(0, 0, 0, .6));
-    box-shadow: inset 0 0 25px rgba(0, 229, 255, .08), 0 0 15px rgba(0, 229, 255, .06);
-    clip-path: polygon(0 0, 88% 0, 100% 13%, 100% 100%, 12% 100%, 0 88%);
-    z-index: 5;
-}
-
-.hud-master-container .radar-circle {
-    position: absolute; width: 174px; height: 174px; border-radius: 50%;
-    border: 2px solid rgba(0, 229, 255, .55);
-    background: radial-gradient(circle, transparent 19%, rgba(0, 229, 255, .25) 20%, transparent 21%),
-                repeating-radial-gradient(circle, transparent 0 24px, rgba(0, 229, 255, .22) 25px 26px);
-}
-.hud-master-container .radar-circle::before {
-    content: ""; position: absolute; inset: 0; border-radius: 50%;
-    background: conic-gradient(from 0deg, transparent 0deg, rgba(0, 229, 255, .30) 30deg, transparent 80deg);
-    animation: hudScan 4s linear infinite;
-}
-.hud-master-container .radar-circle::after {
-    content: ""; position: absolute; top: 50%; left: 50%; width: 28px; height: 28px;
-    transform: translate(-50%, -50%); border-radius: 50%; background: var(--hud-blue);
-    box-shadow: 0 0 10px var(--hud-blue), 0 0 30px var(--hud-blue);
-}
-.hud-master-container .radar-crosshair {
-    position: absolute; width: 195px; height: 195px; border-radius: 50%;
-    border: 1px dashed rgba(0, 229, 255, .35); animation: hudSpinRight 20s linear infinite;
-}
-
-/* =====================================================
-   TOP RIGHT DIGITAL GLOBE
-===================================================== */
-.hud-master-container .top-right-globe {
-    position: absolute; top: 30px; right: 30px;
-    width: 220px; height: 230px;
-    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-    z-index: 5;
-}
-.hud-master-container .globe-sphere {
-    position: relative; width: 175px; height: 175px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(0, 229, 255, .55);
-    background: repeating-linear-gradient(0deg, transparent 0px, transparent 12px, rgba(0, 229, 255, .30) 13px, transparent 14px),
-                repeating-linear-gradient(90deg, transparent 0px, transparent 12px, rgba(0, 229, 255, .30) 13px, transparent 14px);
-    box-shadow: inset 0 0 35px rgba(0, 120, 255, .35), 0 0 15px rgba(0, 229, 255, .12);
-    animation: hudGlobeGridPan 12s linear infinite;
-}
-.hud-master-container .globe-sphere::before {
-    content: ""; position: absolute; inset: -20px; border-radius: 50%; border: 1px dashed rgba(0, 229, 255, .65);
-    transform: rotateX(65deg); animation: hudSpinRight 14s linear infinite;
-}
-.hud-master-container .globe-sphere::after {
-    content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 60%; transform: translateX(-50%);
-    border-left: 1px solid rgba(0, 229, 255, .6); border-right: 1px solid rgba(0, 229, 255, .6);
-    border-radius: 50%; box-shadow: 0 0 10px rgba(0, 229, 255, .25);
-}
-.hud-master-container .globe-chart {
-    width: 100%; height: 38px; display: flex; align-items: flex-end; gap: 3px; border-bottom: 1px solid rgba(0, 229, 255, .5);
-}
-.hud-master-container .globe-chart div {
-    flex: 1; height: 35%; background: linear-gradient(to top, #0077ff, var(--hud-blue)); animation: hudBarPulse 1s ease-in-out infinite alternate;
-}
-
-/* =====================================================
-   SIDE DATA CARDS
-===================================================== */
-.hud-master-container .side-cards-container {
-    position: absolute;
-    top: 58%;
-    transform: translateY(-50%);
-    display: flex; flex-direction: column; gap: 35px;
-    z-index: 10;
-}
-.hud-master-container .left-cards { left: 25px; }
-.hud-master-container .right-cards { right: 25px; }
-
-.hud-master-container .hud-block {
-    box-sizing: border-box; position: relative;
-    width: 280px; height: 112px; padding: 12px 16px;
-    display: flex; flex-direction: column; justify-content: center;
-    background: linear-gradient(110deg, rgba(0, 229, 255, .07), rgba(0, 10, 25, .92) 45%, rgba(0, 100, 180, .08));
-    border: 1px solid rgba(0, 229, 255, .7);
-    clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
-    animation: hudGlow 7s ease-in-out infinite;
-}
-.hud-master-container .hud-block::before {
-    content: ""; position: absolute; left: 4px; top: 10px; bottom: 10px; width: 2px;
-    background: var(--hud-blue); box-shadow: 0 0 8px var(--hud-blue);
-}
-.hud-master-container .block-title {
-    display: flex; align-items: center; justify-content: space-between; gap: 6px;
-    padding-bottom: 5px; margin-bottom: 6px; color: #eafaff; font-size: 10px; font-weight: 600; letter-spacing: .8px;
-    border-bottom: 1px solid rgba(0, 229, 255, .4);
-}
-.hud-master-container .block-title i { color: var(--hud-blue); margin-right: 5px; }
-.hud-master-container .block-value {
-    display: flex; align-items: center; gap: 10px; color: var(--hud-blue); font-size: 27px; font-weight: 800;
-    text-shadow: 0 0 10px rgba(0, 229, 255, .65);
-}
-.hud-master-container .mini-eq { display: flex; align-items: flex-end; height: 13px; gap: 3px; margin-top: 5px; }
-.hud-master-container .mini-eq span { flex: 1; height: 40%; background: var(--hud-blue); box-shadow: 0 0 5px rgba(0, 229, 255, .35); animation: hudBarPulse .65s ease-in-out infinite alternate; }
-
-.hud-master-container .hud-block.alert-block { border-color: #ff245d; }
-.hud-master-container .hud-block.alert-block::before { background: #ff245d; box-shadow: 0 0 8px #ff245d; }
-.hud-master-container .hud-block.alert-block .block-title { color: #ff6688; border-color: rgba(255, 36, 93, .5); }
-.hud-master-container .hud-block.alert-block .block-title i,
-.hud-master-container .hud-block.alert-block .block-value { color: #ff245d; text-shadow: 0 0 10px rgba(255, 36, 93, .6); }
-.hud-master-container .hud-block.alert-block .mini-eq span { background: #ff245d; }
-
-/* =====================================================
-   BOTTOM CIRCULAR CONTROLS
-===================================================== */
-.hud-master-container .bottom-circles-container {
-    position: absolute;
-    bottom: 35px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex; align-items: center; justify-content: center;
-    gap: 75px; 
-    z-index: 12;
-}
-
-.hud-master-container .circle-btn {
-    position: relative;
-    width: 95px; 
-    height: 95px;
-    flex-shrink: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    border-radius: 50%;
-    background: rgba(2, 11, 24, .94); border: 2px solid rgba(0, 229, 255, .6);
-    cursor: pointer;
-    box-shadow: inset 0 0 16px rgba(0, 229, 255, .12), 0 0 12px rgba(0, 229, 255, .08);
-    transition: background .25s ease, box-shadow .25s ease, border-color .25s ease;
-}
-
-.hud-master-container .circle-btn::before {
-    content: ""; position: absolute;
-    inset: -12px; 
-    border-radius: 50%; border: 2px solid transparent; border-top-color: var(--hud-blue); border-bottom-color: var(--hud-blue);
-    animation: hudSpinRight 8s linear infinite;
-}
-
-.hud-master-container .circle-btn::after {
-    content: ""; position: absolute;
-    inset: 6px; 
-    border-radius: 50%; border: 1px dashed rgba(0, 229, 255, .65);
-    animation: hudSpinLeft 9s linear infinite;
-}
-
-.hud-master-container .circle-btn i {
-    position: relative; z-index: 2;
-    color: #fff;
-    font-size: 26px; 
-    margin-bottom: 5px;
-    filter: drop-shadow(0 0 5px var(--hud-blue));
-}
-
-.hud-master-container .circle-btn span {
-    position: relative; z-index: 2;
-    color: var(--hud-blue);
-    font-size: 11px; 
-    font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
-}
-
-.hud-master-container .circle-btn:hover {
-    background: rgba(0, 140, 200, .22); border-color: #fff;
-    box-shadow: 0 0 25px rgba(0, 229, 255, .35), inset 0 0 20px rgba(0, 229, 255, .18);
-}
-
-/* =====================================================
-   BOTTOM DECORATION
-===================================================== */
-.hud-master-container .bottom-dec {
-    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 340px; height: 20px;
-    border-top: 2px solid rgba(0, 229, 255, .7); border-left: 2px solid rgba(0, 229, 255, .7); border-right: 2px solid rgba(0, 229, 255, .7);
-}
-
-/* Removed the ::before pseudo-element that generated the binary text for the bottom decoration */
-
-/* =====================================================
-   STATUS INDICATORS
-===================================================== */
-.hud-master-container .hud-status {
-    position: absolute; top: 18px; left: 50%; margin-top: 53px; transform: translateX(-50%);
-    color: rgba(0, 229, 255, .65); font-size: 8px; letter-spacing: 2px; white-space: nowrap; z-index: 10;
-}
-.hud-master-container .hud-status .status-dot {
-    display: inline-block; width: 6px; height: 6px; margin-right: 7px; border-radius: 50%;
-    background: #00ff99; box-shadow: 0 0 8px #00ff99; animation: hudPulse 1.5s infinite;
+@media (prefers-reduced-motion: reduce) {
+    .hud-master-container * { animation: none !important; }
 }
 </style>
 
 <div class="hud-master-container" id="hudContainer">
     <div class="hud-corner tl"></div><div class="hud-corner tr"></div>
     <div class="hud-corner bl"></div><div class="hud-corner br"></div>
-
+    
     <div class="hud-scaler" id="hudScaler">
-        <!-- HEADER -->
-        <div class="top-hud-header">
-            <i class="fa-solid fa-satellite satellite-icon"></i>
-            <h1>PURIX ACADEMY</h1>
-        </div>
-        <div class="header-subtitle">CENTRAL COMMAND // SYSTEM PROTOCOL</div>
-        <div class="hud-status"><span class="status-dot"></span>SYSTEM ONLINE</div>
+        <svg id="hxSvg" viewBox="0 0 1300 900" width="1300" height="900" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="hxLines" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1.2" fill="#1a5aa0" opacity=".22"/></pattern>
+                <radialGradient id="hxCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#0f5cb8"/><stop offset=".6" stop-color="#0a3a80"/><stop offset="1" stop-color="#05204a"/></radialGradient>
+                <linearGradient id="hxSweep" x1="0" x2="1"><stop offset="0" stop-color="#2ee6ff" stop-opacity="0"/><stop offset="1" stop-color="#2ee6ff" stop-opacity=".7"/></linearGradient>
+                <linearGradient id="hxScanG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#37c8ff" stop-opacity="0"/><stop offset=".5" stop-color="#37c8ff" stop-opacity=".12"/><stop offset="1" stop-color="#37c8ff" stop-opacity="0"/></linearGradient>
+                <filter id="hxGlow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <path id="hxBp" d="M650,130 a300,300 0 1,1 -0.01,0"/>
+                <linearGradient id="hxFan" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#0a2f78"/><stop offset="1" stop-color="#20c0ff"/></linearGradient>
+                <linearGradient id="hxBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b8cff"/><stop offset="1" stop-color="#0e3a9a"/></linearGradient>
+                <pattern id="hxSeg" width="6" height="2.6" patternUnits="userSpaceOnUse"><rect y="1.8" width="6" height=".8" fill="#04122a" opacity=".85"/></pattern>
+                <radialGradient id="hxBtnG" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#0e4c8e"/><stop offset=".7" stop-color="#06224a"/><stop offset="1" stop-color="#041430"/></radialGradient>
+                <clipPath id="hxLogoClip"><circle cx="650" cy="430" r="66"/></clipPath>
+                <clipPath id="hxCartClip"><rect x="3.5" y="9" width="136" height="72"/></clipPath>
+            </defs>
 
-        <!-- TOP LEFT RADAR -->
-        <div class="top-left-radar">
-            <div class="radar-circle"></div>
-            <div class="radar-crosshair"></div>
-        </div>
+            <rect width="1300" height="900" fill="url(#hxLines)"/>
 
-        <!-- TOP RIGHT DIGITAL GLOBE -->
-        <div class="top-right-globe">
-            <div class="globe-sphere"></div>
-            <div class="globe-chart">
-                <div style="animation-delay:.1s"></div><div style="animation-delay:.3s"></div>
-                <div style="animation-delay:.5s"></div><div style="animation-delay:.2s"></div>
-                <div style="animation-delay:.6s"></div><div style="animation-delay:.4s"></div>
-                <div style="animation-delay:.1s"></div><div style="animation-delay:.7s"></div>
-                <div style="animation-delay:.3s"></div><div style="animation-delay:.5s"></div>
-                <div style="animation-delay:.2s"></div><div style="animation-delay:.6s"></div>
-            </div>
-        </div>
+            <!-- ===== CENTER REACTOR ===== -->
+            <circle cx="650" cy="430" r="338" fill="#020917" opacity=".9"/>
+            <!-- Binary ring around reactor removed to fix issue -->
+            <g filter="url(#hxGlow)">
+                <circle class="hx-r" style="transform-origin:650px 430px;animation-duration:90s" cx="650" cy="430" r="262" fill="none" stroke="#2a7fd0" stroke-width="12" stroke-dasharray="2 11" opacity=".55"/>
+                <circle class="hx-r hx-f" style="transform-origin:650px 430px;animation-duration:60s" cx="650" cy="430" r="236" fill="none" stroke="#2fb4f0" stroke-width="16" stroke-dasharray="26 8 12 8 44 40 8 8 30 220 14 8 40 700 18 12 30 30" opacity=".85"/>
+                <circle class="hx-r" style="transform-origin:650px 430px;animation-duration:40s" cx="650" cy="430" r="236" fill="none" stroke="#eaffff" stroke-width="16" stroke-dasharray="10 5 10 5 10 5 10 1400" opacity=".9"/>
+                <circle class="hx-r" style="transform-origin:650px 430px;animation-duration:22s" cx="650" cy="430" r="195" fill="none" stroke="#4cc2ff" stroke-width="9" stroke-dasharray="560 666" stroke-linecap="butt"/>
+                <circle class="hx-r hx-f" style="transform-origin:650px 430px;animation-duration:30s" cx="650" cy="430" r="172" fill="none" stroke="#33d0ff" stroke-width="2" stroke-dasharray="14 5 3 5 40 9"/>
+                <circle class="hx-r" style="transform-origin:650px 430px;animation-duration:16s" cx="650" cy="430" r="150" fill="none" stroke="#6fe0ff" stroke-width="5" stroke-dasharray="1 15" stroke-linecap="round"/>
+                <circle class="hx-r hx-f" style="transform-origin:650px 430px;animation-duration:12s" cx="650" cy="430" r="128" fill="none" stroke="#2fb4f0" stroke-width="3" stroke-dasharray="34 10 6 10"/>
+                <circle class="hx-r" style="transform-origin:650px 430px;animation-duration:9s" cx="650" cy="430" r="112" fill="none" stroke="#9af0ff" stroke-width="2" stroke-dasharray="3 6"/>
+                <circle cx="650" cy="430" r="100" fill="url(#hxCore)" stroke="#2e9fe6" stroke-width="2"/>
+                <circle class="hx-pulse" cx="650" cy="430" r="86" fill="none" stroke="#4cc2ff" stroke-width="1.5"/>
+                <g class="hx-r" style="transform-origin:650px 430px;animation-duration:22s"><path d="M845,430 l-9,-9 v18z" fill="#6fe0ff" transform="rotate(-8 650 430)"/><circle cx="650" cy="235" r="4" fill="#fff"/><circle cx="650" cy="625" r="4" fill="#4cc2ff"/></g>
+                <g class="hx-r hx-f" style="transform-origin:650px 430px;animation-duration:30s"><circle cx="650" cy="258" r="4" fill="#fff"/><circle cx="822" cy="430" r="3.5" fill="#6fe0ff"/><circle cx="478" cy="430" r="3.5" fill="#6fe0ff"/></g>
+            </g>
+            <circle cx="650" cy="430" r="69" fill="#020b18" stroke="#fff" stroke-width="2" style="filter:drop-shadow(0 0 8px #00e5ff)"/>
+            <image href="logo.png" x="584" y="364" width="132" height="132" clip-path="url(#hxLogoClip)" preserveAspectRatio="xMidYMid slice"/>
+            
+            <g id="topBlocks"></g>
 
-        <!-- LEFT DASHBOARD CARDS -->
-        <div class="side-cards-container left-cards">
-            <div class="hud-block">
-                <div class="block-title"><span><i class="fa-solid fa-user-plus"></i>TODAY'S ADMISSIONS</span><span>01</span></div>
-                <div class="block-value" id="homeMonthAdmission"><i class="fa-solid fa-spinner fa-spin"></i></div>
-                <div class="mini-eq"><span style="animation-delay:.1s"></span><span style="animation-delay:.4s"></span><span style="animation-delay:.2s"></span><span style="animation-delay:.6s"></span><span style="animation-delay:.3s"></span><span style="animation-delay:.5s"></span></div>
-            </div>
-            <div class="hud-block">
-                <div class="block-title"><span><i class="fa-solid fa-users"></i>ACTIVE STUDENTS</span><span>02</span></div>
-                <div class="block-value" id="homeActiveStudents"><i class="fa-solid fa-spinner fa-spin"></i></div>
-                <div class="mini-eq"><span style="animation-delay:.5s"></span><span style="animation-delay:.2s"></span><span style="animation-delay:.8s"></span><span style="animation-delay:.1s"></span><span style="animation-delay:.4s"></span><span style="animation-delay:.7s"></span></div>
-            </div>
-        </div>
+            <!-- ===== HEADER ===== -->
+            <polygon points="330,0 970,0 890,92 410,92" fill="#04142f" stroke="#144a8c" stroke-width="2"/>
+            <text x="650" y="56" font-size="31" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="4" style="filter:drop-shadow(0 0 8px #00e5ff)">PURIX ACADEMY</text>
+            <text x="650" y="80" font-size="8.5" fill="#00e5ff" opacity=".7" text-anchor="middle" letter-spacing="3.5">CENTRAL COMMAND // SYSTEM PROTOCOL</text>
+            <circle class="hx-pulse" cx="590" cy="113" r="3" fill="#00ff99"/><text x="600" y="116" font-size="8" fill="#00e5ff" opacity=".7" letter-spacing="2">SYSTEM ONLINE</text>
+            
+            <!-- ===== TOP LEFT RADAR ===== -->
+            <rect x="18" y="18" width="312" height="280" fill="#030c20" opacity=".85"/>
+            <path d="M18,42 V18 H44 M277,17 L300,25 L320,48 V72 M330,96 V190 M18,262 V288 H48 L58,296 H92 M330,262 V292 H304 M120,18 H220" fill="none" stroke="#2a8fe0" stroke-width="1.5"/>
+            <g id="radar" filter="url(#hxGlow)"></g>
 
-        <!-- CENTER REACTOR -->
-        <div class="center-reactor">
-            <div class="reactor-ring ring-1-outer"></div>
-            <div class="reactor-ring ring-2-binary"></div>
-            <div class="reactor-ring ring-3-ticks"></div>
-            <div class="reactor-ring ring-4-thick"></div>
-            <div class="reactor-ring ring-5-inner-dashed"></div>
-            <div class="reactor-ring ring-6-core"></div>
-            <div class="reactor-ring ring-7-core"></div>
-            <img src="logo.png" class="core-logo" alt="Purix Academy Logo">
-        </div>
+            <!-- ===== TOP RIGHT GLOBE ===== -->
+            <path d="M985,18 H1285 V270 H1000 L968,238 V40z" fill="#051836" stroke="#0f4a8a" stroke-width="2"/>
+            <g id="scale" fill="#7fa8d8" font-size="11"></g>
+            <g filter="url(#hxGlow)" fill="none" stroke="#2f8cff" stroke-width="1.6">
+                <g transform="rotate(-18 1115 135)">
+                    <circle cx="1115" cy="135" r="96" stroke-width="2.2" stroke="#4cb4ff"/>
+                    <g id="lats"></g>
+                    <g id="lons"></g>
+                    <g id="dots" stroke="none" fill="#9fe6ff"></g>
+                </g>
+            </g>
+            <g id="specBars" fill="#3da6ff"></g>
+            <line x1="1028" y1="318" x2="1240" y2="318" stroke="#3da6ff"/>
 
-        <!-- RIGHT DASHBOARD CARDS -->
-        <div class="side-cards-container right-cards">
-            <div class="hud-block">
-                <div class="block-title"><span><i class="fa-solid fa-wallet"></i>TODAY'S COLLECTION</span><span>03</span></div>
-                <div class="block-value" id="homeTodayCollection"><i class="fa-solid fa-spinner fa-spin"></i></div>
-                <div class="mini-eq"><span style="animation-delay:.3s"></span><span style="animation-delay:.7s"></span><span style="animation-delay:.1s"></span><span style="animation-delay:.5s"></span><span style="animation-delay:.4s"></span><span style="animation-delay:.2s"></span></div>
-            </div>
-            <div class="hud-block alert-block" onclick="loadModule('alerts')" style="cursor:pointer;" title="Open overdue alerts">
-                <div class="block-title"><span><i class="fa-solid fa-triangle-exclamation"></i>OVERDUE ALERTS</span><span>04</span></div>
-                <div class="block-value" id="alertCount"><i class="fa-solid fa-spinner fa-spin"></i></div>
-                <div class="mini-eq"><span style="animation-delay:.2s"></span><span style="animation-delay:.6s"></span><span style="animation-delay:.3s"></span><span style="animation-delay:.8s"></span><span style="animation-delay:.1s"></span><span style="animation-delay:.4s"></span></div>
-            </div>
-        </div>
+            <!-- ===== LEFT PANELS A B C ===== -->
+            <g id="leftPanels"></g>
+            <!-- ===== RIGHT PANELS ===== -->
+            <g id="rightPanels"></g>
 
-        <!-- BOTTOM ACTION BUTTONS -->
-        <div class="bottom-circles-container">
-            <div class="circle-btn" onclick="loadModule('admission')" title="Open Admissions">
-                <i class="fa-solid fa-id-card-clip"></i><span>Admit</span>
-            </div>
-            <div class="circle-btn" onclick="loadModule('payment')" title="Open Fee Management">
-                <i class="fa-solid fa-hand-holding-dollar"></i><span>Fee</span>
-            </div>
-            <div class="circle-btn" onclick="loadModule('profile')" title="Search Students">
-                <i class="fa-solid fa-magnifying-glass-chart"></i><span>Search</span>
-            </div>
-            <div class="circle-btn" onclick="loadModule('reports')" title="Open Reports">
-                <i class="fa-solid fa-file-invoice"></i><span>Reports</span>
-            </div>
-        </div>
+            <!-- ===== BOTTOM ===== -->
+            <!-- bottom buttons -->
+            <path d="M335,772 L362,748 H938 L965,772 V870 L945,888 H355 L335,870Z" fill="#041429" opacity=".92" stroke="#144a8c" stroke-width="1.5"/>
+            <path d="M335,792 V772 L362,748 H398 M965,792 V772 L938,748 H902 M335,848 V870 L355,888 H392 M965,848 V870 L945,888 H908" fill="none" stroke="#2a8fe0" stroke-width="1.8"/>
+            <g id="hxBtns"></g>
 
-        <div class="bottom-dec"></div>
+            <!-- scan band + frame lines -->
+            <rect class="hx-scan" x="0" y="0" width="1300" height="60" fill="url(#hxScanG)"/>
+            <path d="M0,880 H440 M860,880 H1300" stroke="#144a8c" stroke-width="2"/>
+            <circle class="hx-blink" cx="1262" cy="870" r="4" fill="#4cc2ff"/>
+        </svg>
     </div>
 </div>
 
 <script>
-(function () {
-    "use strict";
+(function(){
+    var HC=document.getElementById('hudContainer'),NS='http://www.w3.org/2000/svg',$=function(i){return HC.querySelector('#'+i)};
+    function el(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
 
-    /* =================================================
-       1. RESPONSIVE DESKTOP HUD SCALING
-    ================================================= */
-    const container = document.getElementById("hudContainer");
-    const scaler = document.getElementById("hudScaler");
+    /* left blocks on center ring */
+    var tb=$('topBlocks');
+    [[-52,'#eaffff'],[-40,'#8fe9ff'],[-28,'#4cc2ff'],[28,'#4cc2ff'],[40,'#8fe9ff'],[52,'#2f9be0']].forEach(function(b){
+        el('rect',{x:640,y:160,width:10,height:24,fill:b[1],opacity:.9,transform:'rotate('+b[0]+' 650 430)'},tb)});
+    for(var i=-6;i<=6;i++){el('rect',{x:646,y:640,width:7,height:14,fill:i%3?'#2f7fd0':'#cfeaff',transform:'rotate('+(i*4)+' 650 430)'},tb)}
 
-    if (!container || !scaler) return;
+    /* helpers */
+    function P(cx,cy,r,a){a=a*Math.PI/180;return [cx+r*Math.sin(a),cy-r*Math.cos(a)]}
+    function f(n){return n.toFixed(1)}
+    function sec(cx,cy,r1,r2,a1,a2){var l=(a2-a1)>180?1:0,p=P(cx,cy,r2,a1),q=P(cx,cy,r2,a2),s=P(cx,cy,r1,a2),u=P(cx,cy,r1,a1);return 'M'+f(p[0])+','+f(p[1])+'A'+r2+','+r2+' 0 '+l+' 1 '+f(q[0])+','+f(q[1])+'L'+f(s[0])+','+f(s[1])+'A'+r1+','+r1+' 0 '+l+' 0 '+f(u[0])+','+f(u[1])+'Z'}
+    function arc(cx,cy,r,a1,a2){var l=(a2-a1)>180?1:0,p=P(cx,cy,r,a1),q=P(cx,cy,r,a2);return 'M'+f(p[0])+','+f(p[1])+'A'+r+','+r+' 0 '+l+' 1 '+f(q[0])+','+f(q[1])}
+    function ln(cx,cy,r1,r2,a){var p=P(cx,cy,r1,a),q=P(cx,cy,r2,a);return 'M'+f(p[0])+','+f(p[1])+'L'+f(q[0])+','+f(q[1])}
 
-    const BASE_WIDTH = 1280;
-    const BASE_HEIGHT = 720;
+    /* radar */
+    var RG=$('radar'),X=175,Y=158,W='#f2fbff',radT=[],hubT=[];
+    function add(t,a,p){return el(t,a,p||RG)}
+    add('circle',{cx:X,cy:Y,r:125,fill:'#051333',stroke:'#1b7de8','stroke-width':4});
+    [[62,92,258,292],[45,95,62,100],[40,60,5,50],[40,58,205,238],[45,60,128,170]].forEach(function(s){add('path',{d:sec(X,Y,s[0],s[1],s[2],s[3]),fill:'url(#hxFan)',opacity:.9})});
+    var pg=add('g',{class:'hx-pulse'});
+    [[104,245,290,9,'#1f9cff'],[106,55,75,9,'#1f9cff'],[106,95,130,9,'#1f9cff'],[108,138,177,9,'#2aa8ff'],[62,150,215,12,'#1fb0ff'],[55,255,285,12,'#1fb4ff'],[52,-28,-10,4,'#1fb4ff'],[59,-28,-10,4,'#1fb4ff']].forEach(function(a){add('path',{d:arc(X,Y,a[0],a[1],a[2]),fill:'none',stroke:a[4],'stroke-width':a[3]},pg)});
+    [[88,220,312],[98,50,172]].forEach(function(a){add('path',{d:arc(X,Y,a[0],a[1],a[2]),fill:'none',stroke:'#fff','stroke-width':2.6,'stroke-linecap':'round','stroke-dasharray':'0.1 6.2',class:'hx-march'})});
+    add('path',{d:arc(X,Y,84,140,172)+arc(X,Y,98,140,172),fill:'none',stroke:W,'stroke-width':1.2});
+    add('rect',{x:146,y:250,width:11,height:9,fill:'none',stroke:W,'stroke-width':1.2});
+    function ticks(a1,a2,r0,dir,col,par){for(var a=a1;a<=a2;a+=1.3){var e=add('path',{stroke:col,'stroke-width':1.1,fill:'none'},par);radT.push({e:e,a:a,r:r0,d:dir,amp:5+Math.random()*13})}}
+    function wedge(a1,a2,divs,dur,rev,extra,tk){
+        var g=add('g',{class:'hx-r'+(rev?' hx-f':''),style:'transform-origin:175px 158px;animation-duration:'+dur+'s'});
+        add('path',{d:sec(X,Y,88,116,a1,a2),fill:'#06214f','fill-opacity':.7,stroke:W,'stroke-width':1.4},g);
+        divs.forEach(function(a){add('path',{d:ln(X,Y,34,116,a),stroke:W,'stroke-width':1.4,fill:'none'},g)});
+        extra.forEach(function(e){add('path',{d:e[0],fill:'none',stroke:e[1],'stroke-width':1.2},g)});
+        ticks(tk[0],tk[1],tk[2],tk[3],tk[4],g)}
+    wedge(-51,0,[309,0],26,false,[[arc(X,Y,68,-47,-8),W]],[-48,-4,96,1,'#3fa8ff']);
+    wedge(0,51,[0,51],20,true,[[arc(X,Y,74,8,48)+arc(X,Y,80,12,44),'#2a8fe0']],[4,48,96,1,'#3fa8ff']);
+    wedge(180,231,[180,231],32,false,[[arc(X,Y,70,190,225),'#2a8fe0']],[184,224,113,-1,'#fff']);
+    for(var i=0;i<120;i++){var a=i*3;if((a>235&&a<305)||(a>55&&a<125)||(a>130&&a<170))hubT.push(add('path',{d:ln(X,Y,37,50,a),stroke:'#2fc8ff','stroke-width':1.5}))}
+    add('circle',{cx:X,cy:Y,r:33,fill:'#08285e',stroke:'#1c7fe0','stroke-width':3});
+    add('circle',{cx:X,cy:Y,r:29,fill:'#031638'});
+    var hb=add('g',{class:'hx-r',style:'transform-origin:175px 158px;animation-duration:20s'});
+    for(var i=0;i<10;i++)add('path',{d:sec(X,Y,18,27,i*36,i*36+24),fill:'#19c4f0'},hb);
+    add('circle',{cx:X,cy:Y,r:14.5,fill:'#061a40',stroke:'#fff','stroke-width':2.4});
 
-    function scaleHUD() {
-        const width = container.clientWidth;
-        const height = container.clientHeight;
+    /* scale */
+    var sc=$('scale');for(var i=0;i<=10;i++){el('text',{x:1262,y:56+(10-i)*21.5,'text-anchor':'middle'},sc).textContent=(i<10?'0':'')+i}
 
-        if (!width || !height) return;
+    /* globe */
+    var GX=1115,GY=135,GL=el('g',{filter:'url(#hxGlow)',fill:'none','stroke-linecap':'round'},$('specBars').parentNode);
+    function rot(p,ax,a){var c=Math.cos(a),s=Math.sin(a),x=p[0],y=p[1],z=p[2];
+        if(ax=='y')return [x*c+z*s,y,-x*s+z*c];if(ax=='x')return [x,y*c-z*s,y*s+z*c];return [x*c-y*s,x*s+y*c,z]}
+    function mkLayer(R,nl,nm,lc,dc,ops,speed,dir){
+        var pts=[[0,-1,0]],E=[],i,j;
+        for(i=1;i<=nl;i++){var ph=-Math.PI/2+Math.PI*i/(nl+1);for(j=0;j<nm;j++){var th=2*Math.PI*j/nm;pts.push([Math.cos(ph)*Math.cos(th),Math.sin(ph),Math.cos(ph)*Math.sin(th)])}}
+        pts.push([0,1,0]);var last=pts.length-1;
+        function id(i,j){return 1+(i-1)*nm+((j%nm)+nm)%nm}
+        for(j=0;j<nm;j++){E.push([0,id(1,j)]);E.push([id(nl,j),last])}
+        for(i=1;i<=nl;i++)for(j=0;j<nm;j++){E.push([id(i,j),id(i,j+1)]);if(i<nl)E.push([id(i,j),id(i+1,j)])}
+        var o={lf:el('path',{stroke:lc,'stroke-width':.9,opacity:.95},GL),lb:el('path',{stroke:lc,'stroke-width':.7,opacity:.3},GL),
+               df:el('path',{stroke:dc,'stroke-width':2.6},GL),db:el('path',{stroke:dc,'stroke-width':1.6,opacity:.35},GL)};
+        return function(t){var a=t*speed*dir,q=pts.map(function(p){var r=rot(p,ops[0],a);for(var k=1;k<ops.length;k++)r=rot(r,ops[k][0],ops[k][1]);return [GX+r[0]*R,GY+r[1]*R,r[2]]});
+            var lf='',lb='',df='',db='';
+            E.forEach(function(e){var A=q[e[0]],B=q[e[1]],d='M'+f(A[0])+','+f(A[1])+'L'+f(B[0])+','+f(B[1]);if(A[2]+B[2]>0)lf+=d;else lb+=d});
+            q.forEach(function(p){var d='M'+f(p[0])+','+f(p[1])+'h0';if(p[2]>0)df+=d;else db+=d});
+            o.lf.setAttribute('d',lf);o.lb.setAttribute('d',lb);o.df.setAttribute('d',df);o.db.setAttribute('d',db)}}
+    var gl=[mkLayer(94,10,18,'#2f8cff','#4cb4ff',['y',['x',.2],['z',-.31]],.35,1),
+            mkLayer(76,7,12,'#1fb4e8','#7fe3ff',['x',['z',.45]],.5,-1),
+            mkLayer(58,4,8,'#8fefff','#d8fbff',['y',['z',-.95]],.65,-1)];
+    var gt0=performance.now(),still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function gtick(now){var t=(now-gt0)/1000;gl.forEach(function(g){g(t)});if(!still)requestAnimationFrame(gtick)}
+    requestAnimationFrame(gtick);
 
-        const scaleX = width / BASE_WIDTH;
-        const scaleY = height / BASE_HEIGHT;
-        const scale = Math.min(scaleX, scaleY) * 0.95;
+    /* spectrum bars */
+    var sp=$('specBars'),spb=[];for(var i=0;i<72;i++){spb.push(el('rect',{x:1030+i*2.9,y:300,width:1.8,height:18,fill:'#3da6ff'},sp))}
 
-        scaler.style.transform = "translate(-50%, -50%) scale(" + scale + ")";
+    /* helpers */
+    function go(g,mod,hover){g.style.cursor='pointer';g.addEventListener('click',function(){if(typeof loadModule==='function')loadModule(mod)});
+        if(hover){g.addEventListener('mouseenter',function(){g.style.filter='brightness(1.45)'});g.addEventListener('mouseleave',function(){g.style.filter=''})}}
+    function fit(e){var base=+e.getAttribute('data-fs'),w=+e.getAttribute('data-w');e.setAttribute('font-size',base);var L=0;try{L=e.getComputedTextLength()}catch(x){}if(L>w)e.setAttribute('font-size',(base*w/L).toFixed(1))}
+    function vtxt(g,x,y,c,w){var e=el('text',{x:x,y:y,'font-size':c.fs||27,'data-fs':c.fs||27,'data-w':w,'font-weight':800,fill:'#fff','text-anchor':'middle',stroke:'#04122e','stroke-width':3.2,'paint-order':'stroke',style:'filter:drop-shadow(0 0 3px '+(c.red?'#ff245d':'#00e5ff')+')'},g);
+        if(c.id)e.setAttribute('id',c.id);
+        if(typeof MutationObserver!=='undefined')new MutationObserver(function(){fit(e)}).observe(e,{childList:true,characterData:true,subtree:true});
+        return e}
+
+    /* ===== LEFT PANELS ===== */
+    var LP=$('leftPanels'),cells=[],SC=1.28;
+    var LCFG=[{n:'A',label:"TODAY'S ADMISSIONS",id:'homeMonthAdmission',v:'...'},{n:'B',label:'ACTIVE STUDENTS',id:'homeActiveStudents',v:'...'},{n:'C',date:true}];
+    [330,475,620].forEach(function(y,pi){var c0=LCFG[pi],g=el('g',{transform:'translate(40,'+y+') scale('+SC+')'},LP);
+        el('rect',{x:-14,y:-8,width:200,height:118,rx:14,fill:'#020a16',opacity:.85},g);
+        el('path',{d:'M0,22 V6 Q0,2 5,2 H62 L75,13 H132 L142,6 H157 Q162,6 162,12 V52 L168,58 V82 L162,88 V96 H92 L86,92 H44 L38,86 H12 L7,80 V46 L0,40Z',fill:'#04122c',stroke:'#e2f1ff','stroke-width':1.2},g);
+        el('path',{d:'M26,15 H130 L141,9 H155 Q158,9 158,12 V54 L163,58 V82 L157,87 V91 H94 L88,88 H46 L40,83 H12 V44 L9,40 V28 L14,22Z',fill:'#06204a',stroke:'url(#hxBlue)','stroke-width':5,'stroke-linejoin':'round'},g);
+        el('rect',{x:26,y:22,width:112,height:62,fill:'#04122e',stroke:'#1b4fa0'},g);
+        [82,98,114].forEach(function(x){el('rect',{x:x,y:7.8,width:14,height:3.2,rx:1.6,fill:'#5fb4ff'},g)});
+        [100,116,132].forEach(function(x){el('rect',{x:x,y:89.5,width:14,height:3.2,rx:1.6,fill:'#5fb4ff'},g)});
+        el('rect',{x:10,y:52,width:4,height:28,fill:'#1a5ad0'},g);
+        el('polygon',{points:'143,56 150,50 157,56 157,80 150,86 143,80',fill:'#08265a',stroke:'#3d8fff','stroke-width':1.2},g);
+        el('path',{d:'M146,67 L150,62 L154,67 M146,74 L150,79 L154,74',fill:'none',stroke:'#8be6a0','stroke-width':1.4},g);
+        el('polygon',{points:'3,22 10,16 22,16 29,22 29,44 22,50 10,50 3,44',fill:'#0a2a66',stroke:'#3d8fff','stroke-width':1.4},g);
+        
+        var arr=[];for(var c=0;c<19;c++)for(var r=0;r<10;r++)arr.push({c:c,r:r,k:c0.date?.18:.3,e:el('rect',{x:42+c*4.85,y:30+r*5.1,width:3.6,height:3.3,fill:'#1b5e9e'},g)});
+        cells.push(arr);
+        if(c0.date){
+            el('text',{id:'hxWk',x:82,y:35,'font-size':7.5,'font-weight':700,fill:'#9be8ff','text-anchor':'middle','letter-spacing':1.2},g);
+            el('text',{id:'hxDay',x:55,y:67,'font-size':30,'font-weight':800,fill:'#fff','text-anchor':'middle',stroke:'#04122e','stroke-width':3,'paint-order':'stroke',style:'filter:drop-shadow(0 0 3px #00e5ff)'},g);
+            el('path',{d:'M78,43 V68',stroke:'#2a8fe0','stroke-width':1},g);
+            el('text',{id:'hxMon',x:108,y:54,'font-size':12,'font-weight':800,fill:'#00e5ff','text-anchor':'middle'},g);
+            el('text',{id:'hxYr',x:108,y:66,'font-size':9,'font-weight':700,fill:'#fff','text-anchor':'middle'},g);
+            el('text',{id:'hxTime',x:82,y:80,'font-size':8,'font-weight':700,fill:'#cfeaff','text-anchor':'middle','letter-spacing':.8},g);
+        }else{
+            el('text',{x:82,y:36,'font-size':7.2,'font-weight':700,fill:'#9be8ff','text-anchor':'middle','letter-spacing':.6},g).textContent=c0.label;
+            var v=vtxt(g,82,69,c0,100);v.textContent=c0.v;fit(v);
+        }
+    });
+
+    /* date clock */
+    function dateTick(){
+        if(!HC.isConnected){clearInterval(dt);return}
+        var d=new Date(),L='en-IN';
+        var w=$('hxWk'),dd=$('hxDay'),m=$('hxMon'),y=$('hxYr'),tm=$('hxTime');if(!w)return;
+        w.textContent=d.toLocaleDateString(L,{weekday:'long'}).toUpperCase();dd.textContent=d.getDate();
+        m.textContent=d.toLocaleDateString(L,{month:'short'}).toUpperCase();y.textContent=d.getFullYear();
+        tm.textContent=d.toLocaleTimeString(L,{hour:'2-digit',minute:'2-digit',second:'2-digit'}).toUpperCase()
     }
+    var dt=setInterval(dateTick,1000);dateTick();
 
-    window.addEventListener("resize", scaleHUD);
-    if (typeof ResizeObserver !== "undefined") {
-        const hudResizeObserver = new ResizeObserver(scaleHUD);
-        hudResizeObserver.observe(container);
+    /* ===== RIGHT PANELS ===== */
+    var RP=$('rightPanels'),bars=[],cartG=null;
+    var RCFG=[{title:"TODAY'S COLLECTION",id:'homeTodayCollection',v:'...'},{title:'OVERDUE ALERTS',id:'alertCount',v:'...',go:'alerts',red:true},{cartoon:true}];
+    [330,475,620].forEach(function(y,pi){var c0=RCFG[pi],red=!!c0.red,hl=red?'#ff245d':'#2a9bff',g=el('g',{transform:'translate(1081,'+y+') scale('+SC+')'},RP);
+        el('rect',{x:-22,y:-6,width:196,height:114,rx:12,fill:'#020a16',opacity:.85},g);
+        el('path',{d:'M0,36 V6 L5,1 H78 L85,8 H138 L148,26 V44 L141,53 V83 L131,94 H98 L88,86 H8 V44Z',fill:'none',stroke:'#eaf6ff','stroke-width':1.3},g);
+        el('path',{d:'M4,5 L8,2 H76 M92,88 L99,92 H128 L135,85',fill:'none',stroke:red?'#ff8aa5':'#a8d8a0','stroke-width':.9},g);
+        el('rect',{x:3.5,y:9,width:136,height:72,fill:red?'#150610':'#031226',stroke:hl,'stroke-width':2},g);
+        var h1='',h2='';for(var i=0;i<10;i++)h1+='M'+(6+i*4)+',16 l4,-5 ';for(var i=0;i<13;i++)h2+='M'+(86+i*4)+',80 l4,-6 ';
+        el('path',{d:h1+h2,stroke:hl,'stroke-width':1,fill:'none'},g);
+        
+        if(c0.cartoon){cartG=g;return}
+        var t=el('text',{x:132,y:24,'font-size':10.5,'font-weight':700,fill:red?'#ff9db4':'#fff','text-anchor':'end','letter-spacing':.5},g);t.textContent=c0.title;
+        var bg=el('g',{opacity:.3},g),arr=[];
+        for(var i=0;i<10;i++){var x=20+i*11.5;
+            el('rect',{x:x,y:28,width:5.7,height:42,fill:red?'#3a1020':'#123a68'},bg);
+            var lit=el('rect',{x:x,y:50,width:5.7,height:20,fill:red?'#b82049':'#1e68ad'},bg);
+            el('rect',{x:x,y:28,width:5.7,height:42,fill:'url(#hxSeg)'},bg);
+            arr.push({lit:lit,m1:el('rect',{x:x,y:48,width:5.7,height:3,fill:'#cdeeb4'},bg),m2:el('rect',{x:x,y:53,width:5.7,height:2,fill:'#a9dca8'},bg),m3:el('rect',{x:x,y:57,width:5.7,height:1.8,fill:'#6fc0b0',opacity:.8},bg)})}
+        bars.push(arr);
+        var v=vtxt(g,74,64,c0,108);v.textContent=c0.v;fit(v);
+        if(c0.go)go(g,c0.go,true)});
+
+    /* cartoon buddy */
+    (function(){
+        var g=cartG;if(!g)return;
+        var cg=el('g',{'clip-path':'url(#hxCartClip)'},g),S={};
+        el('ellipse',{cx:71,cy:79,rx:17,ry:2.2,fill:'#000',opacity:.4},cg);
+        var ch=el('g',{},cg);
+        function E(t,a,n){var e=el(t,a,ch);if(n)S[n]=e;return e}
+        [-5,5].forEach(function(x){E('line',{x1:x,y1:70,x2:x,y2:77,stroke:'#2b4a7a','stroke-width':3,'stroke-linecap':'round'});E('ellipse',{cx:x+(x<0?-1:1),cy:77.5,rx:4,ry:2,fill:'#fff'})});
+        E('ellipse',{cx:0,cy:62,rx:11,ry:10,fill:'#2fa8ff',stroke:'#0c5aa8','stroke-width':.8});
+        E('path',{fill:'none',stroke:'#ffd166','stroke-width':3.2,'stroke-linecap':'round'},'aL');
+        E('path',{fill:'none',stroke:'#ffd166','stroke-width':3.2,'stroke-linecap':'round'},'aR');
+        E('circle',{cx:0,cy:36,r:16,fill:'#ffd166',stroke:'#b9791c','stroke-width':.8},'face');
+        E('path',{d:'M-6,21 Q0,14 6,21 M0,20 Q-3,14 2,13',fill:'none',stroke:'#6b3b0a','stroke-width':2,'stroke-linecap':'round'});
+        E('circle',{cx:-10,cy:40,r:2.4,fill:'#ff8f8f',opacity:.55});E('circle',{cx:10,cy:40,r:2.4,fill:'#ff8f8f',opacity:.55});
+        [-6,6].forEach(function(x,i){E('ellipse',{cx:x,cy:34,rx:3.6,ry:4.4,fill:'#fff',stroke:'#222','stroke-width':.6},'ew'+i);E('circle',{cx:x,cy:34,r:1.9,fill:'#111'},'pu'+i);E('path',{fill:'none',stroke:'#222','stroke-width':1.5,'stroke-linecap':'round'},'ld'+i)});
+        E('path',{fill:'none',stroke:'#6b3b0a','stroke-width':1.9,'stroke-linecap':'round'},'b0');
+        E('path',{fill:'none',stroke:'#6b3b0a','stroke-width':1.9,'stroke-linecap':'round'},'b1');
+        E('path',{fill:'none',stroke:'#7a1f1f','stroke-width':1.6,'stroke-linecap':'round','stroke-linejoin':'round'},'mo');
+        E('circle',{r:1.8,fill:'#4cc2ff',opacity:0},'t0');E('circle',{r:1.8,fill:'#4cc2ff',opacity:0},'t1');
+        for(var i=0;i<3;i++)E('circle',{fill:'#fff',opacity:0},'s'+i);
+        el('circle',{cx:87,cy:29,r:1.6,fill:'#e8fbff'},cg);el('circle',{cx:91,cy:25,r:2.4,fill:'#e8fbff'},cg);
+        el('rect',{x:95,y:12,width:40,height:16,rx:7,fill:'#e8fbff',stroke:'#2a8fe0','stroke-width':1},cg);
+        var bt=el('text',{x:115,y:23.4,'font-size':8.5,'font-weight':800,fill:'#06204a','text-anchor':'middle'},cg);
+        var up=['M-9,27 Q-6,24 -3,27','M3,27 Q6,24 9,27'];
+        var M={
+            think:{face:'#ffd166',b:['M-9,28 Q-6,26 -3,28','M3,24 Q6,21 10,24'],eyes:1,mo:'M-4,44 Q0,42 4,44',fill:'none',bub:'?'},
+            jump:{face:'#ffd166',b:up,eyes:1,mo:'M-6,41 Q0,51 6,41 Z',fill:'#7a1f1f',bub:'YAY!'},
+            laugh:{face:'#ffd166',b:up,eyes:0,lid:['M-9,35 Q-6,30 -3,35','M3,35 Q6,30 9,35'],mo:'M-8,40 Q0,50 8,40 Z',fill:'#7a1f1f',bub:'HA HA'},
+            angry:{face:'#ff6f52',b:['M-10,26 L-2,30','M10,26 L2,30'],eyes:1,mo:'M-5,46 Q0,40 5,46',fill:'none',bub:'GRR!'},
+            cry:{face:'#bcd9ff',b:['M-10,31 L-3,27','M10,31 L3,27'],eyes:0,lid:['M-9,34 Q-6,37 -3,34','M3,34 Q6,37 9,34'],mo:'M-6,46 Q-3,42 0,46 Q3,42 6,46',fill:'none',bub:'HUHU'}
+        };
+        var names=['think','jump','laugh','angry','cry'],cur='think',nxt=0,last=0;
+        function setMood(n){cur=n;var m=M[n];
+            S.face.setAttribute('fill',m.face);S.b0.setAttribute('d',m.b[0]);S.b1.setAttribute('d',m.b[1]);
+            S.mo.setAttribute('d',m.mo);S.mo.setAttribute('fill',m.fill);
+            for(var i=0;i<2;i++){S['ew'+i].setAttribute('opacity',m.eyes?1:0);S['pu'+i].setAttribute('opacity',m.eyes?1:0);
+                S['ld'+i].setAttribute('opacity',m.eyes?0:1);if(!m.eyes)S['ld'+i].setAttribute('d',m.lid[i])}
+            bt.textContent=m.bub}
+        function next(){var n;do{n=names[Math.floor(Math.random()*names.length)]}while(n===cur);setMood(n)}
+        setMood('think');
+        g.style.cursor='pointer';g.addEventListener('click',function(){next();nxt=performance.now()+3200});
+        HC.hxMood=function(n){setMood(n);nxt=performance.now()+60000};
+        function ctick(now){
+            if(!HC.isConnected)return;requestAnimationFrame(ctick);
+            if(now-last<33)return;last=now;var t=now/1000;
+            if(now>nxt){next();nxt=now+2800+Math.random()*1800}
+            var dy=0,rot=0,gx=0,gy=0,aL,aR,i;
+            if(cur==='jump'){dy=-Math.abs(Math.sin(t*6))*10;rot=Math.sin(t*6)*3;var w=Math.sin(t*10)*3;aL='M-10,57 Q-19,'+(48+w)+' -16,'+(37+w);aR='M10,57 Q19,'+(48-w)+' 16,'+(37-w)}
+            else if(cur==='think'){rot=Math.sin(t*1.6)*3;gx=1.3+Math.sin(t*.8)*.6;gy=-1.6;aL='M-10,57 Q-17,63 -15,69';aR='M10,57 Q18,50 4,46';bt.textContent=Math.floor(t*1.2)%2?'...':'?'}
+            else if(cur==='laugh'){rot=Math.sin(t*22)*2.5;dy=Math.sin(t*22+1);aL='M-10,57 Q-7,66 0,64';aR='M10,57 Q7,66 0,64';S.mo.setAttribute('d','M-8,40 Q0,'+(49+3*Math.sin(t*18)).toFixed(1)+' 8,40 Z')}
+            else if(cur==='angry'){rot=Math.sin(t*38)*2;gy=.8;aL='M-10,57 Q-21,58 -17,48';aR='M10,57 Q21,58 17,48'}
+            else{rot=Math.sin(t*28)*1.2;gy=1;aL='M-10,57 Q-19,47 -8,38';aR='M10,57 Q19,47 8,38'}
+            S.aL.setAttribute('d',aL);S.aR.setAttribute('d',aR);
+            for(i=0;i<2;i++){S['pu'+i].setAttribute('cx',(i?6:-6)+gx);S['pu'+i].setAttribute('cy',34+gy)}
+            ch.setAttribute('transform','translate(71,'+dy.toFixed(1)+') rotate('+rot.toFixed(1)+' 0 68)');
+            for(i=0;i<2;i++){var e=S['t'+i];if(cur==='cry'){var ph=(t*14+i*6)%12;e.setAttribute('cx',i?7:-7);e.setAttribute('cy',(38+ph).toFixed(1));e.setAttribute('opacity',(1-ph/12).toFixed(2))}else e.setAttribute('opacity',0)}
+            for(i=0;i<3;i++){var s=S['s'+i];if(cur==='angry'){var p=(t*12+i*5)%14;s.setAttribute('cx',(i-1)*13);s.setAttribute('cy',(19-p).toFixed(1));s.setAttribute('r',(2+p/4.5).toFixed(1));s.setAttribute('opacity',(.85-p/18).toFixed(2))}else s.setAttribute('opacity',0)}
+        }
+        requestAnimationFrame(ctick);
+    })();
+
+    /* ===== bottom buttons ===== */
+    var BG=$('hxBtns');
+    var BT=[{l:'ADMIT',m:'admission',i:'user'},{l:'FEE',m:'payment',i:'rupee'},{l:'SEARCH',m:'profile',i:'search'},{l:'REPORTS',m:'reports',i:'chart'}];
+    BT.forEach(function(b,k){var cx=425+k*150,cy=818,g=el('g',{},BG);
+        var face=el('circle',{cx:cx,cy:cy,r:54,fill:'url(#hxBtnG)',stroke:'#2a8fe0','stroke-width':2.2},g);
+        var tk='';for(var q=0;q<60;q++){tk+=ln(cx,cy,q%5?50.5:48,53,q*6)}
+        el('path',{d:tk,stroke:'#4cc2ff','stroke-width':1,opacity:.75},g);
+        el('polygon',{points:(cx-73)+','+(cy-6)+' '+(cx-73)+','+(cy+6)+' '+(cx-65)+','+cy,fill:'#00e5ff'},g);
+        el('polygon',{points:(cx+73)+','+(cy-6)+' '+(cx+73)+','+(cy+6)+' '+(cx+65)+','+cy,fill:'#00e5ff'},g);
+        var rr=el('g',{class:'hx-r',style:'transform-origin:'+cx+'px '+cy+'px;animation-duration:8s'},g);
+        el('path',{d:arc(cx,cy,61,-65,65)+arc(cx,cy,61,115,245),fill:'none',stroke:'#00e5ff','stroke-width':2.4},rr);
+        var r2=el('g',{class:'hx-r hx-f',style:'transform-origin:'+cx+'px '+cy+'px;animation-duration:9s'},g);
+        el('circle',{cx:cx,cy:cy,r:48,fill:'none',stroke:'#4cc2ff','stroke-width':1,'stroke-dasharray':'4 4',opacity:.7},r2);
+        el('circle',{cx:cx,cy:cy-13,r:19,fill:'#031225',stroke:'#2a8fe0','stroke-width':1.2},g);
+        el('circle',{cx:cx,cy:cy-13,r:22.5,fill:'none',stroke:'#00e5ff','stroke-width':1,'stroke-dasharray':'2 3',opacity:.8},g);
+        el('rect',{x:cx-38,y:cy+18,width:76,height:16,rx:3,fill:'#031225',stroke:'#1b6fc0','stroke-width':1},g);
+        el('path',{d:'M'+(cx-14)+','+(cy+34.6)+' H'+(cx+14),stroke:'#00e5ff','stroke-width':2,'stroke-linecap':'round'},g);
+        var ig=el('g',{transform:'translate('+cx+','+(cy-13)+')',fill:'none',stroke:'#fff','stroke-width':2.2,'stroke-linecap':'round','stroke-linejoin':'round'},g);
+        if(b.i==='user'){el('circle',{cx:-3,cy:-6,r:5},ig);el('path',{d:'M-12,10 Q-3,-2 6,10'},ig);el('path',{d:'M11,-6 V2 M7,-2 H15'},ig)}
+        else if(b.i==='rupee'){el('circle',{r:12},ig);el('text',{y:5.5,'font-size':15,'font-weight':800,fill:'#fff',stroke:'none','text-anchor':'middle'},ig).textContent='\u20B9'}
+        else if(b.i==='search'){el('circle',{cx:-2,cy:-2,r:8},ig);el('path',{d:'M4,4 L12,12','stroke-width':3.2},ig)}
+        else{el('path',{d:'M-11,11 H11 M-7,8 V0 M0,8 V-8 M7,8 V-3','stroke-width':3.2},ig)}
+        el('text',{x:cx,y:cy+30,'font-size':12.5,'font-weight':800,fill:'#fff','text-anchor':'middle','letter-spacing':.7,stroke:'#041429','stroke-width':2.5,'paint-order':'stroke'},g).textContent=b.l;
+        var hit=el('circle',{cx:cx,cy:cy,r:62,fill:'transparent'},g);
+        el('title',{},hit).textContent='Open '+b.l;
+        hit.addEventListener('mouseenter',function(){face.setAttribute('fill','#0c3c70');face.setAttribute('stroke','#fff')});
+        hit.addEventListener('mouseleave',function(){face.setAttribute('fill','url(#hxBtnG)');face.setAttribute('stroke','#2a8fe0')});
+        go(hit,b.m)});
+
+    /* animation loop */
+    var t0=performance.now(),last=0;
+    function tick(now){
+        if(!HC.isConnected)return;
+        requestAnimationFrame(tick);
+        if(now-last<70)return;last=now;var t=(now-t0)/1000;
+        cells.forEach(function(arr,pi){var fr=((t*6+pi*7)%34)-6;arr.forEach(function(o){
+            var d=fr-Math.abs(o.r-4.5)*1.3-o.c,col='#1b5e9e',op=.85;
+            if(d>=0&&d<2.2){col='#d4f8b8';op=1}
+            else if(d>=2.2&&d<5){col='#3fd0d8';op=.9-(d-2.2)*.1}
+            else if(d>=5&&Math.random()<.04){col='#2f9ad0'}
+            o.e.setAttribute('fill',col);o.e.setAttribute('opacity',(op*o.k).toFixed(2))})});
+        bars.forEach(function(arr,pi){arr.forEach(function(b,i){
+            var L=.2+.55*(.5+.5*Math.sin(t*1.3+i*.9+pi*2.1))+.1*Math.random(),h=L*42;
+            b.lit.setAttribute('y',70-h);b.lit.setAttribute('height',h);
+            b.m1.setAttribute('y',70-h);b.m2.setAttribute('y',70-h+5);b.m3.setAttribute('y',70-h+9)})});
+        radT.forEach(function(o,i){var h=2+o.amp*(.3+.7*Math.abs(Math.sin(t*3+i*.7)));o.e.setAttribute('d',ln(X,Y,o.r,o.r+o.d*h,o.a))});
+        hubT.forEach(function(e,i){e.setAttribute('opacity',(.3+.7*Math.abs(Math.sin(t*2+i*.5))).toFixed(2))});
+        spb.forEach(function(e,i){var h=3+15*Math.abs(Math.sin(t*1.4+i*.35))*(.4+.6*Math.random());
+            e.setAttribute('height',h.toFixed(1));e.setAttribute('y',(318-h).toFixed(1))});
     }
-    requestAnimationFrame(scaleHUD);
+    requestAnimationFrame(tick);
+})();
 
-
-    /* =================================================
-       2. EXISTING CRM DATA FETCHING (INTEGRATED)
-    ================================================= */
+/* =================================================
+   CRM DATA INTEGRATION (Auto-Sync & Logic)
+================================================= */
+(function() {
     const CACHE_DURATION_MS = 5 * 60 * 1000;
-
+    
     function safeJSON(value) {
         try { return JSON.parse(value); } catch (error) { return null; }
     }
-
     function setText(id, value) {
-        const element = document.getElementById(id);
-        if (element) { element.textContent = value; }
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
     }
 
     function loadDashboardData() {
         const now = Date.now();
-
-        /* ----- DASHBOARD STATISTICS ----- */
         const cachedStatsString = localStorage.getItem("purix_home_stats");
         let cachedStats = null;
-        if (cachedStatsString) { cachedStats = safeJSON(cachedStatsString); }
+        if (cachedStatsString) cachedStats = safeJSON(cachedStatsString);
 
         if (cachedStats && cachedStats.timestamp && cachedStats.data && now - cachedStats.timestamp < CACHE_DURATION_MS) {
             updateStatsUI(cachedStats.data);
@@ -557,10 +484,9 @@
                         localStorage.setItem("purix_home_stats", JSON.stringify({ timestamp: Date.now(), data: data.data }));
                     }
                 })
-                .catch(error => console.error("Purix Stats Error:", error));
+                .catch(err => console.error(err));
         }
 
-        /* ----- OVERDUE ALERTS ----- */
         const todayStr = new Date().toDateString();
         const cachedAlertsDate = localStorage.getItem("purix_alerts_date");
         const cachedAlertsData = safeJSON(localStorage.getItem("purix_alerts_data"));
@@ -577,56 +503,46 @@
                         setText("alertCount", countRealOverdueAlerts(data.data));
                     }
                 })
-                .catch(error => console.error("Purix Alerts Error:", error));
+                .catch(err => console.error(err));
         }
     }
 
-    /* =================================================
-       3. BULLETPROOF SELF-HEALING UI UPDATE
-    ================================================= */
     function updateStatsUI(data) {
         if (!data) return;
-
         if (data.todayAdmissions === undefined && data.monthAdmission !== undefined) {
             localStorage.removeItem("purix_home_stats");
         }
-
-        const active = data.activeStudents !== undefined ? data.activeStudents : 0;
-        const admissions = data.todayAdmissions !== undefined ? data.todayAdmissions : (data.monthAdmission || 0);
-        const collection = data.todayCollection !== undefined ? data.todayCollection : 0;
-
-        setText("homeActiveStudents", active);
-        setText("homeMonthAdmission", admissions);
-        setText("homeTodayCollection", "₹" + collection);
+        setText("homeActiveStudents", data.activeStudents !== undefined ? data.activeStudents : 0);
+        setText("homeMonthAdmission", data.todayAdmissions !== undefined ? data.todayAdmissions : (data.monthAdmission || 0));
+        setText("homeTodayCollection", "₹" + (data.todayCollection !== undefined ? data.todayCollection : 0));
     }
 
-    /* =================================================
-       4. OVERDUE ALERT COUNTING
-    ================================================= */
     function countRealOverdueAlerts(alertsList) {
         if (!Array.isArray(alertsList)) return 0;
-
-        let criticalCount = 0;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        alertsList.forEach(function (student) {
-            if (!student || !student.dueDate) return;
-            const due = new Date(student.dueDate);
+        let c = 0;
+        const today = new Date(); today.setHours(0,0,0,0);
+        alertsList.forEach(s => {
+            if (!s || !s.dueDate) return;
+            const due = new Date(s.dueDate);
             if (!isNaN(due.getTime())) {
-                due.setHours(0, 0, 0, 0);
-                const difference = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-                if (difference < 0) { criticalCount++; }
+                due.setHours(0,0,0,0);
+                if (Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)) < 0) c++;
             }
         });
-        return criticalCount;
+        return c;
     }
 
-    /* =================================================
-       5. AUTO-SYNC TIMER (Live Background Updates)
-    ================================================= */
-    loadDashboardData();
-    window.setInterval(loadDashboardData, 60000);
+    /* Scaling Logic from the new code structure */
+    function scaleHUD() {
+        const hc = document.getElementById("hudContainer"), hs = document.getElementById("hudScaler");
+        if (!hc || !hs) return;
+        const s = Math.min(hc.clientWidth / 1300, hc.clientHeight / 900) * 0.95;
+        hs.style.transform = `translate(-50%, -50%) scale(${s})`;
+    }
+    window.addEventListener("resize", scaleHUD);
+    requestAnimationFrame(scaleHUD);
 
+    loadDashboardData();
+    setInterval(loadDashboardData, 60000);
 })();
 </script>
