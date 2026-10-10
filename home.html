@@ -9,21 +9,26 @@
     }
     body, html { margin: 0; padding: 0; background: var(--hud-dark); overflow: hidden; font-family: 'Orbitron', sans-serif; }
     
+    /* Container ab viewport ki jagah apne parent (sidebar ke bachi jagah) me fit hoga */
     .hud-master-container {
-        position: relative; width: 100vw; height: 100vh;
+        position: relative; width: 100%; min-height: calc(100vh - 10px);
         background-color: var(--hud-dark);
-        /* Exact horizontal lines from image */
         background-image: repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0, 150, 255, 0.1) 3px, rgba(0, 150, 255, 0.1) 4px);
-        display: flex; justify-content: center; align-items: center; z-index: 1;
+        overflow: hidden; z-index: 1;
+    }
+
+    /* AUTO-SCALE WRAPPER: Ye box apne aap chhota-bada hoga */
+    .hud-scaler {
+        width: 1280px; height: 720px; 
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        transform-origin: center center;
     }
 
     /* TOP HUD TEXT & SATELLITE */
     .top-hud-header {
-        position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+        position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
         display: flex; align-items: flex-end; gap: 15px; z-index: 10;
-    }
-    .top-hud-header .satellite-img {
-        width: 60px; height: auto; opacity: 0.8; filter: drop-shadow(0 0 5px var(--hud-blue));
     }
     .top-hud-header h1 {
         margin: 0; padding: 5px 30px; font-size: 32px; color: #fff;
@@ -42,7 +47,6 @@
         box-shadow: 0 0 50px rgba(0, 0, 0, 0.8); z-index: 5;
     }
 
-    /* Multi-layered Rings (Replicating exact image details) */
     .reactor-ring { position: absolute; border-radius: 50%; border: 1px solid transparent; display: flex; justify-content: center; align-items: center; }
     
     .ring-1-outer { width: 620px; height: 620px; border: 1px dashed rgba(0, 229, 255, 0.3); animation: spinRight 120s linear infinite; }
@@ -56,33 +60,28 @@
     }
 
     .ring-4-thick {
-        width: 480px; height: 480px;
-        border: 15px solid rgba(0, 229, 255, 0.1);
+        width: 480px; height: 480px; border: 15px solid rgba(0, 229, 255, 0.1);
         border-top-color: rgba(0, 229, 255, 0.8); border-bottom-color: rgba(0, 229, 255, 0.8);
         animation: spinLeft 25s linear infinite;
     }
 
     .ring-5-inner-dashed {
-        width: 420px; height: 420px;
-        border: 4px dashed var(--hud-blue); opacity: 0.6;
+        width: 420px; height: 420px; border: 4px dashed var(--hud-blue); opacity: 0.6;
         animation: spinRight 20s linear infinite;
     }
 
     .ring-6-core {
-        width: 330px; height: 330px;
-        border: 2px solid var(--hud-blue);
+        width: 330px; height: 330px; border: 2px solid var(--hud-blue);
         box-shadow: 0 0 30px rgba(0, 229, 255, 0.4), inset 0 0 30px rgba(0, 229, 255, 0.4);
         background: radial-gradient(circle, rgba(0,229,255,0.1) 0%, transparent 70%);
     }
 
-    /* Core Logo */
     .core-logo {
         width: 150px; height: 150px; border-radius: 50%; z-index: 10;
         border: 2px solid #fff; box-shadow: 0 0 40px var(--hud-blue);
         object-fit: cover; background: #000;
     }
 
-    /* Circular Data Text (Pseudo) */
     .ring-2-binary::before { content: "0100 01111 0100 0011 1110 0101 1000 0000 0101 1110 0100 0001"; position: absolute; top: -10px; }
     .ring-2-binary::after { content: "1110 0100 0011 1110 0101 1000 0000 0101 1110 0100 0001 0100"; position: absolute; bottom: -10px; }
 
@@ -112,8 +111,7 @@
         display: flex; flex-direction: column; justify-content: space-between; align-items: center; z-index: 5;
     }
     .globe-sphere {
-        width: 180px; height: 180px; border-radius: 50%;
-        border: 1px solid rgba(0,229,255,0.2);
+        width: 180px; height: 180px; border-radius: 50%; border: 1px solid rgba(0,229,255,0.2);
         background: repeating-linear-gradient(0deg, transparent, transparent 15px, rgba(0,229,255,0.3) 16px),
                     repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(0,229,255,0.3) 16px);
         background-size: 100% 100%; border-radius: 50%;
@@ -124,25 +122,22 @@
     @keyframes chartPulse { 0% { height: 20%; } 100% { height: 100%; } }
 
     /* =========================================
-       4. EXACT SIDE CARDS (Block_A, B style)
+       4. EXACT SIDE CARDS (Real Names)
     ========================================= */
     .side-cards-container {
         position: absolute; top: 50%; transform: translateY(-50%);
         display: flex; flex-direction: column; gap: 40px; z-index: 10;
     }
-    .left-cards { left: 40px; }
-    .right-cards { right: 40px; }
+    .left-cards { left: 30px; }
+    .right-cards { right: 30px; }
 
     .hud-block {
-        width: 240px; height: 110px; position: relative;
-        background: var(--hud-panel);
-        border: 1px solid var(--hud-blue);
+        width: 270px; height: 110px; position: relative;
+        background: var(--hud-panel); border: 1px solid var(--hud-blue);
         display: flex; flex-direction: column; justify-content: center; padding: 0 20px;
-        /* Exact shape from image */
         clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
         box-shadow: inset 0 0 15px rgba(0,229,255,0.2);
     }
-    /* Side decorations for blocks */
     .hud-block::before {
         content: ''; position: absolute; left: -10px; top: 10%; width: 5px; height: 80%;
         border-left: 2px solid var(--hud-blue); border-top: 2px solid var(--hud-blue); border-bottom: 2px solid var(--hud-blue);
@@ -151,8 +146,9 @@
         content: ''; position: absolute; right: -10px; top: 10%; width: 5px; height: 80%;
         border-right: 2px solid var(--hud-blue); border-top: 2px solid var(--hud-blue); border-bottom: 2px solid var(--hud-blue);
     }
+    
     .block-title {
-        font-size: 11px; color: #fff; letter-spacing: 2px; margin-bottom: 5px; text-align: right;
+        font-size: 11px; color: #fff; letter-spacing: 1px; margin-bottom: 5px; text-align: right;
         border-bottom: 1px solid rgba(0,229,255,0.4); padding-bottom: 3px; display: flex; justify-content: space-between;
     }
     .block-value { font-size: 28px; color: var(--hud-blue); font-weight: bold; text-shadow: 0 0 10px var(--hud-blue); display: flex; align-items: center; gap: 10px; }
@@ -170,7 +166,6 @@
         position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
         display: flex; gap: 50px; align-items: center; z-index: 10;
     }
-
     .circle-btn {
         width: 90px; height: 90px; border-radius: 50%;
         background: var(--hud-panel); border: 2px solid rgba(0, 229, 255, 0.4);
@@ -181,7 +176,6 @@
     .circle-btn i { font-size: 24px; color: #fff; margin-bottom: 3px; z-index: 2; }
     .circle-btn span { font-size: 9px; color: var(--hud-blue); font-weight: bold; letter-spacing: 1px; text-transform: uppercase; z-index: 2; }
     
-    /* Exact outer ring designs from image for buttons */
     .circle-btn::before {
         content: ''; position: absolute; width: 110px; height: 110px; border-radius: 50%;
         border: 2px solid transparent; border-top-color: var(--hud-blue); border-bottom-color: var(--hud-blue);
@@ -191,10 +185,8 @@
         content: ''; position: absolute; width: 75px; height: 75px; border-radius: 50%;
         border: 1px dashed var(--hud-blue); animation: spinLeft 6s linear infinite;
     }
-
     .circle-btn:hover { background: rgba(0, 229, 255, 0.2); border-color: var(--hud-blue); box-shadow: 0 0 20px var(--hud-blue); transform: scale(1.05); }
 
-    /* Decorative bottom center lines */
     .bottom-dec {
         position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
         width: 300px; height: 20px; border-top: 2px solid var(--hud-blue);
@@ -204,92 +196,121 @@
 
 </style>
 
-<div class="hud-master-container">
+<div class="hud-master-container" id="hudContainer">
     
-    <!-- TOP HEADER -->
-    <div class="top-hud-header">
-        <img src="https://cdn-icons-png.flaticon.com/512/2855/2855581.png" class="satellite-img" alt="Sat">
-        <h1>HUD</h1>
-    </div>
+    <!-- YAHAN SE AUTO-SCALE ENGINE START HOTA HAI -->
+    <div class="hud-scaler" id="hudScaler">
 
-    <!-- TOP LEFT RADAR -->
-    <div class="top-left-radar">
-        <div style="width:50px; height:50px; background:var(--hud-blue); border-radius:50%; box-shadow:0 0 20px var(--hud-blue);"></div>
-    </div>
-
-    <!-- TOP RIGHT GLOBE -->
-    <div class="top-right-globe">
-        <div class="globe-sphere"></div>
-        <div class="globe-chart">
-            <div style="animation-delay:0.1s"></div><div style="animation-delay:0.3s"></div>
-            <div style="animation-delay:0.5s"></div><div style="animation-delay:0.2s"></div>
-            <div style="animation-delay:0.6s"></div><div style="animation-delay:0.4s"></div>
-            <div style="animation-delay:0.1s"></div><div style="animation-delay:0.7s"></div>
+        <!-- TOP HEADER -->
+        <div class="top-hud-header">
+            <!-- Cycle icon replaced with real Satellite icon -->
+            <i class="fa-solid fa-satellite" style="font-size: 40px; color: var(--hud-blue); filter: drop-shadow(0 0 10px var(--hud-blue));"></i>
+            <h1>HUD</h1>
         </div>
-    </div>
 
-    <!-- LEFT CARDS (2 user blocks) -->
-    <div class="side-cards-container left-cards">
-        <div class="hud-block">
-            <div class="block-title"><span><i class="fa-solid fa-user-plus"></i></span> BLOCK_A (ADM)</div>
-            <div class="block-value" id="homeMonthAdmission"><i class="fa-solid fa-spinner fa-spin"></i></div>
-            <div class="mini-eq"><span style="animation-delay:0.1s"></span><span style="animation-delay:0.4s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.6s"></span></div>
+        <!-- TOP LEFT RADAR -->
+        <div class="top-left-radar">
+            <div style="width:50px; height:50px; background:var(--hud-blue); border-radius:50%; box-shadow:0 0 20px var(--hud-blue);"></div>
         </div>
-        <div class="hud-block">
-            <div class="block-title"><span><i class="fa-solid fa-users"></i></span> BLOCK_B (STD)</div>
-            <div class="block-value" id="homeActiveStudents"><i class="fa-solid fa-spinner fa-spin"></i></div>
-            <div class="mini-eq"><span style="animation-delay:0.5s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.8s"></span><span style="animation-delay:0.1s"></span></div>
-        </div>
-    </div>
 
-    <!-- CENTER MASSIVE REACTOR & LOGO -->
-    <div class="center-reactor">
-        <div class="reactor-ring ring-1-outer"></div>
-        <div class="reactor-ring ring-2-binary"></div>
-        <div class="reactor-ring ring-3-ticks"></div>
-        <div class="reactor-ring ring-4-thick"></div>
-        <div class="reactor-ring ring-5-inner-dashed"></div>
-        <div class="reactor-ring ring-6-core"></div>
+        <!-- TOP RIGHT GLOBE -->
+        <div class="top-right-globe">
+            <div class="globe-sphere"></div>
+            <div class="globe-chart">
+                <div style="animation-delay:0.1s"></div><div style="animation-delay:0.3s"></div>
+                <div style="animation-delay:0.5s"></div><div style="animation-delay:0.2s"></div>
+                <div style="animation-delay:0.6s"></div><div style="animation-delay:0.4s"></div>
+                <div style="animation-delay:0.1s"></div><div style="animation-delay:0.7s"></div>
+            </div>
+        </div>
+
+        <!-- LEFT CARDS (Real Names) -->
+        <div class="side-cards-container left-cards">
+            <div class="hud-block">
+                <div class="block-title"><span><i class="fa-solid fa-user-plus"></i></span> TODAY'S ADMISSIONS</div>
+                <div class="block-value" id="homeMonthAdmission"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <div class="mini-eq"><span style="animation-delay:0.1s"></span><span style="animation-delay:0.4s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.6s"></span></div>
+            </div>
+            <div class="hud-block">
+                <div class="block-title"><span><i class="fa-solid fa-users"></i></span> ACTIVE STUDENTS</div>
+                <div class="block-value" id="homeActiveStudents"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <div class="mini-eq"><span style="animation-delay:0.5s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.8s"></span><span style="animation-delay:0.1s"></span></div>
+            </div>
+        </div>
+
+        <!-- CENTER MASSIVE REACTOR & LOGO -->
+        <div class="center-reactor">
+            <div class="reactor-ring ring-1-outer"></div>
+            <div class="reactor-ring ring-2-binary"></div>
+            <div class="reactor-ring ring-3-ticks"></div>
+            <div class="reactor-ring ring-4-thick"></div>
+            <div class="reactor-ring ring-5-inner-dashed"></div>
+            <div class="reactor-ring ring-6-core"></div>
+            
+            <img src="logo.png" class="core-logo" alt="Purix Core">
+        </div>
+
+        <!-- RIGHT CARDS (Real Names) -->
+        <div class="side-cards-container right-cards">
+            <div class="hud-block">
+                <div class="block-title"><span><i class="fa-solid fa-wallet"></i></span> TODAY'S COLLECTION</div>
+                <div class="block-value" id="homeTodayCollection"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <div class="mini-eq"><span style="animation-delay:0.3s"></span><span style="animation-delay:0.7s"></span><span style="animation-delay:0.1s"></span><span style="animation-delay:0.5s"></span></div>
+            </div>
+            <div class="hud-block alert-block" onclick="loadModule('alerts')" style="cursor:pointer;">
+                <div class="block-title"><span><i class="fa-solid fa-triangle-exclamation"></i></span> OVERDUE ALERTS</div>
+                <div class="block-value" id="alertCount"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <div class="mini-eq"><span style="animation-delay:0.2s"></span><span style="animation-delay:0.6s"></span><span style="animation-delay:0.3s"></span><span style="animation-delay:0.8s"></span></div>
+            </div>
+        </div>
+
+        <!-- BOTTOM CIRCULAR BUTTONS -->
+        <div class="bottom-circles-container">
+            <div class="circle-btn" onclick="loadModule('admission')">
+                <i class="fa-solid fa-id-card-clip"></i><span>Admit</span>
+            </div>
+            <div class="circle-btn" onclick="loadModule('payment')">
+                <i class="fa-solid fa-hand-holding-dollar"></i><span>Fee</span>
+            </div>
+            <div class="circle-btn" onclick="loadModule('profile')">
+                <i class="fa-solid fa-magnifying-glass-chart"></i><span>Search</span>
+            </div>
+            <div class="circle-btn" onclick="loadModule('reports')">
+                <i class="fa-solid fa-file-invoice"></i><span>Reports</span>
+            </div>
+        </div>
+
+        <div class="bottom-dec"></div>
         
-        <img src="logo.png" class="core-logo" alt="Purix Core">
-    </div>
-
-    <!-- RIGHT CARDS (2 user blocks) -->
-    <div class="side-cards-container right-cards">
-        <div class="hud-block">
-            <div class="block-title"><span><i class="fa-solid fa-wallet"></i></span> BLOCK_C (REV)</div>
-            <div class="block-value" id="homeTodayCollection"><i class="fa-solid fa-spinner fa-spin"></i></div>
-            <div class="mini-eq"><span style="animation-delay:0.3s"></span><span style="animation-delay:0.7s"></span><span style="animation-delay:0.1s"></span><span style="animation-delay:0.5s"></span></div>
-        </div>
-        <div class="hud-block alert-block" onclick="loadModule('alerts')" style="cursor:pointer;">
-            <div class="block-title"><span><i class="fa-solid fa-triangle-exclamation"></i></span> BLOCK_D (WRN)</div>
-            <div class="block-value" id="alertCount"><i class="fa-solid fa-spinner fa-spin"></i></div>
-            <div class="mini-eq"><span style="animation-delay:0.2s"></span><span style="animation-delay:0.6s"></span><span style="animation-delay:0.3s"></span><span style="animation-delay:0.8s"></span></div>
-        </div>
-    </div>
-
-    <!-- BOTTOM CIRCULAR BUTTONS (Replaced original image circles with user buttons) -->
-    <div class="bottom-circles-container">
-        <div class="circle-btn" onclick="loadModule('admission')">
-            <i class="fa-solid fa-id-card-clip"></i><span>Admit</span>
-        </div>
-        <div class="circle-btn" onclick="loadModule('payment')">
-            <i class="fa-solid fa-hand-holding-dollar"></i><span>Fee</span>
-        </div>
-        <div class="circle-btn" onclick="loadModule('profile')">
-            <i class="fa-solid fa-magnifying-glass-chart"></i><span>Search</span>
-        </div>
-        <div class="circle-btn" onclick="loadModule('reports')">
-            <i class="fa-solid fa-file-invoice"></i><span>Reports</span>
-        </div>
-    </div>
-
-    <div class="bottom-dec"></div>
+    </div> <!-- SCALER END -->
 </div>
 
 <script>
     (function() {
-        // --- DATA CACHING & FETCH LOGIC ---
+        // --- 1. HUD AUTO-SCALE ENGINE (Naya Jadoo) ---
+        // Ye function screen ka size napkar poore HUD ko perfectly fit kar dega
+        function scaleHUD() {
+            const container = document.getElementById('hudContainer');
+            const scaler = document.getElementById('hudScaler');
+            if (!container || !scaler) return;
+            
+            const cw = container.clientWidth;
+            const ch = container.clientHeight || window.innerHeight;
+            
+            // 1280x720 base size ke hisaab se ratio nikalega
+            const scaleX = cw / 1280;
+            const scaleY = ch / 720;
+            // Jo bhi sabse chhota hoga us hisaab se scale karega (0.95 taaki halka sa gap rahe aur cut na ho)
+            const scale = Math.min(scaleX, scaleY) * 0.95; 
+            
+            scaler.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        }
+        
+        // Jab bhi screen resize hogi, ye khud fit ho jayega
+        window.addEventListener('resize', scaleHUD);
+        scaleHUD(); // Pehli baar load hone par bhi chalega
+
+        // --- 2. DATA CACHING & FETCH LOGIC ---
         const CACHE_DURATION_MS = 5 * 60 * 1000; 
 
         function loadDashboardData() {
@@ -330,7 +351,7 @@
             }
         }
 
-        // --- BULLETPROOF SELF-HEALING UI UPDATE ---
+        // --- 3. BULLETPROOF SELF-HEALING UI UPDATE ---
         function updateStatsUI(data) {
             if (!data) return;
             if (data.todayAdmissions === undefined && data.monthAdmission !== undefined) {
