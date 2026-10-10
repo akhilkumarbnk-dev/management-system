@@ -2,114 +2,107 @@
     /* 1. CINEMATIC DEEP SPACE BACKGROUND */
     .home-bg-3d {
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        background: radial-gradient(circle at center, #0a0f1d 0%, #010205 100%);
+        background: radial-gradient(circle at center, #050811 0%, #010203 100%);
         z-index: -2; overflow: hidden;
     }
     .space-dust {
         position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
         background-image: 
-            radial-gradient(2px 2px at 40px 60px, rgba(255,255,255,0.5), transparent),
-            radial-gradient(2px 2px at 150px 180px, rgba(0,243,255,0.4), transparent);
-        background-size: 250px 250px;
-        animation: floatDust 100s linear infinite; opacity: 0.6;
+            radial-gradient(2px 2px at 40px 60px, rgba(255,255,255,0.4), transparent),
+            radial-gradient(1px 1px at 150px 180px, rgba(0,243,255,0.3), transparent);
+        background-size: 200px 200px;
+        animation: floatDust 80s linear infinite; opacity: 0.6;
     }
     @keyframes floatDust { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(-300px) rotate(5deg); } }
 
     /* 2. MASTER CONSTELLATION WRAPPER */
     .neural-network-wrapper {
         position: relative; width: 100%; height: calc(100vh - 60px); 
-        overflow: hidden; z-index: 1;
+        overflow: hidden; z-index: 1; font-family: 'Orbitron', sans-serif;
     }
 
-    /* 3. SVG ENERGY LINES (Connecting Core to Nodes) */
+    /* 3. SVG ENERGY LINES (Connecting Core to 8 Nodes) */
     .energy-lines-container {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-        pointer-events: none; /* Mouse iske aar-paar ja sake */
+        pointer-events: none;
     }
     .energy-line {
-        stroke: rgba(0, 243, 255, 0.3); stroke-width: 2;
-        stroke-dasharray: 10, 15; animation: energyFlow 20s linear infinite;
-        filter: drop-shadow(0 0 8px rgba(0,243,255,0.5));
+        stroke: rgba(0, 243, 255, 0.15); stroke-width: 1.5;
+        stroke-dasharray: 5, 10; animation: energyFlow 30s linear infinite;
     }
-    .line-collection { stroke: rgba(0, 255, 136, 0.3); filter: drop-shadow(0 0 8px rgba(0,255,136,0.5)); }
-    .line-alerts { stroke: rgba(255, 0, 85, 0.3); filter: drop-shadow(0 0 8px rgba(255,0,85,0.5)); }
-    .line-admissions { stroke: rgba(179, 102, 255, 0.3); filter: drop-shadow(0 0 8px rgba(179,102,255,0.5)); }
-    
     @keyframes energyFlow { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
 
     /* 4. THE CORE (Center Logo) */
     .core-node {
-        position: absolute; top: 45%; left: 50%;
-        transform: translate(-50%, -50%);
+        position: absolute; top: 50%; left: 50%;
         display: flex; flex-direction: column; align-items: center; z-index: 10;
-        transition: transform 0.2s ease-out;
+        /* Custom parallax anchor setup via JS */
     }
     .core-logo-box {
-        width: 130px; height: 130px; border-radius: 50%; padding: 8px;
+        width: 140px; height: 140px; border-radius: 50%; padding: 8px;
         background: rgba(0, 0, 0, 0.8); border: 2px solid #00f3ff;
-        box-shadow: 0 0 40px rgba(0, 243, 255, 0.6), inset 0 0 20px rgba(0,243,255,0.3);
-        position: relative;
+        box-shadow: 0 0 50px rgba(0, 243, 255, 0.5), inset 0 0 30px rgba(0,243,255,0.3);
     }
-    .core-logo-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; z-index: 2; position: relative; }
+    .core-logo-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
     .core-pulse {
-        position: absolute; top: -20%; left: -20%; width: 140%; height: 140%;
-        border-radius: 50%; border: 1px solid rgba(0, 243, 255, 0.5);
-        animation: pulseCore 2s infinite ease-out; z-index: 0;
+        position: absolute; top: -15%; left: -15%; width: 130%; height: 130%;
+        border-radius: 50%; border: 1px dashed rgba(0, 243, 255, 0.6);
+        animation: pulseCore 3s infinite linear; z-index: -1;
     }
-    @keyframes pulseCore { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+    @keyframes pulseCore { 0% { transform: scale(0.9) rotate(0deg); opacity: 1; } 100% { transform: scale(1.6) rotate(90deg); opacity: 0; } }
     
     .live-clock-badge {
-        margin-top: 20px; background: rgba(0, 243, 255, 0.1); padding: 8px 20px; 
-        border-radius: 30px; border: 1px solid rgba(0, 243, 255, 0.4); 
-        color: #00f3ff; font-family: 'Orbitron', sans-serif; font-size: 14px;
-        box-shadow: 0 0 15px rgba(0,243,255,0.2); backdrop-filter: blur(5px);
+        margin-top: 25px; background: rgba(0, 243, 255, 0.05); padding: 5px 15px; 
+        border-radius: 4px; border: 1px solid rgba(0, 243, 255, 0.3); 
+        color: #00f3ff; font-size: 12px; letter-spacing: 2px;
     }
 
-    /* 5. FLOATING NODES (Cards) */
-    .bento-card {
+    /* 5. FLOATING HUD CARDS (Scattered & Sci-Fi Shaped) */
+    .hud-card {
         position: absolute; 
-        background: rgba(15, 23, 42, 0.4); border-radius: 20px; padding: 25px;
-        border: 1px solid rgba(0, 243, 255, 0.2); border-top: 1px solid rgba(255,255,255,0.2);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-        transform: translate(-50%, -50%); /* Centering relative to coordinates */
-        transition: box-shadow 0.3s ease, border 0.3s ease;
+        background: rgba(10, 15, 30, 0.5); padding: 20px 25px;
+        border-left: 3px solid #00f3ff; 
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        backdrop-filter: blur(8px);
+        /* JARVIS CORNER CUT (Sci-Fi Box) */
+        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
         display: flex; flex-direction: column; justify-content: center; z-index: 5;
     }
+    .hud-card:hover { background: rgba(0, 243, 255, 0.1); border-left-color: #fff; box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); }
     
-    .bento-card:hover { border-color: rgba(0, 243, 255, 0.8); box-shadow: 0 0 40px rgba(0, 243, 255, 0.2); z-index: 20; }
-    .bento-bg-icon { position: absolute; right: -5px; bottom: -15px; font-size: 90px; opacity: 0.05; z-index: -1; }
+    .stat-header { font-size: 11px; color: #a5c3e0; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; display: flex; gap: 8px; align-items: center; }
+    .stat-value { font-size: 36px; color: #fff; font-family: 'Poppins', sans-serif; font-weight: 700; margin: 0; }
+
+    /* Asymmetric Card Placements & Sizes */
+    .node-collection { top: 15%; left: 75%; width: 340px; border-left-color: #00ff88; }
+    .node-collection .stat-value { color: #00ff88; font-size: 42px; }
     
-    .stat-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; color: #a5c3e0; font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; }
-    .stat-value { margin: 0; font-size: 38px; color: #fff; font-family: 'Poppins', sans-serif; font-weight: 700; }
+    .node-admissions { top: 22%; left: 20%; width: 230px; border-left-color: #b366ff; }
+    .node-students { top: 75%; left: 18%; width: 280px; border-left-color: #00f3ff; }
+    
+    .node-alerts { top: 78%; left: 78%; width: 260px; border-left-color: #ff0055; cursor: pointer; }
+    .node-alerts .stat-value { color: #ff0055; }
 
-    /* Percentage-based coordinates for auto-adjustment on any screen */
-    .node-admissions { top: 22%; left: 25%; width: 280px; border-bottom: 4px solid rgba(179, 102, 255, 0.8); }
-    .node-collection { top: 22%; left: 75%; width: 320px; border-bottom: 4px solid rgba(0, 255, 136, 0.8); }
-    .node-students { top: 68%; left: 25%; width: 280px; border-bottom: 4px solid rgba(0, 243, 255, 0.8); }
-    .node-alerts { top: 68%; left: 75%; width: 280px; border-bottom: 4px solid rgba(255, 0, 85, 0.8); cursor: pointer; }
-
-    /* Node Custom Colors */
-    .node-collection .stat-header i, .node-collection .stat-value { color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.4); }
-    .node-students .stat-header i, .node-students .stat-value { color: #00f3ff; text-shadow: 0 0 20px rgba(0,243,255,0.4); }
-    .node-admissions .stat-header i, .node-admissions .stat-value { color: #b366ff; text-shadow: 0 0 20px rgba(179,102,255,0.4); }
-    .node-alerts .stat-header i, .node-alerts .stat-value { color: #ff0055; text-shadow: 0 0 20px rgba(255,0,85,0.4); }
-
-    /* 6. COMMAND DOCK (Bottom Actions) */
-    .action-dock {
-        position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%);
-        display: flex; gap: 15px; background: rgba(0, 0, 0, 0.4); padding: 12px 25px;
-        border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px); z-index: 10;
+    /* 6. ACTION BUTTONS (Satellite Nodes) */
+    .action-satellite {
+        position: absolute; 
+        width: 80px; height: 80px; border-radius: 50%;
+        background: rgba(0, 0, 0, 0.6); border: 1px dashed rgba(0, 243, 255, 0.4);
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+        cursor: pointer; z-index: 8; transition: 0.3s;
     }
-    .dock-btn {
-        display: flex; align-items: center; gap: 10px; padding: 12px 20px;
-        background: rgba(15, 23, 42, 0.6); border-radius: 12px; cursor: pointer;
-        color: #a5c3e0; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600;
-        border: 1px solid transparent; transition: 0.3s;
-    }
-    .dock-btn i { font-size: 18px; color: #00f3ff; }
-    .dock-btn:hover { background: rgba(0, 243, 255, 0.15); border-color: #00f3ff; color: #fff; box-shadow: 0 0 15px rgba(0,243,255,0.3); transform: translateY(-3px); }
+    .action-satellite i { font-size: 22px; color: #00f3ff; transition: 0.3s; }
+    .action-satellite span { font-size: 9px; color: #a5c3e0; letter-spacing: 1px; text-transform: uppercase; text-align: center; }
+    
+    .action-satellite:hover { border-style: solid; border-color: #00f3ff; background: rgba(0, 243, 255, 0.15); box-shadow: 0 0 25px rgba(0, 243, 255, 0.4); transform: scale(1.1) translate(-50%, -50%) !important; }
+    .action-satellite:hover i { color: #fff; text-shadow: 0 0 10px #00f3ff; }
+
+    /* Scattered Satellite Positions */
+    .sat-admission { top: 45%; left: 10%; }
+    .sat-fee { top: 12%; left: 50%; }
+    .sat-search { top: 88%; left: 45%; }
+    .sat-reports { top: 50%; left: 90%; }
+
 </style>
 
 <!-- BACKGROUND -->
@@ -117,85 +110,93 @@
 
 <div class="neural-network-wrapper" id="parallaxArea">
     
-    <!-- SVG ENERGY LINES -->
+    <!-- SVG ENERGY LINES (Exact connections to all 8 nodes) -->
     <svg class="energy-lines-container">
-        <!-- Lines connecting Center (50%,45%) to Nodes -->
-        <line x1="50%" y1="45%" x2="25%" y2="22%" class="energy-line line-admissions" />
-        <line x1="50%" y1="45%" x2="75%" y2="22%" class="energy-line line-collection" />
-        <line x1="50%" y1="45%" x2="25%" y2="68%" class="energy-line" />
-        <line x1="50%" y1="45%" x2="75%" y2="68%" class="energy-line line-alerts" />
+        <!-- Cards -->
+        <line x1="50%" y1="50%" x2="75%" y2="15%" class="energy-line" />
+        <line x1="50%" y1="50%" x2="20%" y2="22%" class="energy-line" />
+        <line x1="50%" y1="50%" x2="18%" y2="75%" class="energy-line" />
+        <line x1="50%" y1="50%" x2="78%" y2="78%" class="energy-line" />
+        <!-- Satellites -->
+        <line x1="50%" y1="50%" x2="10%" y2="45%" class="energy-line" style="stroke-width:0.5; stroke-dasharray: 2,4;" />
+        <line x1="50%" y1="50%" x2="50%" y2="12%" class="energy-line" style="stroke-width:0.5; stroke-dasharray: 2,4;" />
+        <line x1="50%" y1="50%" x2="45%" y2="88%" class="energy-line" style="stroke-width:0.5; stroke-dasharray: 2,4;" />
+        <line x1="50%" y1="50%" x2="90%" y2="50%" class="energy-line" style="stroke-width:0.5; stroke-dasharray: 2,4;" />
     </svg>
 
     <!-- THE CORE -->
-    <div class="core-node" id="coreNode">
+    <div class="core-node js-holo" data-speed="5" data-dir-x="-1" data-dir-y="-1" style="top: 50%; left: 50%;">
         <div class="core-logo-box">
             <img src="logo.png" alt="Purix Academy">
             <div class="core-pulse"></div>
         </div>
-        <div class="live-clock-badge">
-            <i class="fa-solid fa-clock"></i> <span id="realtimeClock">Loading Time...</span>
-        </div>
+        <div class="live-clock-badge" id="realtimeClock">Loading Time...</div>
     </div>
 
-    <!-- FLOATING SCATTERED NODES -->
-    <div class="bento-card node-admissions js-parallax-node">
-        <i class="fa-solid fa-user-astronaut bento-bg-icon"></i>
-        <div class="stat-header"><i class="fa-solid fa-user-plus"></i> TODAY'S ADMISSIONS</div>
-        <h2 class="stat-value" id="homeMonthAdmission"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
-    </div>
-
-    <div class="bento-card node-collection js-parallax-node">
-        <i class="fa-solid fa-wallet bento-bg-icon"></i>
-        <div class="stat-header"><i class="fa-solid fa-indian-rupee-sign"></i> TODAY'S COLLECTION</div>
+    <!-- FLOATING HUD CARDS (Data) -->
+    <div class="hud-card node-collection js-holo" data-speed="15" data-dir-x="1" data-dir-y="1" style="top: 15%; left: 75%;">
+        <div class="stat-header"><i class="fa-solid fa-wallet"></i> Collection</div>
         <h2 class="stat-value" id="homeTodayCollection"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
     </div>
 
-    <div class="bento-card node-students js-parallax-node">
-        <i class="fa-solid fa-users-viewfinder bento-bg-icon"></i>
-        <div class="stat-header"><i class="fa-solid fa-users"></i> ACTIVE STUDENTS</div>
+    <div class="hud-card node-admissions js-holo" data-speed="25" data-dir-x="-1" data-dir-y="1" style="top: 22%; left: 20%;">
+        <div class="stat-header"><i class="fa-solid fa-user-plus"></i> Admissions</div>
+        <h2 class="stat-value" id="homeMonthAdmission"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
+    </div>
+
+    <div class="hud-card node-students js-holo" data-speed="12" data-dir-x="1" data-dir-y="-1" style="top: 75%; left: 18%;">
+        <div class="stat-header"><i class="fa-solid fa-users"></i> Students</div>
         <h2 class="stat-value" id="homeActiveStudents"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
     </div>
 
-    <div class="bento-card node-alerts js-parallax-node" onclick="loadModule('alerts')">
-        <i class="fa-solid fa-triangle-exclamation bento-bg-icon"></i>
-        <div class="stat-header"><i class="fa-solid fa-bell"></i> OVERDUE ALERTS</div>
+    <div class="hud-card node-alerts js-holo" data-speed="30" data-dir-x="-1" data-dir-y="-1" style="top: 78%; left: 78%;" onclick="loadModule('alerts')">
+        <div class="stat-header"><i class="fa-solid fa-bell"></i> Alerts</div>
         <h2 class="stat-value" id="alertCount"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
     </div>
 
-    <!-- COMMAND DOCK (Bottom Actions) -->
-    <div class="action-dock">
-        <div class="dock-btn" onclick="loadModule('admission')"><i class="fa-solid fa-id-card-clip"></i> Admission</div>
-        <div class="dock-btn" onclick="loadModule('payment')"><i class="fa-solid fa-hand-holding-dollar"></i> Collect Fee</div>
-        <div class="dock-btn" onclick="loadModule('profile')"><i class="fa-solid fa-magnifying-glass-chart"></i> Search</div>
-        <div class="dock-btn" onclick="loadModule('reports')"><i class="fa-solid fa-file-invoice"></i> Reports</div>
+    <!-- FLOATING SATELLITE BUTTONS (Actions) -->
+    <div class="action-satellite sat-admission js-holo" data-speed="40" data-dir-x="1" data-dir-y="1" style="top: 45%; left: 10%;" onclick="loadModule('admission')">
+        <i class="fa-solid fa-id-card-clip"></i><span>Admit</span>
+    </div>
+    
+    <div class="action-satellite sat-fee js-holo" data-speed="35" data-dir-x="-1" data-dir-y="1" style="top: 12%; left: 50%;" onclick="loadModule('payment')">
+        <i class="fa-solid fa-hand-holding-dollar"></i><span>Fee</span>
+    </div>
+
+    <div class="action-satellite sat-search js-holo" data-speed="20" data-dir-x="-1" data-dir-y="-1" style="top: 88%; left: 45%;" onclick="loadModule('profile')">
+        <i class="fa-solid fa-magnifying-glass-chart"></i><span>Search</span>
+    </div>
+
+    <div class="action-satellite sat-reports js-holo" data-speed="45" data-dir-x="1" data-dir-y="-1" style="top: 50%; left: 90%;" onclick="loadModule('reports')">
+        <i class="fa-solid fa-file-invoice"></i><span>Reports</span>
     </div>
 
 </div>
 
 <script>
     (function() {
-        // --- 1. MOUSE PARALLAX EFFECT (Neural Network Move) ---
-        // Ye pura constellation mouse ke hisaab se hawa me tairta hua hilayega
+        // --- 1. JARVIS INDEPENDENT PARALLAX ENGINE ---
+        // Har element ki ek speed (data-speed) aur direction (data-dir-x) lagayi gayi hai.
         const wrapper = document.getElementById('parallaxArea');
-        const core = document.getElementById('coreNode');
-        const nodes = document.querySelectorAll('.js-parallax-node');
+        const holograms = document.querySelectorAll('.js-holo');
 
         wrapper.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 30; // Max 30px shift
-            const y = (e.clientY / window.innerHeight - 0.5) * 30;
+            // Mouse ki position nikali gayi screen ke center se
+            const x = (e.clientX / window.innerWidth - 0.5); 
+            const y = (e.clientY / window.innerHeight - 0.5);
             
-            // Core opposite direction me shift hoga
-            core.style.transform = `translate(calc(-50% + ${-x*0.5}px), calc(-50% + ${-y*0.5}px))`;
-            
-            // Nodes mouse ki direction me float karenge
-            nodes.forEach(node => {
-                node.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+            holograms.forEach(holo => {
+                const speed = parseFloat(holo.getAttribute('data-speed')) || 10;
+                const dirX = parseFloat(holo.getAttribute('data-dir-x')) || 1;
+                const dirY = parseFloat(holo.getAttribute('data-dir-y')) || 1;
+                
+                // Translate(-50%, -50%) zaroori hai elements ko unke percentage coordinates par center rakhne ke liye
+                holo.style.transform = `translate(-50%, -50%) translate(${x * speed * dirX}px, ${y * speed * dirY}px)`;
             });
         });
 
         // --- 2. LOGIC SECTION (STRICTLY UNTOUCHED) ---
 
-        // LIVE CLOCK
         function updateClock() {
             const clockElement = document.getElementById('realtimeClock');
             if (!clockElement) return; 
@@ -207,7 +208,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // DATA CACHING & FETCH
         const CACHE_DURATION_MS = 5 * 60 * 1000; 
         function loadDashboardData() {
             const now = new Date().getTime();
@@ -247,7 +247,6 @@
             }
         }
 
-        // SELF-HEALING UI
         function updateStatsUI(data) {
             if (!data) return;
             if (data.todayAdmissions === undefined && data.monthAdmission !== undefined) {
@@ -276,7 +275,6 @@
             return criticalCount;
         }
 
-        // AUTO SYNC
         loadDashboardData();
         setInterval(loadDashboardData, 60000); 
     })();
