@@ -1,214 +1,297 @@
 <style>
-    /* 1. CINEMATIC DEEP SPACE BACKGROUND */
-    .home-bg-3d {
-        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        background: radial-gradient(circle at center, #050811 0%, #010203 100%);
-        z-index: -2; overflow: hidden;
+    /* =========================================
+       1. EXACT BACKGROUND & SCANLINES
+    ========================================= */
+    :root {
+        --hud-blue: #00e5ff;
+        --hud-dark: #020b18;
+        --hud-panel: rgba(2, 11, 24, 0.75);
     }
-    .space-dust {
-        position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-        background-image: 
-            radial-gradient(2px 2px at 40px 60px, rgba(255,255,255,0.4), transparent),
-            radial-gradient(1px 1px at 150px 180px, rgba(0,243,255,0.3), transparent);
-        background-size: 200px 200px;
-        animation: floatDust 80s linear infinite; opacity: 0.6;
-    }
-    @keyframes floatDust { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(-300px) rotate(5deg); } }
-
-    /* 2. MASTER CONSTELLATION WRAPPER */
-    .neural-network-wrapper {
-        position: relative; width: 100%; height: calc(100vh - 60px); 
-        overflow: hidden; z-index: 1; font-family: 'Orbitron', sans-serif;
-    }
-
-    /* 3. SVG ENERGY LINES (Connecting Core to 8 Nodes) */
-    .energy-lines-container {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-        pointer-events: none;
-    }
-    .energy-line {
-        stroke: rgba(0, 243, 255, 0.15); stroke-width: 1.5;
-        stroke-dasharray: 5, 10; animation: energyFlow 30s linear infinite;
-    }
-    @keyframes energyFlow { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
-
-    /* 4. THE CORE (Center Logo) */
-    .core-node {
-        position: absolute; top: 50%; left: 50%;
-        display: flex; flex-direction: column; align-items: center; z-index: 10;
-        /* Custom parallax anchor setup via JS */
-    }
-    .core-logo-box {
-        width: 140px; height: 140px; border-radius: 50%; padding: 8px;
-        background: rgba(0, 0, 0, 0.8); border: 2px solid #00f3ff;
-        box-shadow: 0 0 50px rgba(0, 243, 255, 0.5), inset 0 0 30px rgba(0,243,255,0.3);
-    }
-    .core-logo-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-    .core-pulse {
-        position: absolute; top: -15%; left: -15%; width: 130%; height: 130%;
-        border-radius: 50%; border: 1px dashed rgba(0, 243, 255, 0.6);
-        animation: pulseCore 3s infinite linear; z-index: -1;
-    }
-    @keyframes pulseCore { 0% { transform: scale(0.9) rotate(0deg); opacity: 1; } 100% { transform: scale(1.6) rotate(90deg); opacity: 0; } }
+    body, html { margin: 0; padding: 0; background: var(--hud-dark); overflow: hidden; font-family: 'Orbitron', sans-serif; }
     
-    .live-clock-badge {
-        margin-top: 25px; background: rgba(0, 243, 255, 0.05); padding: 5px 15px; 
-        border-radius: 4px; border: 1px solid rgba(0, 243, 255, 0.3); 
-        color: #00f3ff; font-size: 12px; letter-spacing: 2px;
+    .hud-master-container {
+        position: relative; width: 100vw; height: 100vh;
+        background-color: var(--hud-dark);
+        /* Exact horizontal lines from image */
+        background-image: repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0, 150, 255, 0.1) 3px, rgba(0, 150, 255, 0.1) 4px);
+        display: flex; justify-content: center; align-items: center; z-index: 1;
     }
 
-    /* 5. FLOATING HUD CARDS (Scattered & Sci-Fi Shaped) */
-    .hud-card {
-        position: absolute; 
-        background: rgba(10, 15, 30, 0.5); padding: 20px 25px;
-        border-left: 3px solid #00f3ff; 
-        box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-        backdrop-filter: blur(8px);
-        /* JARVIS CORNER CUT (Sci-Fi Box) */
-        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-        display: flex; flex-direction: column; justify-content: center; z-index: 5;
+    /* TOP HUD TEXT & SATELLITE */
+    .top-hud-header {
+        position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+        display: flex; align-items: flex-end; gap: 15px; z-index: 10;
     }
-    .hud-card:hover { background: rgba(0, 243, 255, 0.1); border-left-color: #fff; box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); }
-    
-    .stat-header { font-size: 11px; color: #a5c3e0; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; display: flex; gap: 8px; align-items: center; }
-    .stat-value { font-size: 36px; color: #fff; font-family: 'Poppins', sans-serif; font-weight: 700; margin: 0; }
-
-    /* Asymmetric Card Placements & Sizes */
-    .node-collection { top: 15%; left: 75%; width: 340px; border-left-color: #00ff88; }
-    .node-collection .stat-value { color: #00ff88; font-size: 42px; }
-    
-    .node-admissions { top: 22%; left: 20%; width: 230px; border-left-color: #b366ff; }
-    .node-students { top: 75%; left: 18%; width: 280px; border-left-color: #00f3ff; }
-    
-    .node-alerts { top: 78%; left: 78%; width: 260px; border-left-color: #ff0055; cursor: pointer; }
-    .node-alerts .stat-value { color: #ff0055; }
-
-    /* 6. ACTION BUTTONS (Satellite Nodes) */
-    .action-satellite {
-        position: absolute; 
-        width: 80px; height: 80px; border-radius: 50%;
-        background: rgba(0, 0, 0, 0.6); border: 1px dashed rgba(0, 243, 255, 0.4);
-        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
-        cursor: pointer; z-index: 8; transition: 0.3s;
+    .top-hud-header .satellite-img {
+        width: 60px; height: auto; opacity: 0.8; filter: drop-shadow(0 0 5px var(--hud-blue));
     }
-    .action-satellite i { font-size: 22px; color: #00f3ff; transition: 0.3s; }
-    .action-satellite span { font-size: 9px; color: #a5c3e0; letter-spacing: 1px; text-transform: uppercase; text-align: center; }
-    
-    .action-satellite:hover { border-style: solid; border-color: #00f3ff; background: rgba(0, 243, 255, 0.15); box-shadow: 0 0 25px rgba(0, 243, 255, 0.4); transform: scale(1.1) translate(-50%, -50%) !important; }
-    .action-satellite:hover i { color: #fff; text-shadow: 0 0 10px #00f3ff; }
+    .top-hud-header h1 {
+        margin: 0; padding: 5px 30px; font-size: 32px; color: #fff;
+        background: rgba(0, 0, 0, 0.5); border: 2px solid var(--hud-blue);
+        border-top: none; clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+        text-shadow: 0 0 10px var(--hud-blue); letter-spacing: 5px;
+    }
 
-    /* Scattered Satellite Positions */
-    .sat-admission { top: 45%; left: 10%; }
-    .sat-fee { top: 12%; left: 50%; }
-    .sat-search { top: 88%; left: 45%; }
-    .sat-reports { top: 50%; left: 90%; }
+    /* =========================================
+       2. EXTREME DETAIL CENTER REACTOR
+    ========================================= */
+    .center-reactor {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: 650px; height: 650px; background: radial-gradient(circle, #020a17 40%, #000 70%);
+        border-radius: 50%; display: flex; justify-content: center; align-items: center;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.8); z-index: 5;
+    }
+
+    /* Multi-layered Rings (Replicating exact image details) */
+    .reactor-ring { position: absolute; border-radius: 50%; border: 1px solid transparent; display: flex; justify-content: center; align-items: center; }
+    
+    .ring-1-outer { width: 620px; height: 620px; border: 1px dashed rgba(0, 229, 255, 0.3); animation: spinRight 120s linear infinite; }
+    .ring-2-binary { width: 590px; height: 590px; font-size: 8px; color: rgba(0,229,255,0.4); text-transform: uppercase; letter-spacing: 2px; animation: spinLeft 150s linear infinite; }
+    
+    .ring-3-ticks {
+        width: 530px; height: 530px; border-radius: 50%;
+        background: conic-gradient(from 0deg, var(--hud-blue) 0 1deg, transparent 1deg 3deg);
+        -webkit-mask-image: radial-gradient(transparent 68%, black 70%);
+        animation: spinRight 40s linear infinite; opacity: 0.8;
+    }
+
+    .ring-4-thick {
+        width: 480px; height: 480px;
+        border: 15px solid rgba(0, 229, 255, 0.1);
+        border-top-color: rgba(0, 229, 255, 0.8); border-bottom-color: rgba(0, 229, 255, 0.8);
+        animation: spinLeft 25s linear infinite;
+    }
+
+    .ring-5-inner-dashed {
+        width: 420px; height: 420px;
+        border: 4px dashed var(--hud-blue); opacity: 0.6;
+        animation: spinRight 20s linear infinite;
+    }
+
+    .ring-6-core {
+        width: 330px; height: 330px;
+        border: 2px solid var(--hud-blue);
+        box-shadow: 0 0 30px rgba(0, 229, 255, 0.4), inset 0 0 30px rgba(0, 229, 255, 0.4);
+        background: radial-gradient(circle, rgba(0,229,255,0.1) 0%, transparent 70%);
+    }
+
+    /* Core Logo */
+    .core-logo {
+        width: 150px; height: 150px; border-radius: 50%; z-index: 10;
+        border: 2px solid #fff; box-shadow: 0 0 40px var(--hud-blue);
+        object-fit: cover; background: #000;
+    }
+
+    /* Circular Data Text (Pseudo) */
+    .ring-2-binary::before { content: "0100 01111 0100 0011 1110 0101 1000 0000 0101 1110 0100 0001"; position: absolute; top: -10px; }
+    .ring-2-binary::after { content: "1110 0100 0011 1110 0101 1000 0000 0101 1110 0100 0001 0100"; position: absolute; bottom: -10px; }
+
+    @keyframes spinRight { 100% { transform: rotate(360deg); } }
+    @keyframes spinLeft { 100% { transform: rotate(-360deg); } }
+
+    /* =========================================
+       3. TOP LEFT & RIGHT WIDGETS
+    ========================================= */
+    .top-left-radar {
+        position: absolute; top: 30px; left: 30px; width: 220px; height: 220px;
+        background: var(--hud-panel); border: 1px solid var(--hud-blue);
+        display: flex; justify-content: center; align-items: center; z-index: 5;
+    }
+    .top-left-radar::before {
+        content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%;
+        border: 4px solid rgba(0,229,255,0.3); border-top-color: var(--hud-blue);
+        animation: spinRight 5s linear infinite;
+    }
+    .top-left-radar::after {
+        content: ''; position: absolute; width: 140px; height: 140px; border-radius: 50%;
+        border: 2px dashed var(--hud-blue); animation: spinLeft 10s linear infinite;
+    }
+    
+    .top-right-globe {
+        position: absolute; top: 30px; right: 30px; width: 250px; height: 250px;
+        display: flex; flex-direction: column; justify-content: space-between; align-items: center; z-index: 5;
+    }
+    .globe-sphere {
+        width: 180px; height: 180px; border-radius: 50%;
+        border: 1px solid rgba(0,229,255,0.2);
+        background: repeating-linear-gradient(0deg, transparent, transparent 15px, rgba(0,229,255,0.3) 16px),
+                    repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(0,229,255,0.3) 16px);
+        background-size: 100% 100%; border-radius: 50%;
+        box-shadow: inset 0 0 40px rgba(0,229,255,0.6);
+    }
+    .globe-chart { width: 100%; height: 40px; display: flex; align-items: flex-end; gap: 2px; }
+    .globe-chart div { flex: 1; background: var(--hud-blue); opacity: 0.7; animation: chartPulse 1s infinite alternate; }
+    @keyframes chartPulse { 0% { height: 20%; } 100% { height: 100%; } }
+
+    /* =========================================
+       4. EXACT SIDE CARDS (Block_A, B style)
+    ========================================= */
+    .side-cards-container {
+        position: absolute; top: 50%; transform: translateY(-50%);
+        display: flex; flex-direction: column; gap: 40px; z-index: 10;
+    }
+    .left-cards { left: 40px; }
+    .right-cards { right: 40px; }
+
+    .hud-block {
+        width: 240px; height: 110px; position: relative;
+        background: var(--hud-panel);
+        border: 1px solid var(--hud-blue);
+        display: flex; flex-direction: column; justify-content: center; padding: 0 20px;
+        /* Exact shape from image */
+        clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+        box-shadow: inset 0 0 15px rgba(0,229,255,0.2);
+    }
+    /* Side decorations for blocks */
+    .hud-block::before {
+        content: ''; position: absolute; left: -10px; top: 10%; width: 5px; height: 80%;
+        border-left: 2px solid var(--hud-blue); border-top: 2px solid var(--hud-blue); border-bottom: 2px solid var(--hud-blue);
+    }
+    .hud-block::after {
+        content: ''; position: absolute; right: -10px; top: 10%; width: 5px; height: 80%;
+        border-right: 2px solid var(--hud-blue); border-top: 2px solid var(--hud-blue); border-bottom: 2px solid var(--hud-blue);
+    }
+    .block-title {
+        font-size: 11px; color: #fff; letter-spacing: 2px; margin-bottom: 5px; text-align: right;
+        border-bottom: 1px solid rgba(0,229,255,0.4); padding-bottom: 3px; display: flex; justify-content: space-between;
+    }
+    .block-value { font-size: 28px; color: var(--hud-blue); font-weight: bold; text-shadow: 0 0 10px var(--hud-blue); display: flex; align-items: center; gap: 10px; }
+    .mini-eq { display: flex; gap: 2px; height: 15px; margin-top: 5px; }
+    .mini-eq span { flex: 1; background: var(--hud-blue); animation: chartPulse 0.5s infinite alternate; }
+    
+    .hud-block.alert-block .block-title { color: #ff0055; border-color: #ff0055; }
+    .hud-block.alert-block .block-value { color: #ff0055; text-shadow: 0 0 10px #ff0055; }
+    .hud-block.alert-block .mini-eq span { background: #ff0055; }
+
+    /* =========================================
+       5. BOTTOM CIRCULAR ACTION BUTTONS
+    ========================================= */
+    .bottom-circles-container {
+        position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+        display: flex; gap: 50px; align-items: center; z-index: 10;
+    }
+
+    .circle-btn {
+        width: 90px; height: 90px; border-radius: 50%;
+        background: var(--hud-panel); border: 2px solid rgba(0, 229, 255, 0.4);
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        position: relative; cursor: pointer; transition: 0.3s;
+        box-shadow: inset 0 0 15px rgba(0,229,255,0.2);
+    }
+    .circle-btn i { font-size: 24px; color: #fff; margin-bottom: 3px; z-index: 2; }
+    .circle-btn span { font-size: 9px; color: var(--hud-blue); font-weight: bold; letter-spacing: 1px; text-transform: uppercase; z-index: 2; }
+    
+    /* Exact outer ring designs from image for buttons */
+    .circle-btn::before {
+        content: ''; position: absolute; width: 110px; height: 110px; border-radius: 50%;
+        border: 2px solid transparent; border-top-color: var(--hud-blue); border-bottom-color: var(--hud-blue);
+        animation: spinRight 8s linear infinite;
+    }
+    .circle-btn::after {
+        content: ''; position: absolute; width: 75px; height: 75px; border-radius: 50%;
+        border: 1px dashed var(--hud-blue); animation: spinLeft 6s linear infinite;
+    }
+
+    .circle-btn:hover { background: rgba(0, 229, 255, 0.2); border-color: var(--hud-blue); box-shadow: 0 0 20px var(--hud-blue); transform: scale(1.05); }
+
+    /* Decorative bottom center lines */
+    .bottom-dec {
+        position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+        width: 300px; height: 20px; border-top: 2px solid var(--hud-blue);
+        border-left: 2px solid var(--hud-blue); border-right: 2px solid var(--hud-blue);
+    }
+    .bottom-dec::before { content: '1010 0100 0011 0000 1111 0000'; position: absolute; top: -15px; left: 10px; font-size: 8px; color: var(--hud-blue); }
 
 </style>
 
-<!-- BACKGROUND -->
-<div class="home-bg-3d"><div class="space-dust"></div></div>
-
-<div class="neural-network-wrapper" id="parallaxArea">
+<div class="hud-master-container">
     
-    <!-- SVG ENERGY LINES (Exact connections to all 8 nodes) -->
-    <svg class="energy-lines-container">
-        <!-- Cards -->
-        <line x1="50%" y1="50%" x2="75%" y2="15%" class="energy-line" />
-        <line x1="50%" y1="50%" x2="20%" y2="22%" class="energy-line" />
-        <line x1="50%" y1="50%" x2="18%" y2="75%" class="energy-line" />
-        <line x1="50%" y1="50%" x2="78%" y2="78%" class="energy-line" />
-        <!-- Satellites -->
-        <line x1="50%" y1="50%" x2="10%" y2="45%" class="energy-line" style="stroke-width:0.5; stroke-dasharray: 2,4;" />
-        <line x1="50%" y1="50%" x2="50%" y2="12%" class="energy-line" style="stroke-width:0.5; stroke-dasharray: 2,4;" />
-        <line x1="50%" y1="50%" x2="45%" y2="88%" class="energy-line" style="stroke-width:0.5; stroke-dasharray: 2,4;" />
-        <line x1="50%" y1="50%" x2="90%" y2="50%" class="energy-line" style="stroke-width:0.5; stroke-dasharray: 2,4;" />
-    </svg>
+    <!-- TOP HEADER -->
+    <div class="top-hud-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/2855/2855581.png" class="satellite-img" alt="Sat">
+        <h1>HUD</h1>
+    </div>
 
-    <!-- THE CORE -->
-    <div class="core-node js-holo" data-speed="5" data-dir-x="-1" data-dir-y="-1" style="top: 50%; left: 50%;">
-        <div class="core-logo-box">
-            <img src="logo.png" alt="Purix Academy">
-            <div class="core-pulse"></div>
+    <!-- TOP LEFT RADAR -->
+    <div class="top-left-radar">
+        <div style="width:50px; height:50px; background:var(--hud-blue); border-radius:50%; box-shadow:0 0 20px var(--hud-blue);"></div>
+    </div>
+
+    <!-- TOP RIGHT GLOBE -->
+    <div class="top-right-globe">
+        <div class="globe-sphere"></div>
+        <div class="globe-chart">
+            <div style="animation-delay:0.1s"></div><div style="animation-delay:0.3s"></div>
+            <div style="animation-delay:0.5s"></div><div style="animation-delay:0.2s"></div>
+            <div style="animation-delay:0.6s"></div><div style="animation-delay:0.4s"></div>
+            <div style="animation-delay:0.1s"></div><div style="animation-delay:0.7s"></div>
         </div>
-        <div class="live-clock-badge" id="realtimeClock">Loading Time...</div>
     </div>
 
-    <!-- FLOATING HUD CARDS (Data) -->
-    <div class="hud-card node-collection js-holo" data-speed="15" data-dir-x="1" data-dir-y="1" style="top: 15%; left: 75%;">
-        <div class="stat-header"><i class="fa-solid fa-wallet"></i> Collection</div>
-        <h2 class="stat-value" id="homeTodayCollection"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
+    <!-- LEFT CARDS (2 user blocks) -->
+    <div class="side-cards-container left-cards">
+        <div class="hud-block">
+            <div class="block-title"><span><i class="fa-solid fa-user-plus"></i></span> BLOCK_A (ADM)</div>
+            <div class="block-value" id="homeMonthAdmission"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            <div class="mini-eq"><span style="animation-delay:0.1s"></span><span style="animation-delay:0.4s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.6s"></span></div>
+        </div>
+        <div class="hud-block">
+            <div class="block-title"><span><i class="fa-solid fa-users"></i></span> BLOCK_B (STD)</div>
+            <div class="block-value" id="homeActiveStudents"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            <div class="mini-eq"><span style="animation-delay:0.5s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.8s"></span><span style="animation-delay:0.1s"></span></div>
+        </div>
     </div>
 
-    <div class="hud-card node-admissions js-holo" data-speed="25" data-dir-x="-1" data-dir-y="1" style="top: 22%; left: 20%;">
-        <div class="stat-header"><i class="fa-solid fa-user-plus"></i> Admissions</div>
-        <h2 class="stat-value" id="homeMonthAdmission"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
+    <!-- CENTER MASSIVE REACTOR & LOGO -->
+    <div class="center-reactor">
+        <div class="reactor-ring ring-1-outer"></div>
+        <div class="reactor-ring ring-2-binary"></div>
+        <div class="reactor-ring ring-3-ticks"></div>
+        <div class="reactor-ring ring-4-thick"></div>
+        <div class="reactor-ring ring-5-inner-dashed"></div>
+        <div class="reactor-ring ring-6-core"></div>
+        
+        <img src="logo.png" class="core-logo" alt="Purix Core">
     </div>
 
-    <div class="hud-card node-students js-holo" data-speed="12" data-dir-x="1" data-dir-y="-1" style="top: 75%; left: 18%;">
-        <div class="stat-header"><i class="fa-solid fa-users"></i> Students</div>
-        <h2 class="stat-value" id="homeActiveStudents"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
+    <!-- RIGHT CARDS (2 user blocks) -->
+    <div class="side-cards-container right-cards">
+        <div class="hud-block">
+            <div class="block-title"><span><i class="fa-solid fa-wallet"></i></span> BLOCK_C (REV)</div>
+            <div class="block-value" id="homeTodayCollection"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            <div class="mini-eq"><span style="animation-delay:0.3s"></span><span style="animation-delay:0.7s"></span><span style="animation-delay:0.1s"></span><span style="animation-delay:0.5s"></span></div>
+        </div>
+        <div class="hud-block alert-block" onclick="loadModule('alerts')" style="cursor:pointer;">
+            <div class="block-title"><span><i class="fa-solid fa-triangle-exclamation"></i></span> BLOCK_D (WRN)</div>
+            <div class="block-value" id="alertCount"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            <div class="mini-eq"><span style="animation-delay:0.2s"></span><span style="animation-delay:0.6s"></span><span style="animation-delay:0.3s"></span><span style="animation-delay:0.8s"></span></div>
+        </div>
     </div>
 
-    <div class="hud-card node-alerts js-holo" data-speed="30" data-dir-x="-1" data-dir-y="-1" style="top: 78%; left: 78%;" onclick="loadModule('alerts')">
-        <div class="stat-header"><i class="fa-solid fa-bell"></i> Alerts</div>
-        <h2 class="stat-value" id="alertCount"><i class="fa-solid fa-spinner fa-spin" style="font-size: 20px;"></i></h2>
+    <!-- BOTTOM CIRCULAR BUTTONS (Replaced original image circles with user buttons) -->
+    <div class="bottom-circles-container">
+        <div class="circle-btn" onclick="loadModule('admission')">
+            <i class="fa-solid fa-id-card-clip"></i><span>Admit</span>
+        </div>
+        <div class="circle-btn" onclick="loadModule('payment')">
+            <i class="fa-solid fa-hand-holding-dollar"></i><span>Fee</span>
+        </div>
+        <div class="circle-btn" onclick="loadModule('profile')">
+            <i class="fa-solid fa-magnifying-glass-chart"></i><span>Search</span>
+        </div>
+        <div class="circle-btn" onclick="loadModule('reports')">
+            <i class="fa-solid fa-file-invoice"></i><span>Reports</span>
+        </div>
     </div>
 
-    <!-- FLOATING SATELLITE BUTTONS (Actions) -->
-    <div class="action-satellite sat-admission js-holo" data-speed="40" data-dir-x="1" data-dir-y="1" style="top: 45%; left: 10%;" onclick="loadModule('admission')">
-        <i class="fa-solid fa-id-card-clip"></i><span>Admit</span>
-    </div>
-    
-    <div class="action-satellite sat-fee js-holo" data-speed="35" data-dir-x="-1" data-dir-y="1" style="top: 12%; left: 50%;" onclick="loadModule('payment')">
-        <i class="fa-solid fa-hand-holding-dollar"></i><span>Fee</span>
-    </div>
-
-    <div class="action-satellite sat-search js-holo" data-speed="20" data-dir-x="-1" data-dir-y="-1" style="top: 88%; left: 45%;" onclick="loadModule('profile')">
-        <i class="fa-solid fa-magnifying-glass-chart"></i><span>Search</span>
-    </div>
-
-    <div class="action-satellite sat-reports js-holo" data-speed="45" data-dir-x="1" data-dir-y="-1" style="top: 50%; left: 90%;" onclick="loadModule('reports')">
-        <i class="fa-solid fa-file-invoice"></i><span>Reports</span>
-    </div>
-
+    <div class="bottom-dec"></div>
 </div>
 
 <script>
     (function() {
-        // --- 1. JARVIS INDEPENDENT PARALLAX ENGINE ---
-        // Har element ki ek speed (data-speed) aur direction (data-dir-x) lagayi gayi hai.
-        const wrapper = document.getElementById('parallaxArea');
-        const holograms = document.querySelectorAll('.js-holo');
-
-        wrapper.addEventListener('mousemove', (e) => {
-            // Mouse ki position nikali gayi screen ke center se
-            const x = (e.clientX / window.innerWidth - 0.5); 
-            const y = (e.clientY / window.innerHeight - 0.5);
-            
-            holograms.forEach(holo => {
-                const speed = parseFloat(holo.getAttribute('data-speed')) || 10;
-                const dirX = parseFloat(holo.getAttribute('data-dir-x')) || 1;
-                const dirY = parseFloat(holo.getAttribute('data-dir-y')) || 1;
-                
-                // Translate(-50%, -50%) zaroori hai elements ko unke percentage coordinates par center rakhne ke liye
-                holo.style.transform = `translate(-50%, -50%) translate(${x * speed * dirX}px, ${y * speed * dirY}px)`;
-            });
-        });
-
-        // --- 2. LOGIC SECTION (STRICTLY UNTOUCHED) ---
-
-        function updateClock() {
-            const clockElement = document.getElementById('realtimeClock');
-            if (!clockElement) return; 
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-            const dateString = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-            clockElement.innerText = `${dateString} | ${timeString}`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
+        // --- DATA CACHING & FETCH LOGIC ---
         const CACHE_DURATION_MS = 5 * 60 * 1000; 
+
         function loadDashboardData() {
             const now = new Date().getTime();
             const cachedStatsString = localStorage.getItem('purix_home_stats');
@@ -247,6 +330,7 @@
             }
         }
 
+        // --- BULLETPROOF SELF-HEALING UI UPDATE ---
         function updateStatsUI(data) {
             if (!data) return;
             if (data.todayAdmissions === undefined && data.monthAdmission !== undefined) {
