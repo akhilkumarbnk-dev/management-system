@@ -290,3 +290,50 @@ body {
     }
     .history-section h3 { border-bottom: none !important; }
 }
+/* =========================================
+   PURIX UNIVERSAL FAST RADAR LOADER
+========================================= */
+.hud-radar-loader-wrapper {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 40px; width: 100%; min-height: 250px;
+}
+.hud-fast-radar {
+    position: relative; width: 70px; height: 70px; border-radius: 50%;
+    border: 2px solid rgba(0, 243, 255, 0.4);
+    background: radial-gradient(circle, rgba(0, 243, 255, 0.1) 0%, transparent 70%);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 15px rgba(0, 243, 255, 0.1);
+    overflow: hidden;
+}
+.hud-fast-radar::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0deg, rgba(0, 243, 255, 0.9) 90deg, transparent 90deg);
+    animation: radarFastSweep 0.6s linear infinite; 
+}
+.hud-fast-radar::after {
+    content: ""; position: absolute; top: 50%; left: 50%; width: 80%; height: 80%;
+    transform: translate(-50%, -50%); border-radius: 50%;
+    border: 1px dashed rgba(0, 243, 255, 0.8);
+    animation: radarFastReverse 2s linear infinite reverse;
+}
+.radar-cross {
+    position: absolute; top: 50%; left: 50%; width: 100%; height: 1px;
+    background: rgba(0, 243, 255, 0.5); transform: translate(-50%, -50%); z-index: 2;
+}
+.radar-cross::after {
+    content: ""; position: absolute; top: -35px; left: 50%; width: 1px; height: 70px;
+    background: rgba(0, 243, 255, 0.5); transform: translateX(-50%);
+}
+.radar-core {
+    position: absolute; top: 50%; left: 50%; width: 12px; height: 12px;
+    border-radius: 50%; background: #00f3ff; transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px #00f3ff; animation: corePulse 1s ease-in-out infinite alternate; z-index: 3;
+}
+.hud-loading-text {
+    margin-top: 20px; color: var(--primary-neon); font-family: 'Orbitron', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 4px; animation: textPulse 1s infinite alternate;
+}
+@keyframes radarFastSweep { 100% { transform: rotate(360deg); } }
+@keyframes radarFastReverse { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes textPulse { 0% { opacity: 0.5; text-shadow: 0 0 5px rgba(0,243,255,0.5); } 100% { opacity: 1; text-shadow: 0 0 15px #00f3ff; } }
+@keyframes corePulse { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; } 100% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } }
