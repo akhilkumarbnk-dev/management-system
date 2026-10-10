@@ -23,32 +23,15 @@
 }
 
 /* Background grid and scanlines */
-
 .hud-master-container::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: -2;
-
     background:
-        radial-gradient(
-            ellipse at center,
-            rgba(0, 94, 160, .23),
-            transparent 65%
-        ),
-        repeating-linear-gradient(
-            0deg,
-            transparent 0px,
-            transparent 3px,
-            rgba(0, 150, 255, .075) 4px,
-            transparent 5px
-        ),
-        linear-gradient(
-            135deg,
-            #04172a,
-            #010712 60%,
-            #03182b
-        );
+        radial-gradient(ellipse at center, rgba(0, 94, 160, .23), transparent 65%),
+        repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(0, 150, 255, .075) 4px, transparent 5px),
+        linear-gradient(135deg, #04172a, #010712 60%, #03182b);
 }
 
 .hud-master-container::after {
@@ -57,37 +40,23 @@
     inset: 0;
     pointer-events: none;
     z-index: 20;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent 49.9%,
-            rgba(0, 229, 255, .055) 50%,
-            transparent 50.1%
-        );
-
+    background: linear-gradient(90deg, transparent 49.9%, rgba(0, 229, 255, .055) 50%, transparent 50.1%);
     opacity: .6;
 }
 
 /* =====================================================
    RESPONSIVE HUD CANVAS
 ===================================================== */
-
 .hud-master-container .hud-scaler {
     position: absolute;
     top: 50%;
     left: 50%;
-
     width: 1280px;
     height: 720px;
-
     transform: translate(-50%, -50%) scale(.95);
     transform-origin: center center;
-
     transition: transform .15s ease-out;
 }
-
-/* Corner brackets */
 
 .hud-master-container .hud-corner {
     position: absolute;
@@ -96,971 +65,358 @@
     z-index: 15;
     pointer-events: none;
 }
-
-.hud-master-container .hud-corner.tl {
-    top: 12px;
-    left: 12px;
-    border-top: 2px solid var(--hud-blue);
-    border-left: 2px solid var(--hud-blue);
-}
-
-.hud-master-container .hud-corner.tr {
-    top: 12px;
-    right: 12px;
-    border-top: 2px solid var(--hud-blue);
-    border-right: 2px solid var(--hud-blue);
-}
-
-.hud-master-container .hud-corner.bl {
-    bottom: 12px;
-    left: 12px;
-    border-bottom: 2px solid var(--hud-blue);
-    border-left: 2px solid var(--hud-blue);
-}
-
-.hud-master-container .hud-corner.br {
-    bottom: 12px;
-    right: 12px;
-    border-bottom: 2px solid var(--hud-blue);
-    border-right: 2px solid var(--hud-blue);
-}
+.hud-master-container .hud-corner.tl { top: 12px; left: 12px; border-top: 2px solid var(--hud-blue); border-left: 2px solid var(--hud-blue); }
+.hud-master-container .hud-corner.tr { top: 12px; right: 12px; border-top: 2px solid var(--hud-blue); border-right: 2px solid var(--hud-blue); }
+.hud-master-container .hud-corner.bl { bottom: 12px; left: 12px; border-bottom: 2px solid var(--hud-blue); border-left: 2px solid var(--hud-blue); }
+.hud-master-container .hud-corner.br { bottom: 12px; right: 12px; border-bottom: 2px solid var(--hud-blue); border-right: 2px solid var(--hud-blue); }
 
 /* =====================================================
-   HEADER (Modified for Purix Academy)
+   HEADER
 ===================================================== */
-
 .hud-master-container .top-hud-header {
     position: absolute;
     top: 12px;
     left: 50%;
     transform: translateX(-50%);
-
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 15px;
-
+    gap: 15px; /* Adjusted gap slightly */
     z-index: 12;
 }
 
 .hud-master-container .top-hud-header .satellite-icon {
     color: var(--hud-blue);
-    font-size: 30px;
+    font-size: 30px; /* Adjusted size slightly */
     filter: drop-shadow(0 0 12px var(--hud-blue));
     animation: hudSatelliteFloat 4s ease-in-out infinite;
 }
 
 .hud-master-container .top-hud-header h1 {
-    margin: 0;
-    padding: 6px 45px 8px; /* Adjusted for wider text */
-
-    color: #fff;
-    font-size: 24px; /* Reduced to fit long name */
-    font-weight: 800;
-    letter-spacing: 4px;
-
-    background: linear-gradient(
-        180deg,
-        rgba(0, 229, 255, .12),
-        rgba(0, 0, 0, .65)
-    );
-
+    margin: 0; padding: 6px 45px 8px; /* Adjusted padding for longer text */
+    color: #fff; font-size: 24px; font-weight: 800; letter-spacing: 4px; /* Changed text size and spacing */
+    background: linear-gradient(180deg, rgba(0, 229, 255, .12), rgba(0, 0, 0, .65));
     border-bottom: 2px solid var(--hud-blue);
-
-    /* Fixed pixel calculation so corners stay sharp regardless of text length */
-    clip-path: polygon(
-        0 0,
-        100% 0,
-        calc(100% - 20px) 100%,
-        20px 100%
-    );
-
+    clip-path: polygon(0 0, 100% 0, calc(100% - 20px) 100%, 20px 100%); /* Fixed clip-path for longer text */
     text-shadow: 0 0 14px var(--hud-blue);
 }
 
 .hud-master-container .header-subtitle {
-    position: absolute;
-    top: 69px;
-    left: 50%;
-    transform: translateX(-50%);
-
-    font-size: 8px;
-    letter-spacing: 4px;
-    white-space: nowrap;
-    color: rgba(0, 229, 255, .65);
+    position: absolute; top: 69px; left: 50%; transform: translateX(-50%);
+    font-size: 8px; letter-spacing: 4px; white-space: nowrap; color: rgba(0, 229, 255, .65);
 }
 
 /* =====================================================
    ANIMATION DEFINITIONS
 ===================================================== */
-
-@keyframes hudSpinRight {
-    to { transform: rotate(360deg); }
-}
-
-@keyframes hudSpinLeft {
-    to { transform: rotate(-360deg); }
-}
-
-@keyframes hudPulse {
-    0%, 100% {
-        opacity: .5;
-        filter: brightness(.8);
-    }
-
-    50% {
-        opacity: 1;
-        filter: brightness(1.6);
-    }
-}
-
-@keyframes hudScan {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-@keyframes hudSatelliteFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-@keyframes hudGlow {
-    0%, 100% {
-        box-shadow:
-            0 0 10px rgba(0, 229, 255, .15),
-            inset 0 0 10px rgba(0, 229, 255, .05);
-    }
-
-    50% {
-        box-shadow:
-            0 0 22px rgba(0, 229, 255, .35),
-            inset 0 0 18px rgba(0, 229, 255, .12);
-    }
-}
-
-@keyframes hudDataFlow {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 100px; }
-}
-
-@keyframes hudBarPulse {
-    from { height: 18%; opacity: .5; }
-    to { height: 95%; opacity: 1; }
-}
-
-/* 🔥 Naya Animation: 3D Globe Spinning effect */
-@keyframes hudGlobeGridPan {
-    0% { background-position: 0px 0px; }
-    100% { background-position: 140px 0px; } /* Perfect loop for the grid */
-}
+@keyframes hudSpinRight { to { transform: rotate(360deg); } }
+@keyframes hudSpinLeft { to { transform: rotate(-360deg); } }
+@keyframes hudPulse { 0%, 100% { opacity: .5; filter: brightness(.8); } 50% { opacity: 1; filter: brightness(1.6); } }
+@keyframes hudScan { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes hudSatelliteFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes hudGlow { 0%, 100% { box-shadow: 0 0 10px rgba(0, 229, 255, .15), inset 0 0 10px rgba(0, 229, 255, .05); } 50% { box-shadow: 0 0 22px rgba(0, 229, 255, .35), inset 0 0 18px rgba(0, 229, 255, .12); } }
+@keyframes hudBarPulse { from { height: 18%; opacity: .5; } to { height: 95%; opacity: 1; } }
+/* New animation for the globe */
+@keyframes hudGlobeGridPan { 0% { background-position: 0px 0px; } 100% { background-position: 140px 0px; } }
 
 /* =====================================================
    CENTER REACTOR
 ===================================================== */
-
 .hud-master-container .center-reactor {
     position: absolute;
-    top: 50%;
-    left: 50%;
-
-    width: 590px;
-    height: 590px;
-
+    top: 50%; left: 50%;
+    width: 590px; height: 590px;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: radial-gradient(
-        circle,
-        rgba(0, 70, 125, .17) 0%,
-        rgba(1, 10, 23, .94) 52%,
-        rgba(0, 0, 0, .97) 72%
-    );
-
-    box-shadow:
-        0 0 65px rgba(0, 0, 0, .85),
-        inset 0 0 60px rgba(0, 100, 180, .10);
-
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle, rgba(0, 70, 125, .17) 0%, rgba(1, 10, 23, .94) 52%, rgba(0, 0, 0, .97) 72%);
+    box-shadow: 0 0 65px rgba(0, 0, 0, .85), inset 0 0 60px rgba(0, 100, 180, .10);
     z-index: 3;
 }
 
-/* All reactor rings */
-
+/* Rings will now spin perfectly on axis without wobbling */
 .hud-master-container .reactor-ring {
     position: absolute;
-    top: 50%;
-    left: 50%;
-
-    transform: translate(-50%, -50%);
+    top: 0; bottom: 0; left: 0; right: 0;
+    margin: auto;
     border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+    display: flex; align-items: center; justify-content: center;
     pointer-events: none;
 }
 
 .hud-master-container .ring-1-outer {
-    width: 570px;
-    height: 570px;
-
-    border: 1px dashed rgba(0, 229, 255, .45);
-    box-shadow: 0 0 15px rgba(0, 229, 255, .05);
-
+    width: 570px; height: 570px;
+    border: 1px dashed rgba(0, 229, 255, .45); box-shadow: 0 0 15px rgba(0, 229, 255, .05);
     animation: hudSpinRight 100s linear infinite;
 }
 
 .hud-master-container .ring-2-binary {
-    width: 535px;
-    height: 535px;
-
+    width: 535px; height: 535px;
     border: 2px dotted rgba(0, 229, 255, .25);
-
     animation: hudSpinLeft 85s linear infinite;
 }
 
-.hud-master-container .ring-2-binary::before,
-.hud-master-container .ring-2-binary::after {
-    position: absolute;
-    left: 50%;
-
-    color: rgba(0, 229, 255, .7);
-    font-size: 8px;
-    letter-spacing: 3px;
-    white-space: nowrap;
+.hud-master-container .ring-2-binary::before, .hud-master-container .ring-2-binary::after {
+    position: absolute; left: 50%; color: rgba(0, 229, 255, .7); font-size: 8px; letter-spacing: 3px; white-space: nowrap;
 }
-
-.hud-master-container .ring-2-binary::before {
-    content: "0100 0111 0100 0011 1110 0101 1000 0000";
-    top: -7px;
-    transform: translateX(-50%);
-}
-
-.hud-master-container .ring-2-binary::after {
-    content: "1110 0100 0011 1110 0101 1000 0101";
-    bottom: -7px;
-    transform: translateX(-50%);
-}
+.hud-master-container .ring-2-binary::before { content: "0100 0111 0100 0011 1110 0101 1000 0000"; top: -7px; transform: translateX(-50%); }
+.hud-master-container .ring-2-binary::after { content: "1110 0100 0011 1110 0101 1000 0101"; bottom: -7px; transform: translateX(-50%); }
 
 .hud-master-container .ring-3-ticks {
-    width: 490px;
-    height: 490px;
-
-    background: conic-gradient(
-        from 0deg,
-        var(--hud-blue) 0deg 1deg,
-        transparent 1deg 5deg,
-        rgba(0, 120, 220, .8) 5deg 6deg,
-        transparent 6deg 12deg
-    );
-
-    -webkit-mask-image: radial-gradient(
-        transparent 70%,
-        #000 71%,
-        #000 73%,
-        transparent 74%
-    );
-
-    mask-image: radial-gradient(
-        transparent 70%,
-        #000 71%,
-        #000 73%,
-        transparent 74%
-    );
-
+    width: 490px; height: 490px;
+    background: conic-gradient(from 0deg, var(--hud-blue) 0deg 1deg, transparent 1deg 5deg, rgba(0, 120, 220, .8) 5deg 6deg, transparent 6deg 12deg);
+    -webkit-mask-image: radial-gradient(transparent 70%, #000 71%, #000 73%, transparent 74%);
+    mask-image: radial-gradient(transparent 70%, #000 71%, #000 73%, transparent 74%);
     animation: hudSpinRight 45s linear infinite;
 }
 
 .hud-master-container .ring-4-thick {
-    width: 425px;
-    height: 425px;
-
-    border: 13px solid rgba(0, 229, 255, .09);
-    border-top-color: rgba(0, 229, 255, .9);
-    border-bottom-color: rgba(0, 229, 255, .85);
-
-    box-shadow:
-        0 0 15px rgba(0, 229, 255, .12),
-        inset 0 0 15px rgba(0, 229, 255, .08);
-
+    width: 425px; height: 425px;
+    border: 13px solid rgba(0, 229, 255, .09); border-top-color: rgba(0, 229, 255, .9); border-bottom-color: rgba(0, 229, 255, .85);
+    box-shadow: 0 0 15px rgba(0, 229, 255, .12), inset 0 0 15px rgba(0, 229, 255, .08);
     animation: hudSpinLeft 28s linear infinite;
 }
 
 .hud-master-container .ring-5-inner-dashed {
-    width: 355px;
-    height: 355px;
-
-    border: 3px dashed rgba(0, 229, 255, .75);
-
-    box-shadow: 0 0 15px rgba(0, 229, 255, .10);
-
+    width: 355px; height: 355px;
+    border: 3px dashed rgba(0, 229, 255, .75); box-shadow: 0 0 15px rgba(0, 229, 255, .10);
     animation: hudSpinRight 20s linear infinite;
 }
 
 .hud-master-container .ring-6-core {
-    width: 285px;
-    height: 285px;
-
+    width: 285px; height: 285px;
     border: 2px solid var(--hud-blue);
-
-    background: radial-gradient(
-        circle,
-        rgba(0, 130, 220, .22),
-        rgba(0, 30, 65, .25) 55%,
-        transparent 75%
-    );
-
-    box-shadow:
-        0 0 25px rgba(0, 229, 255, .38),
-        inset 0 0 35px rgba(0, 229, 255, .20);
+    background: radial-gradient(circle, rgba(0, 130, 220, .22), rgba(0, 30, 65, .25) 55%, transparent 75%);
+    box-shadow: 0 0 25px rgba(0, 229, 255, .38), inset 0 0 35px rgba(0, 229, 255, .20);
 }
 
 .hud-master-container .ring-7-core {
-    width: 225px;
-    height: 225px;
-
+    width: 225px; height: 225px;
     border: 1px solid rgba(0, 229, 255, .45);
-    border-radius: 50%;
-
-    background: repeating-conic-gradient(
-        from 0deg,
-        rgba(0, 229, 255, .35) 0deg 1deg,
-        transparent 1deg 10deg
-    );
-
-    -webkit-mask-image: radial-gradient(
-        transparent 85%,
-        #000 87%
-    );
-
-    mask-image: radial-gradient(
-        transparent 85%,
-        #000 87%
-    );
-
+    background: repeating-conic-gradient(from 0deg, rgba(0, 229, 255, .35) 0deg 1deg, transparent 1deg 10deg);
+    -webkit-mask-image: radial-gradient(transparent 85%, #000 87%); mask-image: radial-gradient(transparent 85%, #000 87%);
     animation: hudSpinLeft 35s linear infinite;
 }
 
-/* Center logo */
-
 .hud-master-container .core-logo {
-    position: relative;
-    z-index: 8;
-
-    width: 132px;
-    height: 132px;
-
-    object-fit: contain;
-    border-radius: 50%;
-
-    border: 2px solid rgba(255, 255, 255, .85);
-
-    background: #020b18;
-
-    box-shadow:
-        0 0 15px rgba(0, 229, 255, .9),
-        0 0 45px rgba(0, 150, 255, .5);
-
+    position: relative; z-index: 8; width: 132px; height: 132px;
+    object-fit: contain; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .85);
+    background: #020b18; box-shadow: 0 0 15px rgba(0, 229, 255, .9), 0 0 45px rgba(0, 150, 255, .5);
     animation: hudGlow 4s ease-in-out infinite;
 }
 
 /* =====================================================
    TOP LEFT RADAR
 ===================================================== */
-
 .hud-master-container .top-left-radar {
-    position: absolute;
-    top: 35px;
-    left: 30px;
-
-    width: 220px;
-    height: 220px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+    position: absolute; top: 35px; left: 30px;
+    width: 220px; height: 220px;
+    display: flex; align-items: center; justify-content: center;
     border: 1px solid rgba(0, 229, 255, .65);
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(0, 229, 255, .08),
-            rgba(0, 0, 0, .6)
-        );
-
-    box-shadow:
-        inset 0 0 25px rgba(0, 229, 255, .08),
-        0 0 15px rgba(0, 229, 255, .06);
-
-    clip-path: polygon(
-        0 0,
-        88% 0,
-        100% 13%,
-        100% 100%,
-        12% 100%,
-        0 88%
-    );
-
+    background: linear-gradient(135deg, rgba(0, 229, 255, .08), rgba(0, 0, 0, .6));
+    box-shadow: inset 0 0 25px rgba(0, 229, 255, .08), 0 0 15px rgba(0, 229, 255, .06);
+    clip-path: polygon(0 0, 88% 0, 100% 13%, 100% 100%, 12% 100%, 0 88%);
     z-index: 5;
 }
 
 .hud-master-container .radar-circle {
-    position: absolute;
-    width: 174px;
-    height: 174px;
-    border-radius: 50%;
-
+    position: absolute; width: 174px; height: 174px; border-radius: 50%;
     border: 2px solid rgba(0, 229, 255, .55);
-
-    background:
-        radial-gradient(
-            circle,
-            transparent 19%,
-            rgba(0, 229, 255, .25) 20%,
-            transparent 21%
-        ),
-        repeating-radial-gradient(
-            circle,
-            transparent 0 24px,
-            rgba(0, 229, 255, .22) 25px 26px
-        );
+    background: radial-gradient(circle, transparent 19%, rgba(0, 229, 255, .25) 20%, transparent 21%),
+                repeating-radial-gradient(circle, transparent 0 24px, rgba(0, 229, 255, .22) 25px 26px);
 }
-
 .hud-master-container .radar-circle::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-
-    background: conic-gradient(
-        from 0deg,
-        transparent 0deg,
-        rgba(0, 229, 255, .30) 30deg,
-        transparent 80deg
-    );
-
+    content: ""; position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0deg, rgba(0, 229, 255, .30) 30deg, transparent 80deg);
     animation: hudScan 4s linear infinite;
 }
-
 .hud-master-container .radar-circle::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-
-    width: 28px;
-    height: 28px;
-
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-
-    background: var(--hud-blue);
-
-    box-shadow:
-        0 0 10px var(--hud-blue),
-        0 0 30px var(--hud-blue);
+    content: ""; position: absolute; top: 50%; left: 50%; width: 28px; height: 28px;
+    transform: translate(-50%, -50%); border-radius: 50%; background: var(--hud-blue);
+    box-shadow: 0 0 10px var(--hud-blue), 0 0 30px var(--hud-blue);
 }
-
 .hud-master-container .radar-crosshair {
-    position: absolute;
-    width: 195px;
-    height: 195px;
-    border-radius: 50%;
-
-    border: 1px dashed rgba(0, 229, 255, .35);
-
-    animation: hudSpinRight 20s linear infinite;
+    position: absolute; width: 195px; height: 195px; border-radius: 50%;
+    border: 1px dashed rgba(0, 229, 255, .35); animation: hudSpinRight 20s linear infinite;
 }
 
 /* =====================================================
-   TOP RIGHT DIGITAL GLOBE (Now Spinning 3D Effect)
+   TOP RIGHT DIGITAL GLOBE
 ===================================================== */
-
 .hud-master-container .top-right-globe {
-    position: absolute;
-    top: 30px;
-    right: 30px;
-
-    width: 220px;
-    height: 230px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-
+    position: absolute; top: 30px; right: 30px;
+    width: 220px; height: 230px;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
     z-index: 5;
 }
-
 .hud-master-container .globe-sphere {
-    position: relative;
-
-    width: 175px;
-    height: 175px;
-
-    border-radius: 50%;
-    overflow: hidden;
-
-    border: 1px solid rgba(0, 229, 255, .55);
-
-    background:
-        repeating-linear-gradient(
-            0deg,
-            transparent 0px,
-            transparent 12px,
-            rgba(0, 229, 255, .30) 13px,
-            transparent 14px
-        ),
-        repeating-linear-gradient(
-            90deg,
-            transparent 0px,
-            transparent 12px,
-            rgba(0, 229, 255, .30) 13px,
-            transparent 14px
-        );
-
-    box-shadow:
-        inset 0 0 35px rgba(0, 120, 255, .35),
-        0 0 15px rgba(0, 229, 255, .12);
-        
-    /* 🔥 SPINNING GLOBE EFFECT APPLIED HERE */
+    position: relative; width: 175px; height: 175px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(0, 229, 255, .55);
+    background: repeating-linear-gradient(0deg, transparent 0px, transparent 12px, rgba(0, 229, 255, .30) 13px, transparent 14px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 12px, rgba(0, 229, 255, .30) 13px, transparent 14px);
+    box-shadow: inset 0 0 35px rgba(0, 120, 255, .35), 0 0 15px rgba(0, 229, 255, .12);
+    /* Spinning Globe Effect */
     animation: hudGlobeGridPan 12s linear infinite;
 }
-
 .hud-master-container .globe-sphere::before {
-    content: "";
-    position: absolute;
-    inset: -20px;
-
-    border-radius: 50%;
-    border: 1px dashed rgba(0, 229, 255, .65);
-
-    transform: rotateX(65deg);
-    animation: hudSpinRight 14s linear infinite;
+    content: ""; position: absolute; inset: -20px; border-radius: 50%; border: 1px dashed rgba(0, 229, 255, .65);
+    transform: rotateX(65deg); animation: hudSpinRight 14s linear infinite;
 }
-
 .hud-master-container .globe-sphere::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-
-    width: 60%;
-    transform: translateX(-50%);
-
-    border-left: 1px solid rgba(0, 229, 255, .6);
-    border-right: 1px solid rgba(0, 229, 255, .6);
-
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0, 229, 255, .25);
+    content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 60%; transform: translateX(-50%);
+    border-left: 1px solid rgba(0, 229, 255, .6); border-right: 1px solid rgba(0, 229, 255, .6);
+    border-radius: 50%; box-shadow: 0 0 10px rgba(0, 229, 255, .25);
 }
-
 .hud-master-container .globe-chart {
-    width: 100%;
-    height: 38px;
-
-    display: flex;
-    align-items: flex-end;
-    gap: 3px;
-
-    border-bottom: 1px solid rgba(0, 229, 255, .5);
+    width: 100%; height: 38px; display: flex; align-items: flex-end; gap: 3px; border-bottom: 1px solid rgba(0, 229, 255, .5);
 }
-
 .hud-master-container .globe-chart div {
-    flex: 1;
-
-    height: 35%;
-    background: linear-gradient(
-        to top,
-        #0077ff,
-        var(--hud-blue)
-    );
-
-    animation: hudBarPulse 1s ease-in-out infinite alternate;
+    flex: 1; height: 35%; background: linear-gradient(to top, #0077ff, var(--hud-blue)); animation: hudBarPulse 1s ease-in-out infinite alternate;
 }
 
 /* =====================================================
    SIDE DATA CARDS
 ===================================================== */
-
 .hud-master-container .side-cards-container {
     position: absolute;
-    top: 50%;
-
+    top: 58%;
     transform: translateY(-50%);
-
-    display: flex;
-    flex-direction: column;
-    gap: 35px;
-
+    display: flex; flex-direction: column; gap: 35px;
     z-index: 10;
 }
-
-.hud-master-container .left-cards {
-    left: 25px;
-}
-
-.hud-master-container .right-cards {
-    right: 25px;
-}
+.hud-master-container .left-cards { left: 25px; }
+.hud-master-container .right-cards { right: 25px; }
 
 .hud-master-container .hud-block {
-    box-sizing: border-box;
-
-    position: relative;
-
-    width: 280px;
-    height: 112px;
-
-    padding: 12px 16px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    background:
-        linear-gradient(
-            110deg,
-            rgba(0, 229, 255, .07),
-            rgba(0, 10, 25, .92) 45%,
-            rgba(0, 100, 180, .08)
-        );
-
+    box-sizing: border-box; position: relative;
+    width: 280px; height: 112px; padding: 12px 16px;
+    display: flex; flex-direction: column; justify-content: center;
+    background: linear-gradient(110deg, rgba(0, 229, 255, .07), rgba(0, 10, 25, .92) 45%, rgba(0, 100, 180, .08));
     border: 1px solid rgba(0, 229, 255, .7);
-
-    clip-path: polygon(
-        18px 0,
-        100% 0,
-        100% calc(100% - 18px),
-        calc(100% - 18px) 100%,
-        0 100%,
-        0 18px
-    );
-
+    clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
     animation: hudGlow 7s ease-in-out infinite;
 }
-
 .hud-master-container .hud-block::before {
-    content: "";
-    position: absolute;
-
-    left: 4px;
-    top: 10px;
-    bottom: 10px;
-
-    width: 2px;
-
-    background: var(--hud-blue);
-    box-shadow: 0 0 8px var(--hud-blue);
+    content: ""; position: absolute; left: 4px; top: 10px; bottom: 10px; width: 2px;
+    background: var(--hud-blue); box-shadow: 0 0 8px var(--hud-blue);
 }
-
 .hud-master-container .block-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-
-    padding-bottom: 5px;
-    margin-bottom: 6px;
-
-    color: #eafaff;
-
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: .8px;
-
+    display: flex; align-items: center; justify-content: space-between; gap: 6px;
+    padding-bottom: 5px; margin-bottom: 6px; color: #eafaff; font-size: 10px; font-weight: 600; letter-spacing: .8px;
     border-bottom: 1px solid rgba(0, 229, 255, .4);
 }
-
-.hud-master-container .block-title i {
-    color: var(--hud-blue);
-    margin-right: 5px;
-}
-
+.hud-master-container .block-title i { color: var(--hud-blue); margin-right: 5px; }
 .hud-master-container .block-value {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    color: var(--hud-blue);
-
-    font-size: 27px;
-    font-weight: 800;
-
+    display: flex; align-items: center; gap: 10px; color: var(--hud-blue); font-size: 27px; font-weight: 800;
     text-shadow: 0 0 10px rgba(0, 229, 255, .65);
 }
+.hud-master-container .mini-eq { display: flex; align-items: flex-end; height: 13px; gap: 3px; margin-top: 5px; }
+.hud-master-container .mini-eq span { flex: 1; height: 40%; background: var(--hud-blue); box-shadow: 0 0 5px rgba(0, 229, 255, .35); animation: hudBarPulse .65s ease-in-out infinite alternate; }
 
-.hud-master-container .mini-eq {
-    display: flex;
-    align-items: flex-end;
-
-    height: 13px;
-    gap: 3px;
-
-    margin-top: 5px;
-}
-
-.hud-master-container .mini-eq span {
-    flex: 1;
-
-    height: 40%;
-
-    background: var(--hud-blue);
-    box-shadow: 0 0 5px rgba(0, 229, 255, .35);
-
-    animation: hudBarPulse .65s ease-in-out infinite alternate;
-}
-
-/* Overdue alert */
-
-.hud-master-container .hud-block.alert-block {
-    border-color: #ff245d;
-}
-
-.hud-master-container .hud-block.alert-block::before {
-    background: #ff245d;
-    box-shadow: 0 0 8px #ff245d;
-}
-
-.hud-master-container .hud-block.alert-block .block-title {
-    color: #ff6688;
-    border-color: rgba(255, 36, 93, .5);
-}
-
+.hud-master-container .hud-block.alert-block { border-color: #ff245d; }
+.hud-master-container .hud-block.alert-block::before { background: #ff245d; box-shadow: 0 0 8px #ff245d; }
+.hud-master-container .hud-block.alert-block .block-title { color: #ff6688; border-color: rgba(255, 36, 93, .5); }
 .hud-master-container .hud-block.alert-block .block-title i,
-.hud-master-container .hud-block.alert-block .block-value {
-    color: #ff245d;
-    text-shadow: 0 0 10px rgba(255, 36, 93, .6);
-}
-
-.hud-master-container .hud-block.alert-block .mini-eq span {
-    background: #ff245d;
-}
+.hud-master-container .hud-block.alert-block .block-value { color: #ff245d; text-shadow: 0 0 10px rgba(255, 36, 93, .6); }
+.hud-master-container .hud-block.alert-block .mini-eq span { background: #ff245d; }
 
 /* =====================================================
    BOTTOM CIRCULAR CONTROLS
 ===================================================== */
-
 .hud-master-container .bottom-circles-container {
     position: absolute;
-    bottom: 28px;
+    bottom: 35px;
     left: 50%;
-
     transform: translateX(-50%);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 42px;
-
+    display: flex; align-items: center; justify-content: center;
+    gap: 75px;
     z-index: 12;
 }
 
 .hud-master-container .circle-btn {
     position: relative;
-
-    width: 82px;
-    height: 82px;
-
+    width: 95px;
+    height: 95px;
     flex-shrink: 0;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
     border-radius: 50%;
-
-    background: rgba(2, 11, 24, .94);
-    border: 2px solid rgba(0, 229, 255, .6);
-
+    background: rgba(2, 11, 24, .94); border: 2px solid rgba(0, 229, 255, .6);
     cursor: pointer;
-
-    box-shadow:
-        inset 0 0 16px rgba(0, 229, 255, .12),
-        0 0 12px rgba(0, 229, 255, .08);
-
-    transition:
-        background .25s ease,
-        box-shadow .25s ease,
-        border-color .25s ease;
+    box-shadow: inset 0 0 16px rgba(0, 229, 255, .12), 0 0 12px rgba(0, 229, 255, .08);
+    transition: background .25s ease, box-shadow .25s ease, border-color .25s ease;
 }
 
 .hud-master-container .circle-btn::before {
-    content: "";
-
-    position: absolute;
-    inset: -9px;
-
-    border-radius: 50%;
-
-    border: 2px solid transparent;
-    border-top-color: var(--hud-blue);
-    border-bottom-color: var(--hud-blue);
-
+    content: ""; position: absolute;
+    inset: -12px;
+    border-radius: 50%; border: 2px solid transparent; border-top-color: var(--hud-blue); border-bottom-color: var(--hud-blue);
     animation: hudSpinRight 8s linear infinite;
 }
 
 .hud-master-container .circle-btn::after {
-    content: "";
-
-    position: absolute;
-    inset: 5px;
-
-    border-radius: 50%;
-    border: 1px dashed rgba(0, 229, 255, .65);
-
+    content: ""; position: absolute;
+    inset: 6px;
+    border-radius: 50%; border: 1px dashed rgba(0, 229, 255, .65);
     animation: hudSpinLeft 9s linear infinite;
 }
 
 .hud-master-container .circle-btn i {
-    position: relative;
-    z-index: 2;
-
+    position: relative; z-index: 2;
     color: #fff;
-    font-size: 22px;
-
+    font-size: 26px;
     margin-bottom: 5px;
-
     filter: drop-shadow(0 0 5px var(--hud-blue));
 }
 
 .hud-master-container .circle-btn span {
-    position: relative;
-    z-index: 2;
-
+    position: relative; z-index: 2;
     color: var(--hud-blue);
-
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 1px;
-
-    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
 }
 
 .hud-master-container .circle-btn:hover {
-    background: rgba(0, 140, 200, .22);
-    border-color: #fff;
-
-    box-shadow:
-        0 0 25px rgba(0, 229, 255, .35),
-        inset 0 0 20px rgba(0, 229, 255, .18);
+    background: rgba(0, 140, 200, .22); border-color: #fff;
+    box-shadow: 0 0 25px rgba(0, 229, 255, .35), inset 0 0 20px rgba(0, 229, 255, .18);
 }
 
 /* =====================================================
    BOTTOM DECORATION
 ===================================================== */
-
 .hud-master-container .bottom-dec {
-    position: absolute;
-
-    bottom: 0;
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    width: 340px;
-    height: 20px;
-
-    border-top: 2px solid rgba(0, 229, 255, .7);
-    border-left: 2px solid rgba(0, 229, 255, .7);
-    border-right: 2px solid rgba(0, 229, 255, .7);
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 340px; height: 20px;
+    border-top: 2px solid rgba(0, 229, 255, .7); border-left: 2px solid rgba(0, 229, 255, .7); border-right: 2px solid rgba(0, 229, 255, .7);
 }
-
 .hud-master-container .bottom-dec::before {
-    content: "0100 0101 0011 0000 1111 0100";
-
-    position: absolute;
-    top: -15px;
-    left: 10px;
-
-    color: rgba(0, 229, 255, .8);
-    font-size: 8px;
-    letter-spacing: 2px;
+    content: "0100 0101 0011 0000 1111 0100"; position: absolute; top: -15px; left: 10px;
+    color: rgba(0, 229, 255, .8); font-size: 8px; letter-spacing: 2px;
 }
 
 /* =====================================================
    STATUS INDICATORS
 ===================================================== */
-
 .hud-master-container .hud-status {
-    position: absolute;
-
-    top: 18px;
-    left: 50%;
-
-    margin-top: 53px;
-    transform: translateX(-50%);
-
-    color: rgba(0, 229, 255, .65);
-    font-size: 8px;
-    letter-spacing: 2px;
-
-    white-space: nowrap;
-    z-index: 10;
+    position: absolute; top: 18px; left: 50%; margin-top: 53px; transform: translateX(-50%);
+    color: rgba(0, 229, 255, .65); font-size: 8px; letter-spacing: 2px; white-space: nowrap; z-index: 10;
 }
-
 .hud-master-container .hud-status .status-dot {
-    display: inline-block;
-
-    width: 6px;
-    height: 6px;
-
-    margin-right: 7px;
-
-    border-radius: 50%;
-    background: #00ff99;
-
-    box-shadow: 0 0 8px #00ff99;
-
-    animation: hudPulse 1.5s infinite;
-}
-
-/* Reduced motion accessibility */
-
-@media (prefers-reduced-motion: reduce) {
-    .hud-master-container *,
-    .hud-master-container *::before,
-    .hud-master-container *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
+    display: inline-block; width: 6px; height: 6px; margin-right: 7px; border-radius: 50%;
+    background: #00ff99; box-shadow: 0 0 8px #00ff99; animation: hudPulse 1.5s infinite;
 }
 </style>
 
-
 <div class="hud-master-container" id="hudContainer">
-
-    <div class="hud-corner tl"></div>
-    <div class="hud-corner tr"></div>
-    <div class="hud-corner bl"></div>
-    <div class="hud-corner br"></div>
+    <div class="hud-corner tl"></div><div class="hud-corner tr"></div>
+    <div class="hud-corner bl"></div><div class="hud-corner br"></div>
 
     <div class="hud-scaler" id="hudScaler">
-
         <!-- HEADER -->
         <div class="top-hud-header">
             <i class="fa-solid fa-satellite satellite-icon"></i>
             <h1>PURIX ACADEMY</h1>
         </div>
-
-        <div class="header-subtitle">
-            CENTRAL COMMAND // SYSTEM PROTOCOL
-        </div>
-
-        <div class="hud-status">
-            <span class="status-dot"></span>
-            SYSTEM ONLINE
-        </div>
-
+        <div class="header-subtitle">CENTRAL COMMAND // SYSTEM PROTOCOL</div>
+        <div class="hud-status"><span class="status-dot"></span>SYSTEM ONLINE</div>
 
         <!-- TOP LEFT RADAR -->
         <div class="top-left-radar">
@@ -1068,88 +424,35 @@
             <div class="radar-crosshair"></div>
         </div>
 
-
-        <!-- TOP RIGHT DIGITAL GLOBE (Now Spinning!) -->
+        <!-- TOP RIGHT DIGITAL GLOBE -->
         <div class="top-right-globe">
             <div class="globe-sphere"></div>
-
             <div class="globe-chart">
-                <div style="animation-delay:.1s"></div>
-                <div style="animation-delay:.3s"></div>
-                <div style="animation-delay:.5s"></div>
-                <div style="animation-delay:.2s"></div>
-                <div style="animation-delay:.6s"></div>
-                <div style="animation-delay:.4s"></div>
-                <div style="animation-delay:.1s"></div>
-                <div style="animation-delay:.7s"></div>
-                <div style="animation-delay:.3s"></div>
-                <div style="animation-delay:.5s"></div>
-                <div style="animation-delay:.2s"></div>
-                <div style="animation-delay:.6s"></div>
+                <div style="animation-delay:.1s"></div><div style="animation-delay:.3s"></div>
+                <div style="animation-delay:.5s"></div><div style="animation-delay:.2s"></div>
+                <div style="animation-delay:.6s"></div><div style="animation-delay:.4s"></div>
+                <div style="animation-delay:.1s"></div><div style="animation-delay:.7s"></div>
+                <div style="animation-delay:.3s"></div><div style="animation-delay:.5s"></div>
+                <div style="animation-delay:.2s"></div><div style="animation-delay:.6s"></div>
             </div>
         </div>
-
 
         <!-- LEFT DASHBOARD CARDS -->
         <div class="side-cards-container left-cards">
-
             <div class="hud-block">
-
-                <div class="block-title">
-                    <span>
-                        <i class="fa-solid fa-user-plus"></i>
-                        TODAY'S ADMISSIONS
-                    </span>
-                    <span>01</span>
-                </div>
-
-                <div class="block-value" id="homeMonthAdmission">
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                </div>
-
-                <div class="mini-eq">
-                    <span style="animation-delay:.1s"></span>
-                    <span style="animation-delay:.4s"></span>
-                    <span style="animation-delay:.2s"></span>
-                    <span style="animation-delay:.6s"></span>
-                    <span style="animation-delay:.3s"></span>
-                    <span style="animation-delay:.5s"></span>
-                </div>
-
+                <div class="block-title"><span><i class="fa-solid fa-user-plus"></i>TODAY'S ADMISSIONS</span><span>01</span></div>
+                <div class="block-value" id="homeMonthAdmission"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <div class="mini-eq"><span style="animation-delay:.1s"></span><span style="animation-delay:.4s"></span><span style="animation-delay:.2s"></span><span style="animation-delay:.6s"></span><span style="animation-delay:.3s"></span><span style="animation-delay:.5s"></span></div>
             </div>
-
-
             <div class="hud-block">
-
-                <div class="block-title">
-                    <span>
-                        <i class="fa-solid fa-users"></i>
-                        ACTIVE STUDENTS
-                    </span>
-                    <span>02</span>
-                </div>
-
-                <div class="block-value" id="homeActiveStudents">
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                </div>
-
-                <div class="mini-eq">
-                    <span style="animation-delay:.5s"></span>
-                    <span style="animation-delay:.2s"></span>
-                    <span style="animation-delay:.8s"></span>
-                    <span style="animation-delay:.1s"></span>
-                    <span style="animation-delay:.4s"></span>
-                    <span style="animation-delay:.7s"></span>
-                </div>
-
+                <div class="block-title"><span><i class="fa-solid fa-users"></i>ACTIVE STUDENTS</span><span>02</span></div>
+                <div class="block-value" id="homeActiveStudents"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <div class="mini-eq"><span style="animation-delay:.5s"></span><span style="animation-delay:.2s"></span><span style="animation-delay:.8s"></span><span style="animation-delay:.1s"></span><span style="animation-delay:.4s"></span><span style="animation-delay:.7s"></span></div>
             </div>
-
         </div>
-
 
         <!-- CENTER REACTOR -->
         <div class="center-reactor">
-
             <div class="reactor-ring ring-1-outer"></div>
             <div class="reactor-ring ring-2-binary"></div>
             <div class="reactor-ring ring-3-ticks"></div>
@@ -1157,124 +460,42 @@
             <div class="reactor-ring ring-5-inner-dashed"></div>
             <div class="reactor-ring ring-6-core"></div>
             <div class="reactor-ring ring-7-core"></div>
-
-            <img
-                src="logo.png"
-                class="core-logo"
-                alt="Purix Academy Logo"
-            >
-
+            <img src="logo.png" class="core-logo" alt="Purix Academy Logo">
         </div>
-
 
         <!-- RIGHT DASHBOARD CARDS -->
         <div class="side-cards-container right-cards">
-
             <div class="hud-block">
-
-                <div class="block-title">
-                    <span>
-                        <i class="fa-solid fa-wallet"></i>
-                        TODAY'S COLLECTION
-                    </span>
-                    <span>03</span>
-                </div>
-
-                <div class="block-value" id="homeTodayCollection">
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                </div>
-
-                <div class="mini-eq">
-                    <span style="animation-delay:.3s"></span>
-                    <span style="animation-delay:.7s"></span>
-                    <span style="animation-delay:.1s"></span>
-                    <span style="animation-delay:.5s"></span>
-                    <span style="animation-delay:.4s"></span>
-                    <span style="animation-delay:.2s"></span>
-                </div>
-
+                <div class="block-title"><span><i class="fa-solid fa-wallet"></i>TODAY'S COLLECTION</span><span>03</span></div>
+                <div class="block-value" id="homeTodayCollection"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <div class="mini-eq"><span style="animation-delay:.3s"></span><span style="animation-delay:.7s"></span><span style="animation-delay:.1s"></span><span style="animation-delay:.5s"></span><span style="animation-delay:.4s"></span><span style="animation-delay:.2s"></span></div>
             </div>
-
-
-            <div
-                class="hud-block alert-block"
-                onclick="loadModule('alerts')"
-                style="cursor:pointer;"
-                title="Open overdue alerts"
-            >
-
-                <div class="block-title">
-                    <span>
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        OVERDUE ALERTS
-                    </span>
-                    <span>04</span>
-                </div>
-
-                <div class="block-value" id="alertCount">
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                </div>
-
-                <div class="mini-eq">
-                    <span style="animation-delay:.2s"></span>
-                    <span style="animation-delay:.6s"></span>
-                    <span style="animation-delay:.3s"></span>
-                    <span style="animation-delay:.8s"></span>
-                    <span style="animation-delay:.1s"></span>
-                    <span style="animation-delay:.4s"></span>
-                </div>
-
+            <div class="hud-block alert-block" onclick="loadModule('alerts')" style="cursor:pointer;" title="Open overdue alerts">
+                <div class="block-title"><span><i class="fa-solid fa-triangle-exclamation"></i>OVERDUE ALERTS</span><span>04</span></div>
+                <div class="block-value" id="alertCount"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <div class="mini-eq"><span style="animation-delay:.2s"></span><span style="animation-delay:.6s"></span><span style="animation-delay:.3s"></span><span style="animation-delay:.8s"></span><span style="animation-delay:.1s"></span><span style="animation-delay:.4s"></span></div>
             </div>
-
         </div>
-
 
         <!-- BOTTOM ACTION BUTTONS -->
         <div class="bottom-circles-container">
-
-            <div
-                class="circle-btn"
-                onclick="loadModule('admission')"
-                title="Open Admissions"
-            >
-                <i class="fa-solid fa-id-card-clip"></i>
-                <span>Admit</span>
+            <div class="circle-btn" onclick="loadModule('admission')" title="Open Admissions">
+                <i class="fa-solid fa-id-card-clip"></i><span>Admit</span>
             </div>
-
-            <div
-                class="circle-btn"
-                onclick="loadModule('payment')"
-                title="Open Fee Management"
-            >
-                <i class="fa-solid fa-hand-holding-dollar"></i>
-                <span>Fee</span>
+            <div class="circle-btn" onclick="loadModule('payment')" title="Open Fee Management">
+                <i class="fa-solid fa-hand-holding-dollar"></i><span>Fee</span>
             </div>
-
-            <div
-                class="circle-btn"
-                onclick="loadModule('profile')"
-                title="Search Students"
-            >
-                <i class="fa-solid fa-magnifying-glass-chart"></i>
-                <span>Search</span>
+            <div class="circle-btn" onclick="loadModule('profile')" title="Search Students">
+                <i class="fa-solid fa-magnifying-glass-chart"></i><span>Search</span>
             </div>
-
-            <div
-                class="circle-btn"
-                onclick="loadModule('reports')"
-                title="Open Reports"
-            >
-                <i class="fa-solid fa-file-invoice"></i>
-                <span>Reports</span>
+            <div class="circle-btn" onclick="loadModule('reports')" title="Open Reports">
+                <i class="fa-solid fa-file-invoice"></i><span>Reports</span>
             </div>
-
         </div>
 
         <div class="bottom-dec"></div>
-
     </div>
 </div>
-
 
 <script>
 (function () {
@@ -1283,7 +504,6 @@
     /* =================================================
        1. RESPONSIVE DESKTOP HUD SCALING
     ================================================= */
-
     const container = document.getElementById("hudContainer");
     const scaler = document.getElementById("hudScaler");
 
@@ -1298,236 +518,123 @@
 
         if (!width || !height) return;
 
-        /*
-         * Existing 1280x720 canvas retained.
-         * Scale to fit available laptop workspace.
-         */
         const scaleX = width / BASE_WIDTH;
         const scaleY = height / BASE_HEIGHT;
-
         const scale = Math.min(scaleX, scaleY) * 0.95;
 
-        scaler.style.transform =
-            "translate(-50%, -50%) scale(" + scale + ")";
+        scaler.style.transform = "translate(-50%, -50%) scale(" + scale + ")";
     }
 
     window.addEventListener("resize", scaleHUD);
-
     if (typeof ResizeObserver !== "undefined") {
         const hudResizeObserver = new ResizeObserver(scaleHUD);
         hudResizeObserver.observe(container);
     }
-
     requestAnimationFrame(scaleHUD);
 
 
     /* =================================================
-       2. EXISTING CRM DATA FETCHING
-       Existing API_URL is intentionally preserved.
+       2. EXISTING CRM DATA FETCHING (INTEGRATED)
     ================================================= */
-
     const CACHE_DURATION_MS = 5 * 60 * 1000;
 
     function safeJSON(value) {
-        try {
-            return JSON.parse(value);
-        } catch (error) {
-            return null;
-        }
+        try { return JSON.parse(value); } catch (error) { return null; }
     }
 
     function setText(id, value) {
         const element = document.getElementById(id);
-
-        if (element) {
-            element.textContent = value;
-        }
-    }
-
-    function fetchJSON(url) {
-        return fetch(url).then(function (response) {
-            if (!response.ok) {
-                throw new Error("HTTP " + response.status);
-            }
-
-            return response.json();
-        });
+        if (element) { element.textContent = value; }
     }
 
     function loadDashboardData() {
         const now = Date.now();
 
         /* ----- DASHBOARD STATISTICS ----- */
+        const cachedStatsString = localStorage.getItem("purix_home_stats");
+        let cachedStats = null;
+        if (cachedStatsString) { cachedStats = safeJSON(cachedStatsString); }
 
-        const cachedStats = safeJSON(
-            localStorage.getItem("purix_home_stats")
-        );
-
-        if (
-            cachedStats &&
-            cachedStats.timestamp &&
-            cachedStats.data &&
-            now - cachedStats.timestamp < CACHE_DURATION_MS
-        ) {
+        if (cachedStats && cachedStats.timestamp && cachedStats.data && now - cachedStats.timestamp < CACHE_DURATION_MS) {
             updateStatsUI(cachedStats.data);
         } else {
-            fetchJSON(API_URL + "?action=getStats")
-                .then(function (data) {
+            fetch(API_URL + "?action=getStats")
+                .then(res => res.json())
+                .then(data => {
                     if (data.status === "success" && data.data) {
                         updateStatsUI(data.data);
-
-                        localStorage.setItem(
-                            "purix_home_stats",
-                            JSON.stringify({
-                                timestamp: Date.now(),
-                                data: data.data
-                            })
-                        );
+                        localStorage.setItem("purix_home_stats", JSON.stringify({ timestamp: Date.now(), data: data.data }));
                     }
                 })
-                .catch(function (error) {
-                    console.error(
-                        "Purix dashboard statistics error:",
-                        error
-                    );
-                });
+                .catch(error => console.error("Purix Stats Error:", error));
         }
 
-
         /* ----- OVERDUE ALERTS ----- */
-
         const todayStr = new Date().toDateString();
+        const cachedAlertsDate = localStorage.getItem("purix_alerts_date");
+        const cachedAlertsData = safeJSON(localStorage.getItem("purix_alerts_data"));
 
-        const cachedAlertsDate = localStorage.getItem(
-            "purix_alerts_date"
-        );
-
-        const cachedAlertsData = safeJSON(
-            localStorage.getItem("purix_alerts_data")
-        );
-
-        if (
-            cachedAlertsDate === todayStr &&
-            Array.isArray(cachedAlertsData)
-        ) {
-            setText(
-                "alertCount",
-                countRealOverdueAlerts(cachedAlertsData)
-            );
+        if (cachedAlertsDate === todayStr && Array.isArray(cachedAlertsData)) {
+            setText("alertCount", countRealOverdueAlerts(cachedAlertsData));
         } else {
-            fetchJSON(API_URL + "?action=getAlerts")
-                .then(function (data) {
-                    if (
-                        data.status === "success" &&
-                        Array.isArray(data.data)
-                    ) {
-                        localStorage.setItem(
-                            "purix_alerts_date",
-                            todayStr
-                        );
-
-                        localStorage.setItem(
-                            "purix_alerts_data",
-                            JSON.stringify(data.data)
-                        );
-
-                        setText(
-                            "alertCount",
-                            countRealOverdueAlerts(data.data)
-                        );
+            fetch(API_URL + "?action=getAlerts")
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success" && Array.isArray(data.data)) {
+                        localStorage.setItem("purix_alerts_date", todayStr);
+                        localStorage.setItem("purix_alerts_data", JSON.stringify(data.data));
+                        setText("alertCount", countRealOverdueAlerts(data.data));
                     }
                 })
-                .catch(function (error) {
-                    console.error(
-                        "Purix overdue alerts error:",
-                        error
-                    );
-                });
+                .catch(error => console.error("Purix Alerts Error:", error));
         }
     }
 
-
     /* =================================================
-       3. EXISTING STATISTICS UI IDS
+       3. BULLETPROOF SELF-HEALING UI UPDATE
     ================================================= */
-
     function updateStatsUI(data) {
         if (!data) return;
 
-        /*
-         * Preserve the existing API field names.
-         * Do not change the backend response structure.
-         */
-
-        if (
-            data.todayAdmissions === undefined &&
-            data.monthAdmission !== undefined
-        ) {
+        if (data.todayAdmissions === undefined && data.monthAdmission !== undefined) {
             localStorage.removeItem("purix_home_stats");
         }
 
-        const active =
-            data.activeStudents !== undefined
-                ? data.activeStudents
-                : 0;
-
-        const admissions =
-            data.todayAdmissions !== undefined
-                ? data.todayAdmissions
-                : (data.monthAdmission || 0);
-
-        const collection =
-            data.todayCollection !== undefined
-                ? data.todayCollection
-                : 0;
+        const active = data.activeStudents !== undefined ? data.activeStudents : 0;
+        const admissions = data.todayAdmissions !== undefined ? data.todayAdmissions : (data.monthAdmission || 0);
+        const collection = data.todayCollection !== undefined ? data.todayCollection : 0;
 
         setText("homeActiveStudents", active);
         setText("homeMonthAdmission", admissions);
         setText("homeTodayCollection", "₹" + collection);
     }
 
-
     /* =================================================
-       4. EXISTING OVERDUE ALERT COUNTING
+       4. OVERDUE ALERT COUNTING
     ================================================= */
-
     function countRealOverdueAlerts(alertsList) {
         if (!Array.isArray(alertsList)) return 0;
 
         let criticalCount = 0;
-
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
         alertsList.forEach(function (student) {
             if (!student || !student.dueDate) return;
-
             const due = new Date(student.dueDate);
-
             if (!isNaN(due.getTime())) {
                 due.setHours(0, 0, 0, 0);
-
-                const difference = Math.ceil(
-                    (due.getTime() - today.getTime()) /
-                    (1000 * 60 * 60 * 24)
-                );
-
-                if (difference < 0) {
-                    criticalCount++;
-                }
+                const difference = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                if (difference < 0) { criticalCount++; }
             }
         });
-
         return criticalCount;
     }
 
-
     /* =================================================
-       5. START DASHBOARD
+       5. AUTO-SYNC TIMER (Live Background Updates)
     ================================================= */
-
     loadDashboardData();
-
     window.setInterval(loadDashboardData, 60000);
 
 })();
