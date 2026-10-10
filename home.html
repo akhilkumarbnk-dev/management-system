@@ -81,23 +81,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 15px; /* Adjusted gap slightly */
+    gap: 15px; 
     z-index: 12;
 }
 
 .hud-master-container .top-hud-header .satellite-icon {
     color: var(--hud-blue);
-    font-size: 30px; /* Adjusted size slightly */
+    font-size: 30px; 
     filter: drop-shadow(0 0 12px var(--hud-blue));
     animation: hudSatelliteFloat 4s ease-in-out infinite;
 }
 
 .hud-master-container .top-hud-header h1 {
-    margin: 0; padding: 6px 45px 8px; /* Adjusted padding for longer text */
-    color: #fff; font-size: 24px; font-weight: 800; letter-spacing: 4px; /* Changed text size and spacing */
+    margin: 0; padding: 6px 45px 8px; 
+    color: #fff; font-size: 24px; font-weight: 800; letter-spacing: 4px; 
     background: linear-gradient(180deg, rgba(0, 229, 255, .12), rgba(0, 0, 0, .65));
     border-bottom: 2px solid var(--hud-blue);
-    clip-path: polygon(0 0, 100% 0, calc(100% - 20px) 100%, 20px 100%); /* Fixed clip-path for longer text */
+    clip-path: polygon(0 0, 100% 0, calc(100% - 20px) 100%, 20px 100%); 
     text-shadow: 0 0 14px var(--hud-blue);
 }
 
@@ -116,7 +116,6 @@
 @keyframes hudSatelliteFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 @keyframes hudGlow { 0%, 100% { box-shadow: 0 0 10px rgba(0, 229, 255, .15), inset 0 0 10px rgba(0, 229, 255, .05); } 50% { box-shadow: 0 0 22px rgba(0, 229, 255, .35), inset 0 0 18px rgba(0, 229, 255, .12); } }
 @keyframes hudBarPulse { from { height: 18%; opacity: .5; } to { height: 95%; opacity: 1; } }
-/* New animation for the globe */
 @keyframes hudGlobeGridPan { 0% { background-position: 0px 0px; } 100% { background-position: 140px 0px; } }
 
 /* =====================================================
@@ -134,7 +133,6 @@
     z-index: 3;
 }
 
-/* Rings will now spin perfectly on axis without wobbling */
 .hud-master-container .reactor-ring {
     position: absolute;
     top: 0; bottom: 0; left: 0; right: 0;
@@ -156,11 +154,7 @@
     animation: hudSpinLeft 85s linear infinite;
 }
 
-.hud-master-container .ring-2-binary::before, .hud-master-container .ring-2-binary::after {
-    position: absolute; left: 50%; color: rgba(0, 229, 255, .7); font-size: 8px; letter-spacing: 3px; white-space: nowrap;
-}
-.hud-master-container .ring-2-binary::before { content: "0100 0111 0100 0011 1110 0101 1000 0000"; top: -7px; transform: translateX(-50%); }
-.hud-master-container .ring-2-binary::after { content: "1110 0100 0011 1110 0101 1000 0101"; bottom: -7px; transform: translateX(-50%); }
+/* Removed the ::before and ::after pseudo-elements that generated the binary text for ring-2-binary */
 
 .hud-master-container .ring-3-ticks {
     width: 490px; height: 490px;
@@ -254,7 +248,6 @@
     background: repeating-linear-gradient(0deg, transparent 0px, transparent 12px, rgba(0, 229, 255, .30) 13px, transparent 14px),
                 repeating-linear-gradient(90deg, transparent 0px, transparent 12px, rgba(0, 229, 255, .30) 13px, transparent 14px);
     box-shadow: inset 0 0 35px rgba(0, 120, 255, .35), 0 0 15px rgba(0, 229, 255, .12);
-    /* Spinning Globe Effect */
     animation: hudGlobeGridPan 12s linear infinite;
 }
 .hud-master-container .globe-sphere::before {
@@ -328,13 +321,13 @@
     left: 50%;
     transform: translateX(-50%);
     display: flex; align-items: center; justify-content: center;
-    gap: 75px;
+    gap: 75px; 
     z-index: 12;
 }
 
 .hud-master-container .circle-btn {
     position: relative;
-    width: 95px;
+    width: 95px; 
     height: 95px;
     flex-shrink: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -347,14 +340,14 @@
 
 .hud-master-container .circle-btn::before {
     content: ""; position: absolute;
-    inset: -12px;
+    inset: -12px; 
     border-radius: 50%; border: 2px solid transparent; border-top-color: var(--hud-blue); border-bottom-color: var(--hud-blue);
     animation: hudSpinRight 8s linear infinite;
 }
 
 .hud-master-container .circle-btn::after {
     content: ""; position: absolute;
-    inset: 6px;
+    inset: 6px; 
     border-radius: 50%; border: 1px dashed rgba(0, 229, 255, .65);
     animation: hudSpinLeft 9s linear infinite;
 }
@@ -362,7 +355,7 @@
 .hud-master-container .circle-btn i {
     position: relative; z-index: 2;
     color: #fff;
-    font-size: 26px;
+    font-size: 26px; 
     margin-bottom: 5px;
     filter: drop-shadow(0 0 5px var(--hud-blue));
 }
@@ -370,7 +363,7 @@
 .hud-master-container .circle-btn span {
     position: relative; z-index: 2;
     color: var(--hud-blue);
-    font-size: 11px;
+    font-size: 11px; 
     font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
 }
 
@@ -387,10 +380,8 @@
     width: 340px; height: 20px;
     border-top: 2px solid rgba(0, 229, 255, .7); border-left: 2px solid rgba(0, 229, 255, .7); border-right: 2px solid rgba(0, 229, 255, .7);
 }
-.hud-master-container .bottom-dec::before {
-    content: "0100 0101 0011 0000 1111 0100"; position: absolute; top: -15px; left: 10px;
-    color: rgba(0, 229, 255, .8); font-size: 8px; letter-spacing: 2px;
-}
+
+/* Removed the ::before pseudo-element that generated the binary text for the bottom decoration */
 
 /* =====================================================
    STATUS INDICATORS
