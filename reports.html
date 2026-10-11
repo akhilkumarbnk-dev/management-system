@@ -61,7 +61,7 @@
     .btn-csv:hover { background: #00ff88; color: #050914; box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); }
 
     /* Sortable Reports Table */
-    .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid rgba(0, 243, 255, 0.2); }
+    .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid rgba(0, 243, 255, 0.2); min-height: 200px; position: relative;}
     .reports-table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.4); }
     .reports-table th, .reports-table td {
         padding: 14px 15px; text-align: left; border-bottom: 1px solid rgba(0, 243, 255, 0.15);
@@ -69,7 +69,7 @@
     }
     .reports-table th {
         background: rgba(0, 243, 255, 0.1); color: #00f3ff; font-weight: 500; cursor: pointer;
-        font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 1px; white-space: nowrap; position: sticky; top:0;
+        font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 1px; white-space: nowrap; position: sticky; top:0; z-index: 10;
     }
     .reports-table th:hover { background: rgba(0, 243, 255, 0.2); }
     .reports-table tr:hover td { background-color: rgba(0, 243, 255, 0.05); }
@@ -119,9 +119,9 @@
         .report-header-pdf p { margin: 5px 0 0; font-family: 'Arial', sans-serif; font-size: 13px; color: #444 !important;}
         #printFilterInfo { font-size: 12px; color: #666 !important; font-style: italic; margin-top: 8px;}
 
-        .filter-section, .reports-header, .card-inactive, .action-th, .action-btns, .modal-overlay { display: none !important; }
+        .filter-section, .reports-header, .card-inactive, .action-th, .action-btns, .modal-overlay, #reportsLoadingRadar { display: none !important; }
         
-        .table-responsive { border: none !important; overflow: visible !important; }
+        .table-responsive { border: none !important; overflow: visible !important; min-height: auto !important;}
         .reports-table { width: 100% !important; border-collapse: collapse !important; }
         .reports-table th { background: #e2e8f0 !important; color: #000 !important; border-bottom: 2px solid #000 !important; font-weight: bold;}
         .reports-table td { color: #000 !important; border-bottom: 1px solid #ccc !important; }
@@ -209,6 +209,17 @@
             </div>
         </div>
 
+        <!-- 🔥 NEW: Universal Fast Radar Loader (Positioned absolutely over the table area) -->
+        <div id="reportsLoadingRadar" style="position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%); z-index: 50; display: none;">
+            <div class="hud-radar-loader-wrapper">
+                <div class="hud-fast-radar">
+                    <div class="radar-cross"></div>
+                    <div class="radar-core"></div>
+                </div>
+                <div class="hud-loading-text">SYNCING DATABASE...</div>
+            </div>
+        </div>
+
         <div class="table-responsive">
             <table class="reports-table" id="reportsTable">
                 <thead>
@@ -223,7 +234,7 @@
                     </tr>
                 </thead>
                 <tbody id="reportsBody">
-                    <tr><td colspan="7" style="text-align:center;">Fetching Database...</td></tr>
+                    <!-- Data will populate here -->
                 </tbody>
             </table>
         </div>
@@ -260,24 +271,76 @@
     let reportData = []; 
     let currentDisplayedData = []; 
     let sortDirection = true; 
+    
+    // CACHE SETTINGS
+    const CACHE_KEY = "purix_reports_data";
+    const CACHE_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes
 
     document.getElementById('reportDateTxt').innerText = new Date().toLocaleDateString('en-GB');
 
-    fetchReportData();
+    // 🔥 SMART INITIALIZATION
+    initializeReportData();
 
-    function fetchReportData() {
+    function initializeReportData() {
+        const cachedDataString = localStorage.getItem(CACHE_KEY);
+        let cachedData = null;
+        
+        try {
+            if (cachedDataString) cachedData = JSON.parse(cachedDataString);
+        } catch(e) {}
+
+        const now = Date.now();
+        
+        if (cachedData && cachedData.timestamp && cachedData.data && (now - cachedData.timestamp < CACHE_EXPIRY_MS)) {
+            // LOAD FROM CACHE IMMEDIATELY (0 Seconds)
+            reportData = cachedData.data;
+            setupDynamicFilters();
+            filterReports();
+            
+            // Silently update in background so it's always fresh
+            fetchReportData(true); 
+        } else {
+            // FETCH FROM SERVER WITH RADAR
+            setupDynamicFilters();
+            fetchReportData(false);
+        }
+    }
+
+    function fetchReportData(isBackgroundSync = false) {
+        const radar = document.getElementById('reportsLoadingRadar');
+        const tbody = document.getElementById('reportsBody');
+        
+        if (!isBackgroundSync) {
+            radar.style.display = 'block';
+            tbody.innerHTML = '';
+        }
+
         fetch(API_URL + "?action=getReports")
             .then(res => res.json())
             .then(data => {
                 if(data.status === "success") {
                     reportData = data.data;
+                    
+                    // SAVE TO LOCAL STORAGE
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({
+                        timestamp: Date.now(),
+                        data: reportData
+                    }));
+
                     filterReports();
-                } else {
-                    document.getElementById('reportsBody').innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ff0055;">Failed to load data.</td></tr>`;
+                } else if (!isBackgroundSync) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ff0055;">Failed to load data.</td></tr>`;
                 }
             })
             .catch(err => {
-                document.getElementById('reportsBody').innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ff0055;">Network Error.</td></tr>`;
+                if (!isBackgroundSync) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ff0055;">Network Error.</td></tr>`;
+                }
+            })
+            .finally(() => {
+                if (!isBackgroundSync) {
+                    radar.style.display = 'none';
+                }
             });
     }
 
@@ -299,6 +362,8 @@
     }
 
     window.filterReports = function() {
+        if(reportData.length === 0) return;
+
         const searchTxt = document.getElementById('filterSearch').value.toLowerCase();
         const sessionFilter = document.getElementById('filterSession').value;
         const classFilter = document.getElementById('filterClass').value;
@@ -315,7 +380,6 @@
         document.getElementById('printFilterInfo').innerText = filterStr.length > 0 ? "Filters applied: " + filterStr.join(" | ") : "Viewing: All Records";
 
         let baseFiltered = reportData.filter(student => {
-            // 🔥 NAYA FIX: Google Sheet ki Extra Heading Row ya Empty Rows ko yahan direct hata diya
             if (!student.uid || String(student.uid).trim() === "" || String(student.uid).toLowerCase().includes("uid")) {
                 return false; 
             }
@@ -438,6 +502,8 @@
                 .then(data => {
                     if(data.status === 'success') {
                         Swal.fire({ title: 'Updated!', text: `Status changed to ${newStatus}.`, icon: 'success', background: '#050914', color: '#00ff88' });
+                        // Delete cache to force a fresh fetch
+                        localStorage.removeItem(CACHE_KEY);
                         fetchReportData(); 
                     } else { Swal.fire('Error', data.message, 'error'); }
                 });
@@ -490,6 +556,5 @@
         setTimeout(() => { document.title = originalTitle; }, 1000);
     }
 
-    setupDynamicFilters(); 
 })();
 </script>
