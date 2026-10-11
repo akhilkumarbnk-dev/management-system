@@ -1,7 +1,7 @@
 <style>
 /* =====================================================
    PURIX ACADEMY — FUTURISTIC HUD DASHBOARD
-   Desktop-first | Existing CRM integration preserved
+   Desktop-first | Ultra-Responsive Fit | Wide Cards | 3D Logo
 ===================================================== */
 
 .hud-master-container {
@@ -45,22 +45,21 @@
 }
 
 /* =====================================================
-   RESPONSIVE HUD CANVAS (WIDESCREEN FIXED)
+   FIXED CANVAS - NEVER CROPS
 ===================================================== */
 .hud-master-container .hud-scaler {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 100%; /* Changed to 100% for full width */
-    max-width: 1600px; /* Increased max-width for widescreen */
-    height: 900px;
-    transform: translate(-50%, -50%) scale(.9);
+    width: 1600px; /* Fixed Base Width */
+    height: 900px; /* Fixed Base Height */
+    transform: translate(-50%, -50%); /* Javascript will add scale here */
     transform-origin: center center;
 }
 
 .hud-master-container .hud-scaler svg {
     display: block;
-    width: 100%; /* SVG uses 100% of scaler */
+    width: 1600px;
     height: 900px;
     overflow: visible;
 }
@@ -69,7 +68,7 @@
     font-family: 'Orbitron', 'Rajdhani', 'Arial', sans-serif;
 }
 
-/* Corner brackets */
+/* Corner brackets - Kept inside to show bounds */
 .hud-master-container .hud-corner {
     position: absolute;
     width: 30px;
@@ -77,10 +76,10 @@
     z-index: 15;
     pointer-events: none;
 }
-.hud-master-container .hud-corner.tl { top: 12px; left: 12px; border-top: 2px solid var(--hud-blue); border-left: 2px solid var(--hud-blue); }
-.hud-master-container .hud-corner.tr { top: 12px; right: 12px; border-top: 2px solid var(--hud-blue); border-right: 2px solid var(--hud-blue); }
-.hud-master-container .hud-corner.bl { bottom: 12px; left: 12px; border-bottom: 2px solid var(--hud-blue); border-left: 2px solid var(--hud-blue); }
-.hud-master-container .hud-corner.br { bottom: 12px; right: 12px; border-bottom: 2px solid var(--hud-blue); border-right: 2px solid var(--hud-blue); }
+.hud-master-container .hud-corner.tl { top: 15px; left: 15px; border-top: 3px solid var(--hud-blue); border-left: 3px solid var(--hud-blue); }
+.hud-master-container .hud-corner.tr { top: 15px; right: 15px; border-top: 3px solid var(--hud-blue); border-right: 3px solid var(--hud-blue); }
+.hud-master-container .hud-corner.bl { bottom: 15px; left: 15px; border-bottom: 3px solid var(--hud-blue); border-left: 3px solid var(--hud-blue); }
+.hud-master-container .hud-corner.br { bottom: 15px; right: 15px; border-bottom: 3px solid var(--hud-blue); border-right: 3px solid var(--hud-blue); }
 
 /* Animation classes */
 .hud-master-container .hx-r { animation: hxSpin linear infinite; }
@@ -97,18 +96,43 @@
 @keyframes hxScan { from { transform: translateY(-60px); } to { transform: translateY(960px); } }
 @keyframes hxMarch { to { stroke-dashoffset: -6.3; } }
 
+/* 🔥 NEW: 3D EARTH ROTATING LOGO */
+.logo-3d-spin {
+    position: absolute;
+    top: 430px;  /* Center Y of SVG */
+    left: 800px; /* Center X of SVG */
+    width: 140px;
+    height: 140px;
+    margin-top: -70px; /* Half of height to perfectly center */
+    margin-left: -70px; /* Half of width to perfectly center */
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(0, 229, 255, 0.8);
+    box-shadow: 0 0 25px rgba(0, 229, 255, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.2);
+    animation: spinEarth3D 7s linear infinite;
+    z-index: 100;
+}
+
+@keyframes spinEarth3D {
+    0% { transform: perspective(800px) rotateY(0deg); }
+    100% { transform: perspective(800px) rotateY(360deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .hud-master-container * { animation: none !important; }
 }
 </style>
 
 <div class="hud-master-container" id="hudContainer">
-    <div class="hud-corner tl"></div><div class="hud-corner tr"></div>
-    <div class="hud-corner bl"></div><div class="hud-corner br"></div>
-    
     <div class="hud-scaler" id="hudScaler">
-        <!-- Changed viewBox to 1600x900 to fit widescreen laptops naturally -->
-        <svg id="hxSvg" viewBox="0 0 1600 900" width="100%" height="900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <!-- Corners added directly to Scaler to ensure they ALWAYS fit -->
+        <div class="hud-corner tl"></div><div class="hud-corner tr"></div>
+        <div class="hud-corner bl"></div><div class="hud-corner br"></div>
+        
+        <!-- 🔥 NEW: High-Res 3D HTML Logo -->
+        <img src="logo.png" class="logo-3d-spin" alt="Purix Academy 3D Logo">
+
+        <svg id="hxSvg" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <pattern id="hxLines" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1.2" fill="#1a5aa0" opacity=".22"/></pattern>
                 <radialGradient id="hxCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#0f5cb8"/><stop offset=".6" stop-color="#0a3a80"/><stop offset="1" stop-color="#05204a"/></radialGradient>
@@ -120,14 +144,13 @@
                 <linearGradient id="hxBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b8cff"/><stop offset="1" stop-color="#0e3a9a"/></linearGradient>
                 <pattern id="hxSeg" width="6" height="2.6" patternUnits="userSpaceOnUse"><rect y="1.8" width="6" height=".8" fill="#04122a" opacity=".85"/></pattern>
                 <radialGradient id="hxBtnG" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#0e4c8e"/><stop offset=".7" stop-color="#06224a"/><stop offset="1" stop-color="#041430"/></radialGradient>
-                <clipPath id="hxLogoClip"><circle cx="800" cy="430" r="66"/></clipPath>
-                <!-- Expanded clip path for wider cards -->
-                <clipPath id="hxCartClip"><rect x="3.5" y="9" width="166" height="72"/></clipPath> 
+                <!-- Widened clip path for cartoon -->
+                <clipPath id="hxCartClip"><rect x="3.5" y="9" width="236" height="72"/></clipPath> 
             </defs>
 
             <rect width="1600" height="900" fill="url(#hxLines)"/>
 
-            <!-- ===== CENTER REACTOR (Shifted to center of 1600) ===== -->
+            <!-- ===== CENTER REACTOR ===== -->
             <circle cx="800" cy="430" r="338" fill="#020917" opacity=".9"/>
             <g filter="url(#hxGlow)">
                 <circle class="hx-r" style="transform-origin:800px 430px;animation-duration:90s" cx="800" cy="430" r="262" fill="none" stroke="#2a7fd0" stroke-width="12" stroke-dasharray="2 11" opacity=".55"/>
@@ -143,8 +166,9 @@
                 <g class="hx-r" style="transform-origin:800px 430px;animation-duration:22s"><path d="M995,430 l-9,-9 v18z" fill="#6fe0ff" transform="rotate(-8 800 430)"/><circle cx="800" cy="235" r="4" fill="#fff"/><circle cx="800" cy="625" r="4" fill="#4cc2ff"/></g>
                 <g class="hx-r hx-f" style="transform-origin:800px 430px;animation-duration:30s"><circle cx="800" cy="258" r="4" fill="#fff"/><circle cx="972" cy="430" r="3.5" fill="#6fe0ff"/><circle cx="628" cy="430" r="3.5" fill="#6fe0ff"/></g>
             </g>
-            <circle cx="800" cy="430" r="69" fill="#020b18" stroke="#fff" stroke-width="2" style="filter:drop-shadow(0 0 8px #00e5ff)"/>
-            <image href="logo.png" x="734" y="364" width="132" height="132" clip-path="url(#hxLogoClip)" preserveAspectRatio="xMidYMid slice"/>
+            
+            <!-- Dark circle backing for the new HTML 3D Logo to hide the glowing rings -->
+            <circle cx="800" cy="430" r="70" fill="#020b18"/>
             
             <g id="topBlocks"></g>
 
@@ -154,12 +178,12 @@
             <text x="800" y="80" font-size="8.5" fill="#00e5ff" opacity=".7" text-anchor="middle" letter-spacing="3.5">CENTRAL COMMAND // SYSTEM PROTOCOL</text>
             <circle class="hx-pulse" cx="740" cy="113" r="3" fill="#00ff99"/><text x="750" y="116" font-size="8" fill="#00e5ff" opacity=".7" letter-spacing="2">SYSTEM ONLINE</text>
             
-            <!-- ===== TOP LEFT RADAR (Shifted left) ===== -->
+            <!-- ===== TOP LEFT RADAR ===== -->
             <rect x="25" y="18" width="312" height="280" fill="#030c20" opacity=".85"/>
             <path d="M25,42 V18 H51 M284,17 L307,25 L327,48 V72 M337,96 V190 M25,262 V288 H55 L65,296 H99 M337,262 V292 H311 M127,18 H227" fill="none" stroke="#2a8fe0" stroke-width="1.5"/>
             <g id="radar" filter="url(#hxGlow)"></g>
 
-            <!-- ===== TOP RIGHT GLOBE (Shifted right) ===== -->
+            <!-- ===== TOP RIGHT GLOBE ===== -->
             <path d="M1275,18 H1575 V270 H1290 L1258,238 V40z" fill="#051836" stroke="#0f4a8a" stroke-width="2"/>
             <g id="scale" fill="#7fa8d8" font-size="11"></g>
             <g filter="url(#hxGlow)" fill="none" stroke="#2f8cff" stroke-width="1.6">
@@ -271,39 +295,40 @@
     function go(g,mod,hover){g.style.cursor='pointer';g.addEventListener('click',function(){if(typeof loadModule==='function')loadModule(mod)});
         if(hover){g.addEventListener('mouseenter',function(){g.style.filter='brightness(1.45)'});g.addEventListener('mouseleave',function(){g.style.filter=''})}}
     function fit(e){var base=+e.getAttribute('data-fs'),w=+e.getAttribute('data-w');e.setAttribute('font-size',base);var L=0;try{L=e.getComputedTextLength()}catch(x){}if(L>w)e.setAttribute('font-size',(base*w/L).toFixed(1))}
-    function vtxt(g,x,y,c,w){var e=el('text',{x:x,y:y,'font-size':c.fs||28,'data-fs':c.fs||28,'data-w':w,'font-weight':800,fill:'#fff','text-anchor':'middle',stroke:'#04122e','stroke-width':3.2,'paint-order':'stroke',style:'filter:drop-shadow(0 0 4px '+(c.red?'#ff245d':'#00e5ff')+')'},g);
+    function vtxt(g,x,y,c,w){var e=el('text',{x:x,y:y,'font-size':c.fs||32,'data-fs':c.fs||32,'data-w':w,'font-weight':800,fill:'#fff','text-anchor':'middle',stroke:'#04122e','stroke-width':3.2,'paint-order':'stroke',style:'filter:drop-shadow(0 0 5px '+(c.red?'#ff245d':'#00e5ff')+')'},g);
         if(c.id)e.setAttribute('id',c.id);
         if(typeof MutationObserver!=='undefined')new MutationObserver(function(){fit(e)}).observe(e,{childList:true,characterData:true,subtree:true});
         return e}
 
-    /* ===== LEFT PANELS (Cards width increased, text size increased) ===== */
-    var LP=$('leftPanels'),cells=[],SC=1.45; /* SCALING INCREASED */
+    /* ===== LEFT PANELS (🔥 WIDE & BIG TEXT) ===== */
+    var LP=$('leftPanels'),cells=[],SC=1.35; 
     var LCFG=[{n:'A',label:"TODAY'S ADMISSIONS",id:'homeMonthAdmission',v:'...'},{n:'B',label:'ACTIVE STUDENTS',id:'homeActiveStudents',v:'...'},{n:'C',date:true}];
-    [330,480,630].forEach(function(y,pi){var c0=LCFG[pi],g=el('g',{transform:'translate(40,'+y+') scale('+SC+')'},LP);
-        /* Card width increased to 220 */
-        el('rect',{x:-14,y:-8,width:220,height:118,rx:14,fill:'#020a16',opacity:.85},g);
-        el('path',{d:'M0,22 V6 Q0,2 5,2 H62 L75,13 H152 L162,6 H177 Q182,6 182,12 V52 L188,58 V82 L182,88 V96 H92 L86,92 H44 L38,86 H12 L7,80 V46 L0,40Z',fill:'#04122c',stroke:'#e2f1ff','stroke-width':1.2},g);
-        el('path',{d:'M26,15 H150 L161,9 H175 Q178,9 178,12 V54 L183,58 V82 L177,87 V91 H94 L88,88 H46 L40,83 H12 V44 L9,40 V28 L14,22Z',fill:'#06204a',stroke:'url(#hxBlue)','stroke-width':5,'stroke-linejoin':'round'},g);
-        el('rect',{x:26,y:22,width:132,height:62,fill:'#04122e',stroke:'#1b4fa0'},g);
-        [92,108,124].forEach(function(x){el('rect',{x:x,y:7.8,width:14,height:3.2,rx:1.6,fill:'#5fb4ff'},g)});
-        [120,136,152].forEach(function(x){el('rect',{x:x,y:89.5,width:14,height:3.2,rx:1.6,fill:'#5fb4ff'},g)});
+    [330,480,630].forEach(function(y,pi){var c0=LCFG[pi],g=el('g',{transform:'translate(35,'+y+') scale('+SC+')'},LP);
+        // Extra wide rectangle
+        el('rect',{x:-14,y:-8,width:278,height:118,rx:14,fill:'#020a16',opacity:.85},g);
+        el('path',{d:'M0,22 V6 Q0,2 5,2 H62 L75,13 H212 L222,6 H237 Q242,6 242,12 V52 L248,58 V82 L242,88 V96 H92 L86,92 H44 L38,86 H12 L7,80 V46 L0,40Z',fill:'#04122c',stroke:'#e2f1ff','stroke-width':1.2},g);
+        el('path',{d:'M26,15 H210 L221,9 H235 Q238,9 238,12 V54 L243,58 V82 L237,87 V91 H94 L88,88 H46 L40,83 H12 V44 L9,40 V28 L14,22Z',fill:'#06204a',stroke:'url(#hxBlue)','stroke-width':5,'stroke-linejoin':'round'},g);
+        el('rect',{x:26,y:22,width:192,height:62,fill:'#04122e',stroke:'#1b4fa0'},g);
+        
+        [92,108,124,140,156,172,188].forEach(function(x){el('rect',{x:x,y:7.8,width:14,height:3.2,rx:1.6,fill:'#5fb4ff'},g)});
+        [120,136,152,168,184,200,216].forEach(function(x){el('rect',{x:x,y:89.5,width:14,height:3.2,rx:1.6,fill:'#5fb4ff'},g)});
         el('rect',{x:10,y:52,width:4,height:28,fill:'#1a5ad0'},g);
-        el('polygon',{points:'163,56 170,50 177,56 177,80 170,86 163,80',fill:'#08265a',stroke:'#3d8fff','stroke-width':1.2},g);
-        el('path',{d:'M166,67 L170,62 L174,67 M166,74 L170,79 L174,74',fill:'none',stroke:'#8be6a0','stroke-width':1.4},g);
+        el('polygon',{points:'223,56 230,50 237,56 237,80 230,86 223,80',fill:'#08265a',stroke:'#3d8fff','stroke-width':1.2},g);
+        el('path',{d:'M226,67 L230,62 L234,67 M226,74 L230,79 L234,74',fill:'none',stroke:'#8be6a0','stroke-width':1.4},g);
         el('polygon',{points:'3,22 10,16 22,16 29,22 29,44 22,50 10,50 3,44',fill:'#0a2a66',stroke:'#3d8fff','stroke-width':1.4},g);
         
-        var arr=[];for(var c=0;c<23;c++)for(var r=0;r<10;r++)arr.push({c:c,r:r,k:c0.date?.18:.3,e:el('rect',{x:42+c*4.85,y:30+r*5.1,width:3.6,height:3.3,fill:'#1b5e9e'},g)});
+        var arr=[];for(var c=0;c<35;c++)for(var r=0;r<10;r++)arr.push({c:c,r:r,k:c0.date?.18:.3,e:el('rect',{x:42+c*4.85,y:30+r*5.1,width:3.6,height:3.3,fill:'#1b5e9e'},g)});
         cells.push(arr);
         if(c0.date){
-            el('text',{id:'hxWk',x:92,y:35,'font-size':8,'font-weight':700,fill:'#9be8ff','text-anchor':'middle','letter-spacing':1.2},g);
-            el('text',{id:'hxDay',x:65,y:67,'font-size':32,'font-weight':800,fill:'#fff','text-anchor':'middle',stroke:'#04122e','stroke-width':3,'paint-order':'stroke',style:'filter:drop-shadow(0 0 4px #00e5ff)'},g);
-            el('path',{d:'M88,43 V68',stroke:'#2a8fe0','stroke-width':1},g);
-            el('text',{id:'hxMon',x:118,y:54,'font-size':13,'font-weight':800,fill:'#00e5ff','text-anchor':'middle'},g);
-            el('text',{id:'hxYr',x:118,y:66,'font-size':10,'font-weight':700,fill:'#fff','text-anchor':'middle'},g);
-            el('text',{id:'hxTime',x:92,y:80,'font-size':9,'font-weight':700,fill:'#cfeaff','text-anchor':'middle','letter-spacing':.8},g);
+            el('text',{id:'hxWk',x:120,y:35,'font-size':9,'font-weight':700,fill:'#9be8ff','text-anchor':'middle','letter-spacing':1.2},g);
+            el('text',{id:'hxDay',x:85,y:67,'font-size':36,'font-weight':800,fill:'#fff','text-anchor':'middle',stroke:'#04122e','stroke-width':3,'paint-order':'stroke',style:'filter:drop-shadow(0 0 5px #00e5ff)'},g);
+            el('path',{d:'M114,43 V68',stroke:'#2a8fe0','stroke-width':1},g);
+            el('text',{id:'hxMon',x:148,y:54,'font-size':15,'font-weight':800,fill:'#00e5ff','text-anchor':'middle'},g);
+            el('text',{id:'hxYr',x:148,y:68,'font-size':11,'font-weight':700,fill:'#fff','text-anchor':'middle'},g);
+            el('text',{id:'hxTime',x:120,y:82,'font-size':10,'font-weight':700,fill:'#cfeaff','text-anchor':'middle','letter-spacing':.8},g);
         }else{
-            el('text',{x:92,y:36,'font-size':8,'font-weight':700,fill:'#9be8ff','text-anchor':'middle','letter-spacing':.6},g).textContent=c0.label;
-            var v=vtxt(g,92,70,c0,120);v.textContent=c0.v;fit(v);
+            el('text',{x:120,y:36,'font-size':9,'font-weight':700,fill:'#9be8ff','text-anchor':'middle','letter-spacing':.6},g).textContent=c0.label;
+            var v=vtxt(g,120,70,c0,180);v.textContent=c0.v;fit(v);
         }
     });
 
@@ -318,34 +343,36 @@
     }
     var dt=setInterval(dateTick,1000);dateTick();
 
-    /* ===== RIGHT PANELS (Width increased, interactive zones added) ===== */
+    /* ===== RIGHT PANELS (🔥 WIDE & BIG TEXT) ===== */
     var RP=$('rightPanels'),bars=[],cartG=null;
     var RCFG=[{title:"TODAY'S COLLECTION",id:'homeTodayCollection',v:'...'},{title:'OVERDUE ALERTS',id:'alertCount',v:'...',go:'alerts',red:true},{cartoon:true}];
-    [330,480,630].forEach(function(y,pi){var c0=RCFG[pi],red=!!c0.red,hl=red?'#ff245d':'#2a9bff',g=el('g',{transform:'translate(1330,'+y+') scale('+SC+')'},RP);
-        /* Card width increased to 216 */
-        el('rect',{x:-42,y:-6,width:216,height:114,rx:12,fill:'#020a16',opacity:.85},g);
-        el('path',{d:'M-20,36 V6 L-15,1 H58 L65,8 H118 L128,26 V44 L121,53 V83 L111,94 H78 L68,86 H-12 V44Z',fill:'none',stroke:'#eaf6ff','stroke-width':1.3},g);
-        el('path',{d:'M-16,5 L-12,2 H56 M72,88 L79,92 L108,92 L115,85',fill:'none',stroke:red?'#ff8aa5':'#a8d8a0','stroke-width':.9},g);
-        el('rect',{x:-16.5,y:9,width:156,height:72,fill:red?'#150610':'#031226',stroke:hl,'stroke-width':2},g);
-        var h1='',h2='';for(var i=0;i<12;i++)h1+='M'+(-14+i*4)+',16 l4,-5 ';for(var i=0;i<15;i++)h2+='M'+(46+i*4)+',80 l4,-6 ';
+    [330,480,630].forEach(function(y,pi){var c0=RCFG[pi],red=!!c0.red,hl=red?'#ff245d':'#2a9bff',g=el('g',{transform:'translate(1200,'+y+') scale('+SC+')'},RP);
+        // Extra wide right rectangle
+        el('rect',{x:-42,y:-6,width:278,height:114,rx:12,fill:'#020a16',opacity:.85},g);
+        el('path',{d:'M-20,36 V6 L-15,1 H138 L145,8 H198 L208,26 V44 L201,53 V83 L191,94 H158 L148,86 H-12 V44Z',fill:'none',stroke:'#eaf6ff','stroke-width':1.3},g);
+        el('path',{d:'M-16,5 L-12,2 H136 M152,88 L159,92 L188,92 L195,85',fill:'none',stroke:red?'#ff8aa5':'#a8d8a0','stroke-width':.9},g);
+        el('rect',{x:-16.5,y:9,width:216,height:72,fill:red?'#150610':'#031226',stroke:hl,'stroke-width':2},g);
+        var h1='',h2='';for(var i=0;i<20;i++)h1+='M'+(-14+i*4)+',16 l4,-5 ';for(var i=0;i<22;i++)h2+='M'+(106+i*4)+',80 l4,-6 ';
         el('path',{d:h1+h2,stroke:hl,'stroke-width':1,fill:'none'},g);
         
         if(c0.cartoon){cartG=g;return}
-        var t=el('text',{x:132,y:24,'font-size':11.5,'font-weight':700,fill:red?'#ff9db4':'#fff','text-anchor':'end','letter-spacing':.5},g);t.textContent=c0.title;
+        var t=el('text',{x:190,y:24,'font-size':12.5,'font-weight':700,fill:red?'#ff9db4':'#fff','text-anchor':'end','letter-spacing':.5},g);t.textContent=c0.title;
         var bg=el('g',{opacity:.3},g),arr=[];
-        for(var i=0;i<11;i++){var x=0+i*12.5;
+        for(var i=0;i<17;i++){var x=0+i*12.5;
             el('rect',{x:x,y:28,width:6.7,height:42,fill:red?'#3a1020':'#123a68'},bg);
             var lit=el('rect',{x:x,y:50,width:6.7,height:20,fill:red?'#b82049':'#1e68ad'},bg);
             el('rect',{x:x,y:28,width:6.7,height:42,fill:'url(#hxSeg)'},bg);
             arr.push({lit:lit,m1:el('rect',{x:x,y:48,width:6.7,height:3,fill:'#cdeeb4'},bg),m2:el('rect',{x:x,y:53,width:6.7,height:2,fill:'#a9dca8'},bg),m3:el('rect',{x:x,y:57,width:6.7,height:1.8,fill:'#6fc0b0',opacity:.8},bg)})}
         bars.push(arr);
-        var v=vtxt(g,60,65,c0,128);v.textContent=c0.v;fit(v);
+        var v=vtxt(g,90,65,c0,180);v.textContent=c0.v;fit(v);
         if(c0.go)go(g,c0.go,true)});
 
-    /* INTERACTIVE TALKING TOM BUDDY */
+    /* 🔥 INTERACTIVE TALKING TOM BUDDY (Centered) */
     (function(){
         var g=cartG;if(!g)return;
-        var cg=el('g',{'clip-path':'url(#hxCartClip)'},g),S={};
+        // Wrapped in translation to center inside new wider box
+        var wrapper = el('g', {transform: 'translate(45, 0)'}, g); 
+        var cg=el('g',{'clip-path':'url(#hxCartClip)'},wrapper),S={};
         
         // Shadow
         el('ellipse',{cx:61,cy:79,rx:17,ry:2.2,fill:'#000',opacity:.4},cg);
@@ -357,14 +384,14 @@
         [-5,5].forEach(function(x){E('line',{x1:x,y1:70,x2:x,y2:77,stroke:'#2b4a7a','stroke-width':3,'stroke-linecap':'round'});E('ellipse',{cx:x+(x<0?-1:1),cy:77.5,rx:4,ry:2,fill:'#fff'})});
         
         // Body (Belly - Touch Zone)
-        var belly = E('ellipse',{cx:0,cy:62,rx:13,ry:12,fill:'#2fa8ff',stroke:'#0c5aa8','stroke-width':.8, cursor:'pointer'});
+        var belly = E('ellipse',{cx:0,cy:62,rx:13,ry:12,fill:'#2fa8ff',stroke:'#0c5aa8','stroke-width':.8, cursor:'pointer', pointerEvents:'all'});
         
         // Arms
         E('path',{fill:'none',stroke:'#ffd166','stroke-width':3.2,'stroke-linecap':'round'},'aL');
         E('path',{fill:'none',stroke:'#ffd166','stroke-width':3.2,'stroke-linecap':'round'},'aR');
         
         // Head (Touch Zone)
-        var head = E('circle',{cx:0,cy:36,r:18,fill:'#ffd166',stroke:'#b9791c','stroke-width':.8, cursor:'pointer'},'face');
+        var head = E('circle',{cx:0,cy:36,r:18,fill:'#ffd166',stroke:'#b9791c','stroke-width':.8, cursor:'pointer', pointerEvents:'all'},'face');
         
         E('path',{d:'M-6,21 Q0,14 6,21 M0,20 Q-3,14 2,13',fill:'none',stroke:'#6b3b0a','stroke-width':2,'stroke-linecap':'round'});
         E('circle',{cx:-10,cy:40,r:2.4,fill:'#ff8f8f',opacity:.55});E('circle',{cx:10,cy:40,r:2.4,fill:'#ff8f8f',opacity:.55});
@@ -404,7 +431,6 @@
                 S['ld'+i].setAttribute('opacity',m.eyes?0:1);if(!m.eyes)S['ld'+i].setAttribute('d',m.lid[i])}
             bt.textContent=m.bub;
             
-            // Auto return to think
             clearTimeout(idleTimer);
             if(n !== 'think') {
                 idleTimer = setTimeout(() => setMood('think'), lockDuration || 3000);
@@ -412,10 +438,10 @@
         }
         setMood('think');
 
-        // 🔥 INTERACTIVE TOUCH ZONES
-        head.addEventListener('click', function(e) { e.stopPropagation(); setMood('cry', 4000); }); // Head = Cry
-        belly.addEventListener('click', function(e) { e.stopPropagation(); setMood('laugh', 3000); }); // Belly = Laugh
-        g.addEventListener('click', function() { setMood('jump', 2500); }); // Background = Jump
+        // INTERACTIVE TOUCH ZONES
+        head.addEventListener('click', function(e) { e.stopPropagation(); setMood('cry', 4000); }); 
+        belly.addEventListener('click', function(e) { e.stopPropagation(); setMood('laugh', 3000); }); 
+        g.addEventListener('click', function() { setMood('jump', 2500); }); 
 
         function ctick(now){
             if(!HC.isConnected)return;requestAnimationFrame(ctick);
@@ -437,7 +463,7 @@
         requestAnimationFrame(ctick);
     })();
 
-    /* ===== bottom buttons (Shifted to center of 1600) ===== */
+    /* ===== bottom buttons ===== */
     var BG=$('hxBtns');
     var BT=[{l:'ADMIT',m:'admission',i:'user'},{l:'FEE',m:'payment',i:'rupee'},{l:'SEARCH',m:'profile',i:'search'},{l:'REPORTS',m:'reports',i:'chart'}];
     BT.forEach(function(b,k){var cx=575+k*150,cy=818,g=el('g',{},BG);
@@ -569,13 +595,18 @@
         return c;
     }
 
-    /* Adjusted Scaling Logic for new 1600x900 dimension */
+    /* 🔥 PERFECT NO-CROP SCALING LOGIC */
     function scaleHUD() {
-        const hc = document.getElementById("hudContainer"), hs = document.getElementById("hudScaler");
+        const hc = document.getElementById("hudContainer");
+        const hs = document.getElementById("hudScaler");
         if (!hc || !hs) return;
-        const s = Math.min(hc.clientWidth / 1600, hc.clientHeight / 900) * 0.95;
+        
+        // Use Math.min to ensure it NEVER crops, regardless of screen aspect ratio.
+        // It shrinks perfectly to fit inside the viewport box leaving a tiny margin (0.98)
+        const s = Math.min(hc.clientWidth / 1600, hc.clientHeight / 900) * 0.98;
         hs.style.transform = `translate(-50%, -50%) scale(${s})`;
     }
+    
     window.addEventListener("resize", scaleHUD);
     requestAnimationFrame(scaleHUD);
 
