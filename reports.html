@@ -282,16 +282,15 @@
     initializeReportData();
 
     function initializeReportData() {
-        const cachedDataString = localStorage.getItem(CACHE_KEY);
         let cachedData = null;
-        
         try {
+            const cachedDataString = localStorage.getItem(CACHE_KEY);
             if (cachedDataString) cachedData = JSON.parse(cachedDataString);
         } catch(e) {}
 
         const now = Date.now();
         
-        if (cachedData && cachedData.timestamp && cachedData.data && (now - cachedData.timestamp < CACHE_EXPIRY_MS)) {
+        if (cachedData && cachedData.timestamp && Array.isArray(cachedData.data) && (now - cachedData.timestamp < CACHE_EXPIRY_MS)) {
             // LOAD FROM CACHE IMMEDIATELY (0 Seconds)
             reportData = cachedData.data;
             setupDynamicFilters();
@@ -311,34 +310,36 @@
         const tbody = document.getElementById('reportsBody');
         
         if (!isBackgroundSync) {
-            radar.style.display = 'block';
-            tbody.innerHTML = '';
+            if(radar) radar.style.display = 'block';
+            if(tbody) tbody.innerHTML = ''; // Clear table safely
         }
 
         fetch(API_URL + "?action=getReports")
             .then(res => res.json())
             .then(data => {
-                if(data.status === "success") {
+                if(data.status === "success" && Array.isArray(data.data)) {
                     reportData = data.data;
                     
                     // SAVE TO LOCAL STORAGE
-                    localStorage.setItem(CACHE_KEY, JSON.stringify({
-                        timestamp: Date.now(),
-                        data: reportData
-                    }));
+                    try {
+                        localStorage.setItem(CACHE_KEY, JSON.stringify({
+                            timestamp: Date.now(),
+                            data: reportData
+                        }));
+                    } catch(e) {}
 
                     filterReports();
-                } else if (!isBackgroundSync) {
-                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ff0055;">Failed to load data.</td></tr>`;
+                } else if (!isBackgroundSync && tbody) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ff0055;">Failed to load data. API Error.</td></tr>`;
                 }
             })
             .catch(err => {
-                if (!isBackgroundSync) {
-                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ff0055;">Network Error.</td></tr>`;
+                if (!isBackgroundSync && tbody) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ff0055;">Network Error. Please check connection.</td></tr>`;
                 }
             })
             .finally(() => {
-                if (!isBackgroundSync) {
+                if (!isBackgroundSync && radar) {
                     radar.style.display = 'none';
                 }
             });
@@ -347,13 +348,15 @@
     function setupDynamicFilters() {
         const sessionDropdown = document.getElementById('filterSession');
         if(!sessionDropdown) return;
-        sessionDropdown.innerHTML = '<option value="All">All Sessions</option>';
+        
+        // Force default option to "All Sessions" to avoid accidental hiding
+        sessionDropdown.innerHTML = '<option value="All" selected>All Sessions</option>';
+        
         let year = new Date().getFullYear(); 
         let startYear = (new Date().getMonth() < 3) ? year - 1 : year;
         for (let i = startYear; i >= startYear - 2; i--) {
             let sessionText = `${i}-${(i+1).toString().substring(2)}`; 
-            let isSelected = (i === startYear) ? "selected" : "";
-            sessionDropdown.innerHTML += `<option value="${sessionText}" ${isSelected}>${sessionText}</option>`;
+            sessionDropdown.innerHTML += `<option value="${sessionText}">${sessionText}</option>`;
         }
     }
 
@@ -362,7 +365,7 @@
     }
 
     window.filterReports = function() {
-        if(reportData.length === 0) return;
+        if(!Array.isArray(reportData)) return; // Failsafe check
 
         const searchTxt = document.getElementById('filterSearch').value.toLowerCase();
         const sessionFilter = document.getElementById('filterSession').value;
@@ -377,30 +380,40 @@
         if(subjectFilter !== 'All') filterStr.push(`Subject: ${subjectFilter}`);
         if(planFilter !== 'All') filterStr.push(`Plan: ${planFilter}`);
         if(statusFilter !== 'All') filterStr.push(`Status: ${statusFilter}`);
-        document.getElementById('printFilterInfo').innerText = filterStr.length > 0 ? "Filters applied: " + filterStr.join(" | ") : "Viewing: All Records";
+        
+        const printInfo = document.getElementById('printFilterInfo');
+        if(printInfo) printInfo.innerText = filterStr.length > 0 ? "Filters applied: " + filterStr.join(" | ") : "Viewing: All Records";
+
+        let totalColl = 0, totalDues = 0, inactiveCount = 0;
 
         let baseFiltered = reportData.filter(student => {
-            if (!student.uid || String(student.uid).trim() === "" || String(student.uid).toLowerCase().includes("uid")) {
-                return false; 
-            }
-
-            const matchesSearch = !searchTxt || (student.name && student.name.toLowerCase().includes(searchTxt)) || (student.uid && String(student.uid).toLowerCase().includes(searchTxt));
-            const matchesSession = sessionFilter === "All" || student.session === sessionFilter;
-            const matchesClass = classFilter === "All" || student.class === classFilter;
-            const matchesPlan = planFilter === "All" || student.feePlan === planFilter;
+            if (!student) return false; // Fail-safe
             
-            const stdSubjects = student.subject || student.subjects || ""; 
-            const matchesSubject = subjectFilter === "All" || stdSubjects.toLowerCase().includes(subjectFilter.toLowerCase());
+            // Safe conversion to String for all fields to avoid TypeError
+            const uidStr = String(student.uid || "").trim();
+            const nameStr = String(student.name || "").toLowerCase();
+            const sessionStr = String(student.session || "");
+            const classStr = String(student.class || "");
+            const planStr = String(student.feePlan || "Monthly");
+            const subjectsStr = String(student.subject || student.subjects || "").toLowerCase();
+
+            if (uidStr === "" || uidStr.toLowerCase().includes("uid")) return false; 
+
+            const matchesSearch = !searchTxt || nameStr.includes(searchTxt) || uidStr.toLowerCase().includes(searchTxt);
+            const matchesSession = sessionFilter === "All" || sessionStr === sessionFilter;
+            const matchesClass = classFilter === "All" || classStr === classFilter;
+            const matchesPlan = planFilter === "All" || planStr === planFilter;
+            const matchesSubject = subjectFilter === "All" || subjectsStr.includes(subjectFilter.toLowerCase());
             
             return matchesSearch && matchesSession && matchesClass && matchesPlan && matchesSubject;
         });
 
-        let totalColl = 0, totalDues = 0, inactiveCount = 0;
         baseFiltered.forEach(student => {
-            if (student.status === "Active") {
+            const statusStr = String(student.status || "Active");
+            if (statusStr === "Active") {
                 totalColl += parseFloat(student.paid) || 0;
                 totalDues += parseFloat(student.dues) || 0;
-            } else if (student.status === "Inactive") {
+            } else if (statusStr === "Inactive") {
                 inactiveCount++; 
             }
         });
@@ -409,7 +422,11 @@
         document.getElementById('totalDuesText').innerText = formatMoney(totalDues);
         document.getElementById('inactiveCountText').innerText = inactiveCount;
 
-        currentDisplayedData = baseFiltered.filter(student => (statusFilter === "All" || student.status === statusFilter));
+        currentDisplayedData = baseFiltered.filter(student => {
+            const statusStr = String(student.status || "Active");
+            return (statusFilter === "All" || statusStr === statusFilter);
+        });
+        
         renderTable(currentDisplayedData);
     };
 
@@ -420,7 +437,7 @@
             if (key === 'paid' || key === 'dues') {
                 valA = parseFloat(valA) || 0; valB = parseFloat(valB) || 0;
             } else {
-                valA = String(valA).toLowerCase(); valB = String(valB).toLowerCase();
+                valA = String(valA || "").toLowerCase(); valB = String(valB || "").toLowerCase();
             }
             if (valA < valB) return sortDirection ? -1 : 1;
             if (valA > valB) return sortDirection ? 1 : -1;
@@ -438,7 +455,8 @@
         }
 
         data.forEach((student) => {
-            let actionBtn = student.status === "Active" 
+            const statusStr = String(student.status || "Active");
+            let actionBtn = statusStr === "Active" 
                 ? `<button class="btn-icon btn-inactive" onclick="toggleStatus('${student.uid}', 'Inactive')" title="Make Inactive"><i class="fa-solid fa-user-xmark"></i></button>` 
                 : `<button class="btn-icon btn-active" onclick="toggleStatus('${student.uid}', 'Active')" title="Make Active"><i class="fa-solid fa-user-check"></i></button>`;
             
@@ -447,10 +465,10 @@
             let planBorder = student.feePlan === "Monthly" ? "rgba(0, 243, 255, 0.3)" : "rgba(179, 102, 255, 0.3)";
 
             tbody.innerHTML += `
-                <tr style="${student.status === 'Inactive' ? 'background: rgba(255,0,85,0.08); color: #ff0055;' : ''}">
-                    <td><strong>${student.uid}</strong></td>
-                    <td>${student.name}</td>
-                    <td>${student.class}</td>
+                <tr style="${statusStr === 'Inactive' ? 'background: rgba(255,0,85,0.08); color: #ff0055;' : ''}">
+                    <td><strong>${student.uid || 'N/A'}</strong></td>
+                    <td>${student.name || '-'}</td>
+                    <td>${student.class || '-'}</td>
                     <td><span style="background: ${planBadgeColor}; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: ${planTextColor}; border: 1px solid ${planBorder}; font-weight: 500;">${student.feePlan || 'Monthly'}</span></td>
                     <td style="color: #00ff88; font-weight: bold;">${formatMoney(student.paid)}</td>
                     <td style="color: #ff0055; font-weight: bold;">${formatMoney(student.dues)}</td>
@@ -475,7 +493,7 @@
         
         currentDisplayedData.forEach(s => {
             let row = [
-                s.uid, `"${s.name}"`, s.class, s.session, s.feePlan, s.paid || 0, s.dues || 0, s.status
+                s.uid, `"${s.name}"`, s.class, s.session, s.feePlan, s.paid || 0, s.dues || 0, s.status || 'Active'
             ].join(",");
             csvContent += row + "\n";
         });
@@ -502,8 +520,7 @@
                 .then(data => {
                     if(data.status === 'success') {
                         Swal.fire({ title: 'Updated!', text: `Status changed to ${newStatus}.`, icon: 'success', background: '#050914', color: '#00ff88' });
-                        // Delete cache to force a fresh fetch
-                        localStorage.removeItem(CACHE_KEY);
+                        try { localStorage.removeItem(CACHE_KEY); } catch(e) {}
                         fetchReportData(); 
                     } else { Swal.fire('Error', data.message, 'error'); }
                 });
@@ -515,7 +532,7 @@
         const modal = document.getElementById('inactiveModal');
         const tbody = document.getElementById('modalInactiveBody');
         tbody.innerHTML = '';
-        const inactiveStudents = reportData.filter(s => s.status === 'Inactive');
+        const inactiveStudents = reportData.filter(s => (s.status === 'Inactive'));
         if(inactiveStudents.length === 0) {
             tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px; color: #a5c3e0;">No inactive students found.</td></tr>`;
         } else {
