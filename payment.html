@@ -106,6 +106,15 @@
             <button class="cyber-search-btn" id="searchBtn" onclick="searchStudent()"><i class="fa-solid fa-magnifying-glass"></i> SEARCH</button>
         </div>
 
+        <!-- 🔥 NEW: Universal Fast Radar Loader (Hidden by default) -->
+        <div class="hud-radar-loader-wrapper" id="loadingIndicatorPayment" style="display: none;">
+            <div class="hud-fast-radar">
+                <div class="radar-cross"></div>
+                <div class="radar-core"></div>
+            </div>
+            <div class="hud-loading-text">SCANNING DATABASE...</div>
+        </div>
+
         <!-- Search Results List -->
         <div id="resultsContainer" class="results-container">
             <!-- Student cards will appear here -->
@@ -140,6 +149,7 @@
         const resultsContainer = document.getElementById('resultsContainer');
         const addPaymentBox = document.getElementById('addPaymentBox');
         const searchBtn = document.getElementById('searchBtn');
+        const loader = document.getElementById('loadingIndicatorPayment'); // 🔥 NEW: Get Loader
         
         resultsContainer.innerHTML = '';
         addPaymentBox.style.display = 'none';
@@ -152,6 +162,9 @@
         // Add loading state
         searchBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SCANNING...';
         searchBtn.style.opacity = '0.7';
+        
+        // 🔥 NEW: Show Radar Loader safely
+        if(loader) loader.style.display = 'flex';
 
         // Fetching Data from Google Sheet Backend
         fetch(API_URL + "?action=getReports") // getReports returns all students with their dues and mobile numbers
@@ -204,6 +217,9 @@
             .finally(() => {
                 searchBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> SEARCH';
                 searchBtn.style.opacity = '1';
+                
+                // 🔥 NEW: Hide Radar Loader safely
+                if(loader) loader.style.display = 'none';
             });
     };
 
