@@ -105,10 +105,201 @@
             <button class="cyber-search-btn" id="profSearchBtn" onclick="searchProfile()"><i class="fa-solid fa-magnifying-glass"></i> SEARCH</button>
         </div>
 
-        <!-- 🔥 NEW: Universal Fast Radar Loader -->
+        <!-- 🔥 NEW: Universal Fast Radar Loader (Hidden by default) -->
         <div class="hud-radar-loader-wrapper" id="loadingIndicator" style="display: none;">
             <div class="hud-fast-radar">
                 <div class="radar-cross"></div>
                 <div class="radar-core"></div>
             </div>
             <div class="hud-loading-text">SCANNING DATABASE...</div>
+        </div>
+
+        <!-- Selection Area for Multiple Matches -->
+        <div id="multiStudentArea">
+            <h3><i class="fa-solid fa-users"></i> Multiple Students Found. Select Profile:</h3>
+            <div class="mini-card-container" id="miniCardContainer">
+                <!-- Mini cards will load here -->
+            </div>
+        </div>
+
+        <div id="profileCard">
+            <div class="profile-header">
+                <h2><img src="logo.png" style="width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; vertical-align: middle; object-fit: cover;"> PURIX ACADEMY</h2>
+                <p>Student Academic & Financial Dossier</p>
+            </div>
+
+            <div class="profile-actions">
+                <button class="action-btn btn-edit" id="editBtn" onclick="toggleEdit()"><i class="fa-solid fa-pen-to-square"></i> EDIT DETAILS</button>
+                <button class="action-btn btn-save-pdf" onclick="generateProfilePDF()"><i class="fa-solid fa-file-pdf"></i> SAVE AS PDF</button>
+            </div>
+
+            <div class="profile-body">
+                <form id="profileForm">
+                    <div class="info-grid">
+                        <div class="info-group"><label>UID (Roll No)</label><input type="text" id="p_uid" class="locked" readonly></div>
+                        <div class="info-group"><label>Student Name</label><input type="text" id="p_name" class="locked" readonly></div>
+                        <div class="info-group"><label>Father Name</label><input type="text" id="p_father" class="locked" readonly></div>
+                        <div class="info-group"><label>Mobile No.</label><input type="number" id="p_mobile" class="profile-input locked" readonly></div>
+                        <div class="info-group"><label>ID No.</label><input type="text" id="p_aadhar" class="profile-input locked" readonly placeholder="[Redacted]"></div>
+                        <div class="info-group"><label>Class / Session</label><input type="text" id="p_class" class="profile-input locked" readonly></div>
+                        <div class="info-group" style="grid-column: 1 / -1;">
+                            <label>Subjects</label><input type="text" id="p_subject" class="profile-input locked" readonly style="width: 100%; white-space: normal;">
+                        </div>
+                        <div class="info-group"><label>Status</label><input type="text" id="p_status" class="locked" readonly></div>
+                    </div>
+                </form>
+
+                <div class="history-section">
+                    <h3><span><i class="fa-solid fa-clock-rotate-left"></i> Payment Ledger</span><span id="p_dues_alert" class="dues-alert"></span></h3>
+                    <table class="history-table">
+                        <thead><tr><th>Date & Time</th><th>Amount Paid</th><th>Method</th><th>Remarks</th></tr></thead>
+                        <tbody id="paymentHistoryBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    let isEditing = false;
+    let studentDataStore = []; // Array to hold multiple students
+
+    const searchInput = document.getElementById('profileSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchProfile();
+        });
+    }
+
+    window.searchProfile = function() {
+        const query = document.getElementById('profileSearchInput').value.trim();
+        const mainCard = document.getElementById('profileCard');
+        const multiArea = document.getElementById('multiStudentArea');
+        const btn = document.getElementById('profSearchBtn');
+        const loader = document.getElementById('loadingIndicator'); // Radar Element
+        
+        if(!query) {
+            Swal.fire({ icon: 'warning', title: 'Input Required', text: 'Please enter Student UID or Mobile!', background: '#050914', color: '#00f3ff' });
+            return;
+        }
+
+        // Ye code wahi hai jo aapne bheja tha (Button Animation)
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> FETCHING...';
+        btn.style.opacity = '0.7';
+        mainCard.style.display = 'none';
+        multiArea.style.display = 'none';
+        
+        // 🔥 NEW: Show Radar Loader safely
+        if(loader) loader.style.display = 'flex';
+
+        fetch(API_URL + "?action=searchProfile&uid=" + encodeURIComponent(query), { method: 'GET', redirect: 'follow' })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === "success") {
+                studentDataStore = Array.isArray(data.data) ? data.data : [data.data];
+                
+                if(studentDataStore.length > 1) {
+                    let cardsHTML = '';
+                    studentDataStore.forEach((std, index) => {
+                        cardsHTML += `
+                            <div class="mini-card" onclick="loadStudentIntoProfile(${index}, '${query}')">
+                                <h4><i class="fa-solid fa-user"></i> ${std.name}</h4>
+                                <p><strong style="color:#00f3ff;">UID:</strong> ${std.uid || query}</p>
+                                <p><strong>Father:</strong> ${std.fatherName}</p>
+                                <p><strong>Class:</strong> ${std.class}</p>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('miniCardContainer').innerHTML = cardsHTML;
+                    multiArea.style.display = 'block';
+                } else {
+                    loadStudentIntoProfile(0, query);
+                }
+            } else {
+                Swal.fire({ icon: 'error', title: 'Not Found', text: 'No student found.', background: '#050914', color: '#ff0055' });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire({ icon: 'error', title: 'Network Error', text: 'Could not connect to database.', background: '#050914', color: '#ff0055' });
+        })
+        .finally(() => {
+            // Restore button
+            btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> SEARCH';
+            btn.style.opacity = '1';
+            
+            // 🔥 NEW: Hide Radar Loader safely
+            if(loader) loader.style.display = 'none';
+        });
+    };
+
+    window.loadStudentIntoProfile = function(index, query) {
+        const student = studentDataStore[index];
+        
+        document.getElementById('p_uid').value = student.uid || query;
+        document.getElementById('p_name').value = student.name;
+        document.getElementById('p_father').value = student.fatherName;
+        document.getElementById('p_mobile').value = student.mobile;
+        document.getElementById('p_aadhar').value = student.aadhar || ''; 
+        document.getElementById('p_class').value = student.class;
+        document.getElementById('p_subject').value = student.subjects;
+        document.getElementById('p_status').value = student.status;
+
+        const duesAlert = document.getElementById('p_dues_alert');
+        if (student.remainingDues > 0) {
+            duesAlert.innerHTML = `Pending Dues: ₹${student.remainingDues}`;
+            duesAlert.style.display = 'block';
+        } else {
+            duesAlert.style.display = 'none';
+        }
+
+        const historyBody = document.getElementById('paymentHistoryBody');
+        historyBody.innerHTML = '';
+        if(student.history && student.history.length > 0) {
+            const reversedHistory = [...student.history].reverse();
+            reversedHistory.forEach(row => {
+                let dateObj = new Date(row.date);
+                let formattedDate = !isNaN(dateObj.getTime()) ? dateObj.toLocaleString('en-IN', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}) : row.date;
+                historyBody.innerHTML += `
+                    <tr>
+                        <td><i class="fa-regular fa-calendar-days" style="color:#00f3ff;"></i> ${formattedDate}</td>
+                        <td><strong style="color:#00ff88;">₹${row.amount}</strong></td>
+                        <td>${row.mode}</td>
+                        <td>${row.remarks || 'Fee Payment'}</td>
+                    </tr>`;
+            });
+        } else {
+            historyBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#a5c3e0; padding: 20px;">No payment history found.</td></tr>`;
+        }
+
+        document.getElementById('multiStudentArea').style.display = 'none';
+        document.getElementById('profileCard').style.display = 'block';
+        if(isEditing) toggleEdit();
+    };
+
+    window.toggleEdit = function() {
+        const inputs = document.querySelectorAll('.profile-input');
+        const btn = document.getElementById('editBtn');
+
+        if (!isEditing) {
+            inputs.forEach(input => { input.removeAttribute('readonly'); input.classList.remove('locked'); input.classList.add('editable'); });
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> SAVE CHANGES';
+            btn.style.background = 'rgba(0, 243, 255, 0.2)'; btn.style.borderColor = '#00f3ff'; btn.style.color = '#00f3ff';
+            isEditing = true;
+        } else {
+            inputs.forEach(input => { input.setAttribute('readonly', 'true'); input.classList.remove('editable'); input.classList.add('locked'); });
+            btn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> EDIT DETAILS';
+            btn.style.background = 'rgba(255, 170, 0, 0.15)'; btn.style.borderColor = '#ffaa00'; btn.style.color = '#ffaa00';
+            isEditing = false;
+            Swal.fire({ title: 'Details Locked', text: 'Profile modifications saved locally.', icon: 'success', background: '#050914', color: '#00ff88', confirmButtonColor: '#00f3ff' });
+        }
+    };
+
+    window.generateProfilePDF = function() {
+        if(isEditing) toggleEdit();
+        setTimeout(() => { window.print(); }, 400); 
+    }
+})();
+</script>
