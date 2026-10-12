@@ -123,8 +123,10 @@
     }
 
     function calculateDaysDifference(dueDateStr) {
+        if (!dueDateStr || dueDateStr === "-" || dueDateStr.trim() === "") return 999; // Return large number if invalid
+        
         const dueDate = new Date(dueDateStr);
-        if (isNaN(dueDate.getTime())) return null; 
+        if (isNaN(dueDate.getTime())) return 999; 
         
         dueDate.setHours(0,0,0,0);
         const todayMidnight = new Date();
@@ -136,7 +138,10 @@
 
     // Function to calculate exact month names for Monthly plan
     function getPendingMonthsText(dueDateStr) {
+        if(!dueDateStr || dueDateStr === "-") return "Multiple";
         let due = new Date(dueDateStr);
+        if (isNaN(due.getTime())) return "Multiple";
+
         let now = new Date();
         let months = [];
         let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -208,11 +213,26 @@
 
         alertData.forEach(student => {
             let daysDiff = calculateDaysDifference(student.dueDate);
-            if (daysDiff === null) return; 
-
-            let borderColor = daysDiff < 0 ? '#ff0055' : (daysDiff === 0 ? '#00f3ff' : '#ffaa00');
-            let readableDate = new Date(student.dueDate).toLocaleDateString('en-GB');
+            let hasDues = parseFloat(student.dues) > 0;
             let planText = student.feePlan || 'Monthly';
+            
+            // SMART CATEGORIZATION LOGIC
+            let isOverdue = false;
+            let isToday = false;
+            let isUpcoming = false;
+
+            if (hasDues && (planText === 'Monthly' || daysDiff < 0 || daysDiff === 999)) {
+                isOverdue = true;
+            } else if (daysDiff === 0) {
+                isToday = true;
+            } else if (daysDiff > 0 && daysDiff <= 5 && !hasDues) { // Only show upcoming if dues are 0
+                isUpcoming = true;
+            } else if (hasDues && daysDiff > 0) { // If dues exist but date is future, it's still overdue.
+                 isOverdue = true;
+            }
+
+            let borderColor = isOverdue ? '#ff0055' : (isToday ? '#00f3ff' : '#ffaa00');
+            let readableDate = (student.dueDate && student.dueDate !== "-") ? new Date(student.dueDate).toLocaleDateString('en-GB') : "N/A";
 
             let cardHtml = `
                 <div class="alert-card" id="alert-card-${student.uid}" style="border-left: 5px solid ${borderColor}">
@@ -224,7 +244,7 @@
                         <button class="btn-notify" onclick="sendWhatsAppAlert('${student.mobile}', '${student.name}', ${student.dues}, '${planText}', '${student.dueDate}')">
                             <i class="fa-brands fa-whatsapp"></i> NOTIFY
                         </button>
-                        ${daysDiff <= -60 ? `
+                        ${(isOverdue && daysDiff <= -60) ? `
                         <button class="btn-critical-inactive" onclick="directInactive('${student.uid}', '${student.name}')" title="2 Months Default">
                             <i class="fa-solid fa-user-slash"></i> DEACTIVATE
                         </button>` : ''}
@@ -232,11 +252,11 @@
                 </div>
             `;
 
-            if (daysDiff < 0) {
+            if (isOverdue) {
                 failedList.innerHTML += cardHtml; fCount++;
-            } else if (daysDiff === 0) {
+            } else if (isToday) {
                 todayList.innerHTML += cardHtml; tCount++;
-            } else if (daysDiff > 0 && daysDiff <= 5) {
+            } else if (isUpcoming) {
                 upcomingList.innerHTML += cardHtml; uCount++;
             }
         });
@@ -247,11 +267,11 @@
     }
 
     function fetchAndGenerateAlerts() {
-        const todayStr = new Date().toDateString(); // Gives format like "Fri Oct 09 2026"
+        const todayStr = new Date().toDateString(); 
         const cachedDate = localStorage.getItem('purix_alerts_date');
         const cachedData = localStorage.getItem('purix_alerts_data');
 
-        // MIDNIGHT CACHE LOGIC: Agar date match karti hai aur data hai, toh bina load kiye render kar do
+        // Bypassing cache if opened in Incognito (Incognito resets localStorage per session)
         if (cachedDate === todayStr && cachedData) {
             console.log("Loading alerts from fast Local Cache...");
             renderAlerts(JSON.parse(cachedData));
@@ -263,7 +283,6 @@
             .then(res => res.json())
             .then(data => {
                 if(data.status === "success") {
-                    // Save to memory for the rest of the day
                     localStorage.setItem('purix_alerts_date', todayStr);
                     localStorage.setItem('purix_alerts_data', JSON.stringify(data.data));
                     renderAlerts(data.data);
