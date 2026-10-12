@@ -3,7 +3,7 @@
 // ==========================================
 
 // 👇 YAHAN APNA GOOGLE APPS SCRIPT KA URL (WEB APP URL) PASTE KAREIN 👇
-const API_URL = "https://script.google.com/macros/s/AKfycbzqtjHyMz8zF7W8g9nPx6as3UUR89NsSMiGr0aYtobUVXoEELA_RYy6FwJxdczXv7CGIQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwE3hB-RKimSeI11u8PqkLhG8_7MUj_Tqff0K9kvGNHp5grWW-pZmr0BKF_72xNSD6F/exec";
 // 👆 ================================================================ 👆
 
 
