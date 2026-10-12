@@ -136,7 +136,6 @@
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
     }
 
-    // Function to calculate exact month names for Monthly plan
     function getPendingMonthsText(dueDateStr) {
         if(!dueDateStr || dueDateStr === "-") return "Multiple";
         let due = new Date(dueDateStr);
@@ -213,15 +212,19 @@
             let isToday = false;
             let isUpcoming = false;
 
-            if (hasDues && (planText === 'Monthly' || daysDiff < 0 || daysDiff === 999)) {
+            // 🔥 SUPER STRICT LOGIC: BINA MATLAB KISI KO OVERDUE ME NAHI DALNA HAI!
+            if (daysDiff < 0 && hasDues) {
                 isOverdue = true;
-            } else if (daysDiff === 0) {
+            } else if (daysDiff === 0 && hasDues) {
                 isToday = true;
-            } else if (daysDiff > 0 && daysDiff <= 5 && !hasDues) {
+            } else if (daysDiff > 0 && daysDiff <= 5 && hasDues) {
                 isUpcoming = true;
-            } else if (hasDues && daysDiff > 0) {
-                 isOverdue = true;
+            } else if (student.status !== 'Active' && hasDues) {
+                isOverdue = true; // Sirf Inactive walo ko Overdue me phekna hai
             }
+
+            // Agar ye baccha in teeno (Overdue, Today, Upcoming) me se kisi me fit nahi baithta, toh usko screen se gayab karo!
+            if (!isOverdue && !isToday && !isUpcoming) return;
 
             let borderColor = isOverdue ? '#ff0055' : (isToday ? '#00f3ff' : '#ffaa00');
             let readableDate = (student.dueDate && student.dueDate !== "-") ? new Date(student.dueDate).toLocaleDateString('en-GB') : "N/A";
