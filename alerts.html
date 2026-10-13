@@ -1,322 +1,389 @@
 <style>
     .alerts-wrapper { padding: 10px; }
 
-    .module-header { 
-        color: #00f3ff; font-family: 'Orbitron', sans-serif; margin-bottom: 20px; 
-        text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); border-bottom: 1px solid rgba(0, 243, 255, 0.2); 
-        padding-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
+    .module-header {
+        color: #00f3ff; font-family: 'Orbitron', sans-serif; margin: 0 0 25px;
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        display: flex; align-items: center; gap: 10px;
     }
-    .module-header h2 { margin: 0; color: #00f3ff; font-size: 20px; font-family: 'Orbitron', sans-serif; }
+    .alerts-header {
+        border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 10px; margin-bottom: 20px;
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    }
+    .alerts-header .module-header { margin: 0; font-size: 20px; }
 
     .alerts-container {
-        background: rgba(11, 16, 33, 0.8); padding: 30px; border-radius: 12px;
+        background: rgba(11, 16, 33, 0.8); padding: 24px; border-radius: 12px;
         border: 1px solid rgba(0, 243, 255, 0.2); box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.05);
-        max-width: 1000px; margin: 0 auto; backdrop-filter: blur(5px);
+        max-width: 1500px; margin: 0 auto; backdrop-filter: blur(5px);
     }
 
-    /* 🔥 NEW: PREMIUM TAB NAVIGATION */
-    .tabs-nav {
-        display: flex; gap: 15px; margin-bottom: 25px; 
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 15px;
-        overflow-x: auto;
-    }
-    .tab-btn {
-        background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #a5c3e0; padding: 12px 25px; border-radius: 8px;
-        font-family: 'Orbitron', sans-serif; font-size: 14px; cursor: pointer;
-        display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;
-        white-space: nowrap; flex: 1; justify-content: center;
-    }
-    .tab-btn:hover { background: rgba(255, 255, 255, 0.05); }
+    /* 4 columns board */
+    .alerts-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start; }
+    @media (max-width: 1250px) { .alerts-board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 700px)  { .alerts-board { grid-template-columns: minmax(0, 1fr); } }
 
-    /* Active Tab Colors */
-    .tab-btn.active-failed { background: rgba(255, 0, 85, 0.15); border-color: #ff0055; color: #fff; box-shadow: 0 0 15px rgba(255, 0, 85, 0.3); }
-    .tab-btn.active-today { background: rgba(0, 243, 255, 0.15); border-color: #00f3ff; color: #fff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); }
-    .tab-btn.active-upcoming { background: rgba(255, 170, 0, 0.15); border-color: #ffaa00; color: #fff; box-shadow: 0 0 15px rgba(255, 170, 0, 0.3); }
-
-    /* Live Counters (Badges) */
-    .badge {
-        padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: bold; background: #333; color: #fff; font-family: 'Poppins', sans-serif;
+    .alert-section-title {
+        padding: 12px 14px; border-radius: 8px; font-weight: 600; margin-bottom: 8px;
+        display: flex; align-items: center; gap: 10px;
+        font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 0.5px;
     }
-    .badge-red { background: #ff0055; color: #fff; }
-    .badge-blue { background: #00f3ff; color: #000; }
-    .badge-orange { background: #ffaa00; color: #000; }
-
-    /* Alert Sections Control */
-    .alert-section { display: none; }
-    .alert-section.active-section { display: block; animation: slideUpFade 0.4s ease; }
-    
-    @keyframes slideUpFade {
-        from { opacity: 0; transform: translateY(15px); }
-        to { opacity: 1; transform: translateY(0); }
+    .alert-section-title .count {
+        margin-left: auto; min-width: 26px; text-align: center; padding: 2px 8px; border-radius: 20px;
+        background: rgba(255,255,255,0.12); font-size: 12px;
     }
+    .alert-range { font-family: 'Poppins', sans-serif; font-size: 11px; color: #a5c3e0; margin: 0 0 12px 4px; }
 
-    .alert-list { display: flex; flex-direction: column; gap: 12px; }
-    
+    .title-upcoming { background: rgba(255, 212, 0, 0.12); border: 1px solid #ffd400; color: #ffd400; box-shadow: 0 0 15px rgba(255, 212, 0, 0.15); }
+    .title-today    { background: rgba(0, 243, 255, 0.12); border: 1px solid #00f3ff; color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); }
+    .title-current  { background: rgba(255, 140, 0, 0.12); border: 1px solid #ff8c00; color: #ff8c00; box-shadow: 0 0 15px rgba(255, 140, 0, 0.2); }
+    .title-over     { background: rgba(255, 0, 85, 0.15); border: 1px solid #ff0055; color: #ff0055; box-shadow: 0 0 15px rgba(255, 0, 85, 0.2); }
+
+    .alert-list { display: flex; flex-direction: column; gap: 10px; }
+
     .alert-card {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 18px 20px; background: rgba(0, 0, 0, 0.4);
+        display: flex; flex-direction: column; gap: 10px;
+        padding: 14px; background: rgba(0, 0, 0, 0.4);
         border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; transition: 0.3s;
     }
-    .alert-card:hover { box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); transform: translateX(5px); background: rgba(0, 243, 255, 0.03); }
-    
-    .student-info h4 { margin: 0; font-size: 16px; color: #00f3ff; font-family: 'Orbitron', sans-serif; letter-spacing: 0.5px; }
-    .student-info p { margin: 5px 0 0; font-size: 13px; color: #a5c3e0; font-family: 'Poppins', sans-serif; }
+    .alert-card:hover { box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); background: rgba(0, 243, 255, 0.03); }
 
-    .alert-actions { display: flex; gap: 12px; align-items: center; }
-    
+    .student-info h4 { margin: 0; font-size: 14px; color: #00f3ff; font-family: 'Orbitron', sans-serif; word-break: break-word; }
+    .student-info h4 small { font-size: 11px; color: #a5c3e0; font-family: 'Poppins', sans-serif; }
+    .student-info p { margin: 5px 0 0; font-size: 12px; color: #a5c3e0; font-family: 'Poppins', sans-serif; line-height: 1.5; }
+    .amt { color: #ff0055; font-weight: bold; text-shadow: 0 0 5px rgba(255,0,85,0.4); }
+    .when { font-weight: 600; }
+    .months-line { color: #ffd400; }
+
+    .alert-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
     .btn-notify {
         background: rgba(37, 211, 102, 0.15); color: #25D366; border: 1px solid #25D366;
-        padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;
+        padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;
         font-family: 'Orbitron', sans-serif; transition: 0.3s; display: flex; align-items: center; gap: 6px;
     }
     .btn-notify:hover { background: #25D366; color: #fff; box-shadow: 0 0 15px #25D366; }
 
     .btn-critical-inactive {
         background: rgba(255, 0, 85, 0.15); color: #ff0055; border: 1px solid #ff0055;
-        padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;
+        padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;
         animation: pulseRed 2s infinite; transition: 0.3s;
     }
     .btn-critical-inactive:hover { background: #ff0055; color: #fff; box-shadow: 0 0 20px #ff0055; }
-    
+    .btn-critical-inactive:disabled, .btn-notify:disabled { opacity: 0.5; cursor: wait; animation: none; }
+
     @keyframes pulseRed {
         0% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.7); }
         70% { box-shadow: 0 0 0 10px rgba(255, 0, 85, 0); }
         100% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); }
     }
+    @media (prefers-reduced-motion: reduce) { .btn-critical-inactive { animation: none; } }
 
-    .empty-msg {
-        color: #a5c3e0; font-style: italic; padding: 25px; text-align: center; font-family: 'Poppins', sans-serif; font-size: 14px;
-        background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px dashed rgba(255,255,255,0.1);
-    }
+    .empty-msg { color: #a5c3e0; font-style: italic; padding: 10px 4px; font-family: 'Poppins', sans-serif; font-size: 12px; }
 </style>
 
 <div class="alerts-wrapper">
     <div class="alerts-container">
         <div class="alerts-header">
-            <h2 class="module-header"><i class="fa-solid fa-bell"></i> SMART PAYMENT ALERTS
-                <span id="currentDateDisplay" style="color: #a5c3e0; font-weight: 500; font-family: 'Orbitron', sans-serif; font-size: 12px; text-shadow: none;"></span>
-            </h2>
+            <h2 class="module-header"><i class="fa-solid fa-bell"></i> PAYMENT ALERTS SYSTEM</h2>
+            <span id="currentDateDisplay" style="color: #a5c3e0; font-weight: 500; font-family: 'Orbitron', sans-serif; font-size: 12px;"></span>
         </div>
 
-        <!-- 🔥 TABS NAVIGATION BAR -->
-        <div class="tabs-nav">
-            <button class="tab-btn active-failed" id="btn-failed" onclick="switchAlertTab('failed')">
-                <i class="fa-solid fa-triangle-exclamation"></i> OVERDUE
-                <span class="badge badge-red" id="badge-failed"><i class="fa-solid fa-spinner fa-spin"></i></span>
-            </button>
-            <button class="tab-btn" id="btn-today" onclick="switchAlertTab('today')">
-                <i class="fa-solid fa-calendar-day"></i> TODAY
-                <span class="badge badge-blue" id="badge-today"><i class="fa-solid fa-spinner fa-spin"></i></span>
-            </button>
-            <button class="tab-btn" id="btn-upcoming" onclick="switchAlertTab('upcoming')">
-                <i class="fa-solid fa-clock-rotate-left"></i> UPCOMING
-                <span class="badge badge-orange" id="badge-upcoming"><i class="fa-solid fa-spinner fa-spin"></i></span>
-            </button>
-        </div>
-
-        <!-- Failed Payments Section -->
-        <div class="alert-section active-section" id="sec-failed">
-            <div class="alert-list" id="failedList">
-                <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading Defaulters...</div>
+        <div class="alerts-board">
+            <!-- 1. Upcoming -->
+            <div class="alert-col">
+                <div class="alert-section-title title-upcoming">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Upcoming <span class="count" id="countUpcoming">0</span>
+                </div>
+                <p class="alert-range">Due date me 1 se 5 din baaki</p>
+                <div class="alert-list" id="upcomingList">
+                    <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading data...</div>
+                </div>
             </div>
-        </div>
 
-        <!-- Today Payments Section -->
-        <div class="alert-section" id="sec-today">
-            <div class="alert-list" id="todayList">
-                <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading Today's Due...</div>
+            <!-- 2. Today -->
+            <div class="alert-col">
+                <div class="alert-section-title title-today">
+                    <i class="fa-solid fa-calendar-day"></i> Today <span class="count" id="countToday">0</span>
+                </div>
+                <p class="alert-range">Due date aaj hai</p>
+                <div class="alert-list" id="todayList">
+                    <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading data...</div>
+                </div>
             </div>
-        </div>
 
-        <!-- Upcoming Payments Section -->
-        <div class="alert-section" id="sec-upcoming">
-            <div class="alert-list" id="upcomingList">
-                <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading Upcoming...</div>
+            <!-- 3. Current Dues -->
+            <div class="alert-col">
+                <div class="alert-section-title title-current">
+                    <i class="fa-solid fa-hourglass-half"></i> Current Dues <span class="count" id="countCurrent">0</span>
+                </div>
+                <p class="alert-range">Due nikle 1 se 30 din tak</p>
+                <div class="alert-list" id="currentList">
+                    <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading data...</div>
+                </div>
+            </div>
+
+            <!-- 4. Over Dues -->
+            <div class="alert-col">
+                <div class="alert-section-title title-over">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Over Dues <span class="count" id="countOver">0</span>
+                </div>
+                <p class="alert-range">31 din ya zyada late (60 din par Deactivate)</p>
+                <div class="alert-list" id="overList">
+                    <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading data...</div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// Tab Switching Logic
-function switchAlertTab(tabName) {
-    // Sabhi buttons aur sections se active class hata do
-    document.getElementById('btn-failed').className = "tab-btn";
-    document.getElementById('btn-today').className = "tab-btn";
-    document.getElementById('btn-upcoming').className = "tab-btn";
-    
-    document.getElementById('sec-failed').classList.remove('active-section');
-    document.getElementById('sec-today').classList.remove('active-section');
-    document.getElementById('sec-upcoming').classList.remove('active-section');
+(function () {
+    const MS_DAY = 86400000;
+    const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const UPCOMING_DAYS = 5;      
+    const CURRENT_MAX_LATE = 30;  
+    const DEACTIVATE_LATE = 60;   
 
-    // Jo click hua usko activate karo
-    document.getElementById(`sec-${tabName}`).classList.add('active-section');
-    document.getElementById(`btn-${tabName}`).classList.add(`active-${tabName}`);
-}
+    let records = []; 
 
-(function() {
-    const today = new Date();
     const dateDisplay = document.getElementById('currentDateDisplay');
-    if(dateDisplay) {
-        dateDisplay.innerText = `SYSTEM DATE: ${today.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()}`;
+    if (dateDisplay) {
+        dateDisplay.innerText = 'SYSTEM DATE: ' + new Date()
+            .toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
     }
 
-    function calculateDaysDifference(dueDateStr) {
-        if (!dueDateStr || dueDateStr === "-" || dueDateStr.trim() === "") return 999; 
-        const dueDate = new Date(dueDateStr);
-        if (isNaN(dueDate.getTime())) return 999; 
-        
-        dueDate.setHours(0,0,0,0);
-        const todayMidnight = new Date();
-        todayMidnight.setHours(0,0,0,0);
-        
-        const diffTime = dueDate.getTime() - todayMidnight.getTime();
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    /* ---------- helpers ---------- */
+    function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
     }
 
-    function getPendingMonthsText(dueDateStr) {
-        if(!dueDateStr || dueDateStr === "-") return "Multiple";
-        let due = new Date(dueDateStr);
-        if (isNaN(due.getTime())) return "Multiple";
+    function startOfDay(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
 
-        let now = new Date(); let months = [];
-        let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-        let current = new Date(due);
-        while(current <= now || (current.getMonth() === now.getMonth() && current.getFullYear() === now.getFullYear())) {
-            months.push(monthNames[current.getMonth()]);
-            current.setMonth(current.getMonth() + 1);
+    function parseDate(v) {
+        if (v instanceof Date) return isNaN(v.getTime()) ? null : startOfDay(v);
+        if (typeof v === 'number') {
+            if (v > 20000) { 
+                const u = new Date(Math.round((v - 25569) * MS_DAY));
+                return new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate());
+            }
+            return null;
         }
-        
-        if(months.length === 0) return monthNames[due.getMonth()]; 
-        if(months.length === 1) return months[0];
-        if(months.length === 2) return months.join(" aur ");
-        return months.slice(0, -1).join(", ") + " aur " + months[months.length - 1];
+        if (typeof v !== 'string') return null;
+        const s = v.trim();
+        if (!s || s === '-') return null;
+        let m;
+        if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/))) return new Date(+m[1], +m[2] - 1, +m[3]);
+        if (/^\d{4}-\d{2}-\d{2}T/.test(s)) {
+            const d = new Date(s);
+            return isNaN(d.getTime()) ? null : startOfDay(d);
+        }
+        if ((m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/))) return new Date(+m[3], +m[2] - 1, +m[1]);
+        const d = new Date(s);
+        return isNaN(d.getTime()) ? null : startOfDay(d);
     }
 
-    window.directInactive = function(uid, name) {
+    function fmtDate(d) { return d.toLocaleDateString('en-GB'); }
+
+    function toNumber(v) {
+        const n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.\-]/g, ''));
+        return isNaN(n) ? 0 : n;
+    }
+
+    function pendingMonthsText(due, today) {
+        const names = [];
+        for (let i = 0; i < 36; i++) {
+            const mo = due.getMonth() + i;
+            const dim = new Date(due.getFullYear(), mo + 1, 0).getDate();
+            const d = new Date(due.getFullYear(), mo, Math.min(due.getDate(), dim));
+            if (d > today) break;
+            names.push(MONTH_NAMES[d.getMonth()]);
+        }
+        if (names.length === 0) names.push(MONTH_NAMES[due.getMonth()]);
+        if (names.length === 1) return names[0];
+        if (names.length === 2) return names.join(' aur ');
+        return names.slice(0, -1).join(', ') + ' aur ' + names[names.length - 1];
+    }
+
+    /* ---------- bucket logic ---------- */
+    function buildRecords(rows) {
+        const today = startOfDay(new Date());
+        const out = [];
+        (rows || []).forEach(function (s) {
+            
+            // 🔥 NAYA RULE: Agar baccha Admission Sheet me "Inactive" hai, toh usko list me aane hi mat do!
+            const status = String(s.status == null ? '' : s.status).trim().toLowerCase();
+            if (status !== 'active') return; 
+
+            const dues = toNumber(s.dues);
+            if (dues <= 0) return;
+
+            const due = parseDate(s.dueDate);
+            if (!due) return;
+
+            const diff = Math.round((due.getTime() - today.getTime()) / MS_DAY); 
+            const late = -diff;
+            let cat = null;
+            if (diff >= 1 && diff <= UPCOMING_DAYS) cat = 'upcoming';
+            else if (diff === 0) cat = 'today';
+            else if (late >= 1 && late <= CURRENT_MAX_LATE) cat = 'current';
+            else if (late > CURRENT_MAX_LATE) cat = 'over';
+            if (!cat) return;
+
+            out.push({
+                uid: String(s.uid), name: s.name || '', cls: s.class || '', plan: s.feePlan || 'Monthly',
+                mobile: s.mobile, dues: dues, due: due, diff: diff, late: late, cat: cat,
+                monthsText: pendingMonthsText(due, today)
+            });
+        });
+        return out;
+    }
+
+    /* ---------- render ---------- */
+    function cardHtml(r) {
+        const color = { upcoming: '#ffd400', today: '#00f3ff', current: '#ff8c00', over: '#ff0055' }[r.cat];
+        let whenText = '';
+        if (r.cat === 'upcoming') whenText = r.diff + ' din baaki';
+        else if (r.cat === 'today') whenText = 'Aaj due hai';
+        else whenText = r.late + ' din late';
+
+        const monthsLine = (r.plan === 'Monthly' && r.late > 0)
+            ? '<br><span class="months-line">Pending: ' + esc(r.monthsText) + '</span>' : '';
+        const canDeactivate = r.cat === 'over' && r.late >= DEACTIVATE_LATE;
+
+        return '' +
+            '<div class="alert-card" data-uid="' + esc(r.uid) + '" style="border-left: 4px solid ' + color + '">' +
+              '<div class="student-info">' +
+                '<h4>' + esc(r.name) + ' <small>(UID: ' + esc(r.uid) + ')</small></h4>' +
+                '<p>Class: ' + esc(r.cls) + ' | Plan: <strong style="color:' + (r.plan === 'Monthly' ? '#00f3ff' : '#b366ff') + '">' + esc(r.plan) + '</strong><br>' +
+                'Due: <strong>' + fmtDate(r.due) + '</strong> | <span class="when" style="color:' + color + '">' + whenText + '</span><br>' +
+                'Amount: <span class="amt">₹' + esc(r.dues) + '</span>' + monthsLine + '</p>' +
+              '</div>' +
+              '<div class="alert-actions">' +
+                '<button class="btn-notify" data-action="notify" data-uid="' + esc(r.uid) + '"><i class="fa-brands fa-whatsapp"></i> NOTIFY</button>' +
+                (canDeactivate ? '<button class="btn-critical-inactive" data-action="deactivate" data-uid="' + esc(r.uid) + '" title="2 mahine se default"><i class="fa-solid fa-user-slash"></i> DEACTIVATE</button>' : '') +
+              '</div>' +
+            '</div>';
+    }
+
+    function render() {
+        const cfg = {
+            upcoming: { list: 'upcomingList', count: 'countUpcoming', empty: '<i class="fa-solid fa-check-circle" style="color:#00ff88; margin-right:5px;"></i> Koi upcoming payment nahi.', sort: function (a, b) { return a.diff - b.diff; } },
+            today:    { list: 'todayList',    count: 'countToday',    empty: '<i class="fa-regular fa-calendar-check" style="color:#00f3ff; margin-right:5px;"></i> Aaj kisi ki payment due nahi.', sort: function (a, b) { return b.dues - a.dues; } },
+            current:  { list: 'currentList',  count: 'countCurrent',  empty: '<i class="fa-solid fa-check-double" style="color:#ff8c00; margin-right:5px;"></i> Koi current dues nahi.', sort: function (a, b) { return b.late - a.late; } },
+            over:     { list: 'overList',     count: 'countOver',     empty: '<i class="fa-solid fa-shield-halved" style="color:#ff0055; margin-right:5px;"></i> All clear! Koi over dues nahi.', sort: function (a, b) { return b.late - a.late; } }
+        };
+        Object.keys(cfg).forEach(function (cat) {
+            const c = cfg[cat];
+            const items = records.filter(function (r) { return r.cat === cat; }).sort(c.sort);
+            document.getElementById(c.list).innerHTML = items.length
+                ? items.map(cardHtml).join('')
+                : '<div class="empty-msg">' + c.empty + '</div>';
+            document.getElementById(c.count).textContent = items.length;
+        });
+    }
+
+    /* ---------- actions ---------- */
+    function findRecord(uid) { return records.find(function (r) { return r.uid === uid; }); }
+
+    function sendWhatsAppAlert(r) {
+        const digits = String(r.mobile == null ? '' : r.mobile).replace(/\D/g, '').slice(-10);
+        if (digits.length !== 10) {
+            Swal.fire({ title: 'Mobile number sahi nahi hai', text: r.name + ' ka mobile number Sheet me check karein.', icon: 'warning', background: '#050914', color: '#fff' });
+            return;
+        }
+        let message;
+        if (r.plan === 'Monthly') {
+            message = 'Dear ' + r.name + ', aapka ' + r.monthsText + ' mahine ka fee dues (Rs. ' + r.dues + ') baki hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.';
+        } else {
+            message = 'Dear ' + r.name + ', aapki aagami Installment (kist) Rs. ' + r.dues + ' due hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.';
+        }
+        window.open('https://wa.me/91' + digits + '?text=' + encodeURIComponent(message), '_blank');
+    }
+
+    function deactivate(r, btn) {
         Swal.fire({
-            title: 'Deactivate Student?',
-            text: `${name} (UID: ${uid}) has defaulted payment. Mark INACTIVE?`,
+            title: 'Student ko Inactive karein?',
+            text: r.name + ' (UID: ' + r.uid + ') ko Inactive mark kiya jayega.',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#ff0055', cancelButtonColor: '#334155',
-            confirmButtonText: 'Yes, Deactivate', background: '#050914', color: '#fff'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Instantly remove from UI and RAM
-                if (window.cachedAlertsData) {
-                    window.cachedAlertsData = window.cachedAlertsData.filter(s => String(s.uid) !== String(uid));
-                    renderAlerts(window.cachedAlertsData); 
-                } else {
-                    let card = document.getElementById(`alert-card-${uid}`);
-                    if(card) card.remove();
-                }
-                // Background update
-                fetch(API_URL, {
-                    method: "POST",
-                    body: JSON.stringify({ action: 'toggleStatus', uid: uid, status: 'Inactive' })
-                }).then(res => res.json()).then(data => {
-                    if(data.status === 'success') {
-                        Swal.fire({ title: 'Deactivated!', icon: 'success', background: '#050914', color: '#00ff88', timer: 1500, showConfirmButton: false });
-                    }
-                });
-            }
-        });
-    };
-
-    window.sendWhatsAppAlert = function(mobile, name, dues, feePlan, dueDateStr) {
-        let message = "";
-        if (feePlan === "Monthly") {
-            let monthsText = getPendingMonthsText(dueDateStr);
-            message = `Dear ${name}, aapka ${monthsText} mahine ka fee dues (Rs. ${dues}) baki hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.`;
-        } else {
-            message = `Dear ${name}, aapki aagami Installment (kist) Rs. ${dues} due hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.`;
-        }
-        window.open(`https://wa.me/91${mobile}?text=${encodeURIComponent(message)}`, '_blank');
-    };
-
-    function renderAlerts(alertData) {
-        const failedList = document.getElementById('failedList');
-        const todayList = document.getElementById('todayList');
-        const upcomingList = document.getElementById('upcomingList');
-        
-        failedList.innerHTML = ''; todayList.innerHTML = ''; upcomingList.innerHTML = '';
-        let fCount = 0, tCount = 0, uCount = 0;
-
-        alertData.forEach(student => {
-            let daysDiff = calculateDaysDifference(student.dueDate);
-            let hasDues = parseFloat(student.dues) > 0;
-            let planText = student.feePlan || 'Monthly';
+            confirmButtonColor: '#ff0055',
+            cancelButtonColor: '#334155',
+            confirmButtonText: 'Haan, Inactive karo',
+            cancelButtonText: 'Cancel',
+            background: '#050914', color: '#fff'
+        }).then(function (result) {
+            if (!result.isConfirmed) return;
             
-            let isOverdue = false, isToday = false, isUpcoming = false;
-
-            if (daysDiff < 0 && hasDues) { isOverdue = true; } 
-            else if (daysDiff === 0 && hasDues) { isToday = true; } 
-            else if (daysDiff > 0 && daysDiff <= 5 && hasDues) { isUpcoming = true; } 
-            else if (student.status !== 'Active' && hasDues) { isOverdue = true; }
-
-            if (!isOverdue && !isToday && !isUpcoming) return;
-
-            let borderColor = isOverdue ? '#ff0055' : (isToday ? '#00f3ff' : '#ffaa00');
-            let readableDate = (student.dueDate && student.dueDate !== "-") ? new Date(student.dueDate).toLocaleDateString('en-GB') : "N/A";
-
-            let cardHtml = `
-                <div class="alert-card" id="alert-card-${student.uid}" style="border-left: 5px solid ${borderColor}">
-                    <div class="student-info">
-                        <h4>${student.name} <span style="font-size:12px; color:#a5c3e0;">(UID: ${student.uid})</span></h4>
-                        <p>Class: ${student.class} | Plan: <strong style="color:${planText==='Monthly'?'#00f3ff':'#b366ff'}">${planText}</strong> | Due Date: <strong>${readableDate}</strong> | Amt: <span style="color:#ff0055; font-weight:bold; text-shadow: 0 0 5px rgba(255,0,85,0.4);">₹${student.dues}</span></p>
-                    </div>
-                    <div class="alert-actions">
-                        <button class="btn-notify" onclick="sendWhatsAppAlert('${student.mobile}', '${student.name}', ${student.dues}, '${planText}', '${student.dueDate}')">
-                            <i class="fa-brands fa-whatsapp"></i> NOTIFY
-                        </button>
-                        ${(isOverdue && daysDiff <= -60) ? `
-                        <button class="btn-critical-inactive" onclick="directInactive('${student.uid}', '${student.name}')" title="2 Months Default">
-                            <i class="fa-solid fa-user-slash"></i> DEACTIVATE
-                        </button>` : ''}
-                    </div>
-                </div>
-            `;
-
-            if (isOverdue) { failedList.innerHTML += cardHtml; fCount++; } 
-            else if (isToday) { todayList.innerHTML += cardHtml; tCount++; } 
-            else if (isUpcoming) { upcomingList.innerHTML += cardHtml; uCount++; }
+            // Turant screen se hatane ke liye
+            records = records.filter(function (x) { return x.uid !== r.uid; });
+            render();
+            
+            // Background API Call - Update Google Sheet
+            fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'toggleStatus', uid: r.uid, status: 'Inactive' })
+            })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (data && data.status === 'success') {
+                    Swal.fire({ title: 'Sheet Updated!', text: r.name + ' ab Admission Sheet me Inactive ho gaya hai.', icon: 'success', background: '#050914', color: '#00ff88', timer: 2000, showConfirmButton: false });
+                } else {
+                    throw new Error((data && data.message) || 'Status update nahi hua');
+                }
+            })
+            .catch(function (err) {
+                console.error('Deactivate error:', err);
+                // Agar Sheet update me error aayi toh bacche ko wapas screen pe laa do
+                fetchAndGenerateAlerts(); 
+                Swal.fire({ title: 'Error', text: 'Sheet update nahi hui: ' + String(err.message || err), icon: 'error', background: '#050914', color: '#fff' });
+            });
         });
+    }
 
-        // 🔥 Update Live Badges
-        document.getElementById('badge-failed').innerText = fCount;
-        document.getElementById('badge-today').innerText = tCount;
-        document.getElementById('badge-upcoming').innerText = uCount;
+    document.querySelector('.alerts-board').addEventListener('click', function (e) {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        const r = findRecord(btn.getAttribute('data-uid'));
+        if (!r) return;
+        if (btn.getAttribute('data-action') === 'notify') sendWhatsAppAlert(r);
+        else if (btn.getAttribute('data-action') === 'deactivate') deactivate(r, btn);
+    });
 
-        // Empty states
-        if(fCount === 0) failedList.innerHTML = `<div class="empty-msg"><i class="fa-solid fa-check-circle" style="color:#00ff88;"></i> All clear! No overdue payments.</div>`;
-        if(tCount === 0) todayList.innerHTML = `<div class="empty-msg"><i class="fa-regular fa-calendar-check" style="color:#00f3ff;"></i> No payments scheduled for today.</div>`;
-        if(uCount === 0) upcomingList.innerHTML = `<div class="empty-msg"><i class="fa-solid fa-mug-hot" style="color:#ffaa00;"></i> Relax! No upcoming payments in next 5 days.</div>`;
+    /* ---------- load ---------- */
+    function showErrorState() {
+        ['upcomingList', 'todayList', 'currentList', 'overList'].forEach(function (id) {
+            document.getElementById(id).innerHTML = '<div class="empty-msg" style="color:#ff0055;">Database connection error.</div>';
+        });
     }
 
     function fetchAndGenerateAlerts() {
-        if (window.cachedAlertsData) {
-            renderAlerts(window.cachedAlertsData);
-            return;
-        }
+        // 🔥 MAGIC FIX: Cache poori tarah uda diya gaya hai. Humesha Google Sheet (Backend) se naya data aayega!
+        console.log("Fetching 100% FRESH alerts from Sheet... Cache Disabled.");
+        
+        ['upcomingList', 'todayList', 'currentList', 'overList'].forEach(function (id) {
+            document.getElementById(id).innerHTML = '<div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Fetching Live Data...</div>';
+        });
 
-        fetch(API_URL + "?action=getAlerts&timestamp=" + new Date().getTime())
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === "success") {
-                    window.cachedAlertsData = data.data; 
-                    renderAlerts(data.data);
-                } else { showErrorState(); }
-            }).catch(err => showErrorState());
-    }
-
-    function showErrorState() {
-        document.getElementById('failedList').innerHTML = `<div class="empty-msg" style="color:#ff0055;">Database connection error. Hit Refresh (F5).</div>`;
-        document.getElementById('badge-failed').innerText = "!";
-        document.getElementById('badge-today').innerText = "!";
-        document.getElementById('badge-upcoming').innerText = "!";
+        const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
+        
+        // Date.now() ensure karta hai ki browser humesha naya data laye, cache wala nahi
+        fetch(API_URL + sep + 'action=getAlerts&timestamp=' + Date.now())
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (data && data.status === 'success') {
+                    records = buildRecords(data.data);
+                    render();
+                } else {
+                    showErrorState();
+                }
+            })
+            .catch(function (err) {
+                console.error('Alerts Error:', err);
+                showErrorState();
+            });
     }
 
     fetchAndGenerateAlerts();
