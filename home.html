@@ -517,14 +517,14 @@
 })();
 
 /* =================================================
-   CRM DATA INTEGRATION (Auto-Sync & 100% STRICT Logic)
+   CRM DATA INTEGRATION (Auto-Sync & RAM Cache Logic)
 ================================================= */
 (function() {
     // Helpers
     function safeJSON(value) { try { return JSON.parse(value); } catch (e) { return null; } }
     function setText(id, value) { const el = document.getElementById(id); if (el) el.textContent = value; }
     
-    // Exact same robust date parser from alerts.html
+    // Exact robust date parser
     const MS_DAY = 86400000;
     function startOfDay(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
     function parseDate(v) {
@@ -550,62 +550,77 @@
         return isNaN(d.getTime()) ? null : startOfDay(d);
     }
 
-    // MAIN LOAD FUNCTION (NO CACHE AT ALL!)
+    // MAIN LOAD FUNCTION (WITH RAM CACHE LOGIC)
     function loadDashboardData() {
-        console.log("Fetching FRESH HUD Stats... Cache Disabled.");
+        const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 Minutes
+        const now = Date.now();
         
-        // Ziddi Cache hamesha ke liye delete
-        localStorage.removeItem("purix_home_stats");
-        localStorage.removeItem("purix_alerts_date");
-        localStorage.removeItem("purix_alerts_data");
+        // 1. STATS (Active, Admissions, Collection) - 5 MIN CACHE
+        const cachedStatsString = localStorage.getItem("purix_home_stats");
+        let cachedStats = safeJSON(cachedStatsString);
 
-        // URL parameter me timestamp taki Google hamesha naya data de
-        const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
-        
-        // 1. Fetch Stats (Active, Admissions, Collection)
-        fetch(API_URL + sep + "action=getStats&timestamp=" + Date.now())
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === "success" && data.data) {
-                    setText("homeActiveStudents", data.data.activeStudents !== undefined ? data.data.activeStudents : 0);
-                    setText("homeMonthAdmission", data.data.todayAdmissions !== undefined ? data.data.todayAdmissions : 0);
-                    setText("homeTodayCollection", "₹" + (data.data.todayCollection !== undefined ? data.data.todayCollection : 0));
-                }
-            }).catch(err => console.error("HUD Stats Error:", err));
+        if (cachedStats && cachedStats.timestamp && (now - cachedStats.timestamp < CACHE_DURATION_MS)) {
+            console.log("HUD Stats loaded from 5-min Cache ⚡");
+            if (cachedStats.data) {
+                setText("homeActiveStudents", cachedStats.data.activeStudents !== undefined ? cachedStats.data.activeStudents : 0);
+                setText("homeMonthAdmission", cachedStats.data.todayAdmissions !== undefined ? cachedStats.data.todayAdmissions : 0);
+                setText("homeTodayCollection", "₹" + (cachedStats.data.todayCollection !== undefined ? cachedStats.data.todayCollection : 0));
+            }
+        } else {
+            console.log("Fetching FRESH HUD Stats from Server...");
+            const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
+            fetch(API_URL + sep + "action=getStats&timestamp=" + Date.now())
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success" && data.data) {
+                        localStorage.setItem("purix_home_stats", JSON.stringify({ timestamp: Date.now(), data: data.data }));
+                        setText("homeActiveStudents", data.data.activeStudents !== undefined ? data.data.activeStudents : 0);
+                        setText("homeMonthAdmission", data.data.todayAdmissions !== undefined ? data.data.todayAdmissions : 0);
+                        setText("homeTodayCollection", "₹" + (data.data.todayCollection !== undefined ? data.data.todayCollection : 0));
+                    }
+                }).catch(err => console.error("HUD Stats Error:", err));
+        }
 
-        // 2. Fetch Alerts (For Exact Overdue Count)
-        fetch(API_URL + sep + "action=getAlerts&timestamp=" + Date.now())
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === "success" && Array.isArray(data.data)) {
-                    setText("alertCount", countStrictOverDues(data.data));
-                }
-            }).catch(err => console.error("HUD Alerts Error:", err));
+        // 2. ALERTS COUNT (Daily Midnight Cache)
+        const todayStr = new Date().toDateString(); 
+        const cachedAlertsDate = localStorage.getItem("purix_alerts_date");
+        const cachedAlertsData = safeJSON(localStorage.getItem("purix_alerts_data"));
+
+        if (cachedAlertsDate === todayStr && Array.isArray(cachedAlertsData)) {
+            setText("alertCount", countStrictOverDues(cachedAlertsData));
+        } else {
+            const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
+            fetch(API_URL + sep + "action=getAlerts&timestamp=" + Date.now())
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success" && Array.isArray(data.data)) {
+                        localStorage.setItem("purix_alerts_date", todayStr); 
+                        localStorage.setItem("purix_alerts_data", JSON.stringify(data.data)); 
+                        setText("alertCount", countStrictOverDues(data.data));
+                    }
+                }).catch(err => console.error("HUD Alerts Error:", err));
+        }
     }
 
-    // 🔥 STRICT COUNTING: Exactly matches the 4th column ("Over Dues") of alerts.html
+    // STRICT COUNTING
     function countStrictOverDues(alertsList) {
         let count = 0;
         const today = startOfDay(new Date()); 
-        const CURRENT_MAX_LATE = 30; // Exact variable from alerts.html
+        const CURRENT_MAX_LATE = 30; // Exact match with alerts.html
 
         alertsList.forEach(s => {
-            // Rule 1: Must be Active
             const status = String(s.status == null ? '' : s.status).trim().toLowerCase();
             if (status !== 'active') return; 
 
-            // Rule 2: Must have dues > 0
             const dues = parseFloat(String(s.dues == null ? '' : s.dues).replace(/[^0-9.\-]/g, ''));
             if (isNaN(dues) || dues <= 0) return;
 
-            // Rule 3: Must have valid date
             const due = parseDate(s.dueDate);
             if (!due) return;
 
             const diff = Math.round((due.getTime() - today.getTime()) / MS_DAY); 
-            const late = -diff; // Positive means late
+            const late = -diff; 
 
-            // 🔥 Rule 4: Match Alerts.html "Over Dues" column exactly (Late by 31+ days)
             if (late > CURRENT_MAX_LATE) {
                 count++;
             }
@@ -613,7 +628,7 @@
         return count;
     }
 
-    /* 🔥 PERFECT NO-CROP SCALING LOGIC */
+    // SCALING LOGIC
     function scaleHUD() {
         const hc = document.getElementById("hudContainer");
         const hs = document.getElementById("hudScaler");
