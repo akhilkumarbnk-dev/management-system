@@ -19,15 +19,37 @@
     }
 
     /* 4 columns board */
-    .alerts-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start; }
+    .alerts-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start; transition: 0.3s; }
     @media (max-width: 1250px) { .alerts-board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 700px)  { .alerts-board { grid-template-columns: minmax(0, 1fr); } }
 
+    /* 🔥 FOCUS MODE STYLES */
+    .alerts-board.focus-mode { display: block; }
+    .alert-col { transition: 0.3s; }
+    .alert-col.hidden { display: none; }
+    .alert-col.focused { 
+        width: 100%; max-width: 800px; margin: 0 auto; 
+        animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
     .alert-section-title {
         padding: 12px 14px; border-radius: 8px; font-weight: 600; margin-bottom: 8px;
-        display: flex; align-items: center; gap: 10px;
+        display: flex; align-items: center; gap: 10px; cursor: pointer; /* 🔥 Cursor Pointer for Click */
         font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 0.5px;
+        transition: 0.2s;
     }
+    .alert-section-title:hover { filter: brightness(1.2); transform: scale(1.01); }
+    .alert-section-title::after {
+        content: '\f424'; font-family: 'Font Awesome 6 Free'; font-weight: 900; 
+        font-size: 14px; margin-left: 5px; opacity: 0.5; transition: 0.3s;
+    }
+    .focused .alert-section-title::after { content: '\f422'; } /* Change icon on focus */
+
     .alert-section-title .count {
         margin-left: auto; min-width: 26px; text-align: center; padding: 2px 8px; border-radius: 20px;
         background: rgba(255,255,255,0.12); font-size: 12px;
@@ -80,19 +102,24 @@
     @media (prefers-reduced-motion: reduce) { .btn-critical-inactive { animation: none; } }
 
     .empty-msg { color: #a5c3e0; font-style: italic; padding: 10px 4px; font-family: 'Poppins', sans-serif; font-size: 12px; }
+    
+    /* Small sync indicator */
+    #syncStatus {
+        font-size: 11px; color: #00ff88; font-family: 'Poppins', sans-serif; padding: 2px 8px; border-radius: 12px; background: rgba(0, 255, 136, 0.1); margin-left: 10px;
+    }
 </style>
 
 <div class="alerts-wrapper">
     <div class="alerts-container">
         <div class="alerts-header">
-            <h2 class="module-header"><i class="fa-solid fa-bell"></i> PAYMENT ALERTS SYSTEM</h2>
+            <h2 class="module-header"><i class="fa-solid fa-bell"></i> PAYMENT ALERTS SYSTEM <span id="syncStatus" style="display:none;"><i class="fa-solid fa-bolt"></i> Cached</span></h2>
             <span id="currentDateDisplay" style="color: #a5c3e0; font-weight: 500; font-family: 'Orbitron', sans-serif; font-size: 12px;"></span>
         </div>
 
-        <div class="alerts-board">
+        <div class="alerts-board" id="alertsBoard">
             <!-- 1. Upcoming -->
-            <div class="alert-col">
-                <div class="alert-section-title title-upcoming">
+            <div class="alert-col" id="col-upcoming">
+                <div class="alert-section-title title-upcoming" onclick="toggleFocus('upcoming')">
                     <i class="fa-solid fa-clock-rotate-left"></i> Upcoming <span class="count" id="countUpcoming">0</span>
                 </div>
                 <p class="alert-range">Due date me 1 se 5 din baaki</p>
@@ -102,8 +129,8 @@
             </div>
 
             <!-- 2. Today -->
-            <div class="alert-col">
-                <div class="alert-section-title title-today">
+            <div class="alert-col" id="col-today">
+                <div class="alert-section-title title-today" onclick="toggleFocus('today')">
                     <i class="fa-solid fa-calendar-day"></i> Today <span class="count" id="countToday">0</span>
                 </div>
                 <p class="alert-range">Due date aaj hai</p>
@@ -113,8 +140,8 @@
             </div>
 
             <!-- 3. Current Dues -->
-            <div class="alert-col">
-                <div class="alert-section-title title-current">
+            <div class="alert-col" id="col-current">
+                <div class="alert-section-title title-current" onclick="toggleFocus('current')">
                     <i class="fa-solid fa-hourglass-half"></i> Current Dues <span class="count" id="countCurrent">0</span>
                 </div>
                 <p class="alert-range">Due nikle 1 se 30 din tak</p>
@@ -124,8 +151,8 @@
             </div>
 
             <!-- 4. Over Dues -->
-            <div class="alert-col">
-                <div class="alert-section-title title-over">
+            <div class="alert-col" id="col-over">
+                <div class="alert-section-title title-over" onclick="toggleFocus('over')">
                     <i class="fa-solid fa-triangle-exclamation"></i> Over Dues <span class="count" id="countOver">0</span>
                 </div>
                 <p class="alert-range">31 din ya zyada late (60 din par Deactivate)</p>
@@ -138,6 +165,36 @@
 </div>
 
 <script>
+// 🔥 NEW FOCUS LOGIC
+let currentFocus = null;
+function toggleFocus(colId) {
+    const board = document.getElementById('alertsBoard');
+    const cols = ['upcoming', 'today', 'current', 'over'];
+    
+    if (currentFocus === colId) {
+        // Reset everything to normal
+        board.classList.remove('focus-mode');
+        cols.forEach(id => {
+            document.getElementById(`col-${id}`).classList.remove('hidden', 'focused');
+        });
+        currentFocus = null;
+    } else {
+        // Focus specific column
+        board.classList.add('focus-mode');
+        cols.forEach(id => {
+            const col = document.getElementById(`col-${id}`);
+            if (id === colId) {
+                col.classList.remove('hidden');
+                col.classList.add('focused');
+            } else {
+                col.classList.remove('focused');
+                col.classList.add('hidden');
+            }
+        });
+        currentFocus = colId;
+    }
+}
+
 (function () {
     const MS_DAY = 86400000;
     const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -213,7 +270,6 @@
         const out = [];
         (rows || []).forEach(function (s) {
             
-            // 🔥 NAYA RULE: Agar baccha Admission Sheet me "Inactive" hai, toh usko list me aane hi mat do!
             const status = String(s.status == null ? '' : s.status).trim().toLowerCase();
             if (status !== 'active') return; 
 
@@ -316,12 +372,13 @@
             background: '#050914', color: '#fff'
         }).then(function (result) {
             if (!result.isConfirmed) return;
-            
-            // Turant screen se hatane ke liye
+            btn.disabled = true;
+
+            // Turant screen aur records se uda do
             records = records.filter(function (x) { return x.uid !== r.uid; });
             render();
             
-            // Background API Call - Update Google Sheet
+            // Backend Update
             fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action: 'toggleStatus', uid: r.uid, status: 'Inactive' })
@@ -329,6 +386,17 @@
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 if (data && data.status === 'success') {
+                    // Update LocalStorage Daily Cache so it stays hidden on tab switches
+                    try {
+                        const todayStr = new Date().toDateString();
+                        let rawCache = localStorage.getItem("purix_alerts_data");
+                        if(rawCache) {
+                            let parsed = JSON.parse(rawCache);
+                            let updated = parsed.filter(item => item.uid !== r.uid);
+                            localStorage.setItem("purix_alerts_data", JSON.stringify(updated));
+                        }
+                    } catch(e) {}
+
                     Swal.fire({ title: 'Sheet Updated!', text: r.name + ' ab Admission Sheet me Inactive ho gaya hai.', icon: 'success', background: '#050914', color: '#00ff88', timer: 2000, showConfirmButton: false });
                 } else {
                     throw new Error((data && data.message) || 'Status update nahi hua');
@@ -336,8 +404,7 @@
             })
             .catch(function (err) {
                 console.error('Deactivate error:', err);
-                // Agar Sheet update me error aayi toh bacche ko wapas screen pe laa do
-                fetchAndGenerateAlerts(); 
+                fetchAndGenerateAlerts(true); // Force fresh load on error
                 Swal.fire({ title: 'Error', text: 'Sheet update nahi hui: ' + String(err.message || err), icon: 'error', background: '#050914', color: '#fff' });
             });
         });
@@ -359,21 +426,45 @@
         });
     }
 
-    function fetchAndGenerateAlerts() {
-        // 🔥 MAGIC FIX: Cache poori tarah uda diya gaya hai. Humesha Google Sheet (Backend) se naya data aayega!
-        console.log("Fetching 100% FRESH alerts from Sheet... Cache Disabled.");
-        
+    // 🔥 NEW: Midnight Daily Cache Logic to save API calls
+    function fetchAndGenerateAlerts(forceFresh = false) {
+        const todayStr = new Date().toDateString(); 
+        const cachedDate = localStorage.getItem("purix_alerts_date");
+        const cachedDataStr = localStorage.getItem("purix_alerts_data");
+        const syncBadge = document.getElementById("syncStatus");
+
+        if (!forceFresh && cachedDate === todayStr && cachedDataStr) {
+            // Load from daily cache
+            console.log("Loading Alerts from Daily Cache ⚡ (Will auto-refresh at Midnight)");
+            try {
+                const parsedData = JSON.parse(cachedDataStr);
+                records = buildRecords(parsedData);
+                render();
+                if(syncBadge) syncBadge.style.display = 'inline-block';
+                return;
+            } catch(e) { console.error("Cache parse error"); }
+        }
+
+        // Needs fresh load
+        console.log("Fetching FRESH Alerts from Sheet...");
+        if(syncBadge) syncBadge.style.display = 'none';
+
         ['upcomingList', 'todayList', 'currentList', 'overList'].forEach(function (id) {
             document.getElementById(id).innerHTML = '<div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Fetching Live Data...</div>';
         });
 
         const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
         
-        // Date.now() ensure karta hai ki browser humesha naya data laye, cache wala nahi
         fetch(API_URL + sep + 'action=getAlerts&timestamp=' + Date.now())
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 if (data && data.status === 'success') {
+                    // Save for today
+                    try {
+                        localStorage.setItem("purix_alerts_date", todayStr);
+                        localStorage.setItem("purix_alerts_data", JSON.stringify(data.data));
+                    } catch(e) {}
+                    
                     records = buildRecords(data.data);
                     render();
                 } else {
