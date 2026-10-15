@@ -307,18 +307,32 @@ window.toggleFocus = function(colId, btnEl) {
         }));
     }
 
-    // Ek hi fetch sabke liye, koi timeout nahi (badi sheet ko time milega)
-    function fetchFresh() {
+    // Ek hi fetch sabke liye. 90 sec timeout + 1 auto-retry (hung request se loader nahi atkega)
+    function fetchFresh(force) {
         if (!window.__purixAlertsInflight) {
             if (typeof API_URL === 'undefined') return Promise.reject(new Error('API_URL define nahi hai'));
             const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
+            const t0 = Date.now();
             const slowTimer = setTimeout(function () {
                 LISTS.forEach(cls => document.querySelectorAll('.' + cls).forEach(el => {
-                    if (el.querySelector('.skel') && !el.querySelector('.slow-note')) el.insertAdjacentHTML('afterbegin', '<div class="empty-msg slow-note">Sheet badi hai, data aane me thoda time lag raha hai… ⏳</div>');
+                    if (el.querySelector('.skel') && !el.querySelector('.slow-note')) el.insertAdjacentHTML('afterbegin', '<div class="empty-msg slow-note">Data aane me thoda time lag raha hai… ⏳</div>');
                 }));
-            }, 15000);
-            window.__purixAlertsInflight = fetch(API_URL + sep + 'action=getAlerts&timestamp=' + Date.now())
-                .then(res => res.json())
+            }, 12000);
+            const attempt = function () {
+                const ctrl = new AbortController();
+                const killer = setTimeout(function () { ctrl.abort(); }, 90000);
+                return fetch(API_URL + sep + 'action=getAlerts' + (force ? '&fresh=1' : '') + '&timestamp=' + Date.now(), { signal: ctrl.signal })
+                    .then(res => res.text())
+                    .then(function (txt) {
+                        let d;
+                        try { d = JSON.parse(txt); }
+                        catch (e) { throw new Error('Server ne JSON nahi diya (deployment/permission check karein): ' + txt.slice(0, 60)); }
+                        return d;
+                    })
+                    .finally(function () { clearTimeout(killer); });
+            };
+            window.__purixAlertsInflight = attempt()
+                .catch(function () { return attempt(); })
                 .then(function (data) {
                     if (!data || data.status !== 'success') throw new Error((data && data.message) || 'Server ne sahi response nahi diya');
                     try {
@@ -328,6 +342,7 @@ window.toggleFocus = function(colId, btnEl) {
                     } catch (e) {}
                     return data.data;
                 })
+                .catch(function (err) { err.message = err.message + ' (' + Math.round((Date.now() - t0) / 1000) + ' sec)'; throw err; })
                 .finally(function () { clearTimeout(slowTimer); window.__purixAlertsInflight = null; });
         }
         return window.__purixAlertsInflight;
@@ -347,7 +362,7 @@ window.toggleFocus = function(colId, btnEl) {
                 }
             }
             showLoading(); spin(true); setBadge('live');
-            fetchFresh().then(function (rows) {
+            fetchFresh(forceFresh).then(function (rows) {
                 records = buildRecords(rows);
                 render(); setBadge('live');
             }).catch(function (err) {
