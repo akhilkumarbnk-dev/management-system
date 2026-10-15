@@ -1,143 +1,132 @@
 <style>
-.alerts-wrapper{padding:10px}
-.module-header{color:#00f3ff;font-family:'Orbitron',sans-serif;margin:0 0 25px;text-shadow:0 0 10px rgba(0,243,255,.5);display:flex;align-items:center;gap:10px}
-.alerts-header{border-bottom:1px solid rgba(0,243,255,.2);padding-bottom:10px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.alerts-header .module-header{margin:0;font-size:20px;flex-wrap:wrap}
-.header-right{display:flex;align-items:center;gap:12px}
-.btn-refresh{background:rgba(0,243,255,.1);color:#00f3ff;border:1px solid rgba(0,243,255,.5);width:34px;height:34px;border-radius:8px;cursor:pointer;transition:.3s}
-.btn-refresh:hover{background:#00f3ff;color:#050914;box-shadow:0 0 15px #00f3ff}
-.btn-refresh.spinning i{animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.alerts-container{background:rgba(11,16,33,.8);padding:24px;border-radius:12px;border:1px solid rgba(0,243,255,.2);box-shadow:inset 0 0 20px rgba(0,243,255,.05);max-width:1500px;margin:0 auto;backdrop-filter:blur(5px)}
-.summary-strip{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-.sum-chip{flex:1;min-width:160px;padding:12px 16px;border-radius:10px;background:linear-gradient(135deg,rgba(0,243,255,.08),rgba(179,102,255,.06));border:1px solid rgba(0,243,255,.18);font-family:'Poppins',sans-serif}
-.sum-chip small{display:block;color:#a5c3e0;font-size:11px;letter-spacing:.5px;text-transform:uppercase}
-.sum-chip b{font-family:'Orbitron',sans-serif;font-size:20px;color:#fff}
-.sum-chip b.red{color:#ff0055;text-shadow:0 0 8px rgba(255,0,85,.4)}
-.alerts-board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:start;transition:.3s}
-@media(max-width:1250px){.alerts-board{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:700px){.alerts-board{grid-template-columns:minmax(0,1fr)}}
-.alerts-board.focus-mode{display:block}
-.alert-col.hidden{display:none}
-.alert-col.focused{width:100%;max-width:800px;margin:0 auto;animation:fadeIn .4s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-.alert-section-title{padding:12px 14px;border-radius:8px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:.5px;transition:.2s}
-.alert-section-title:hover{filter:brightness(1.2);transform:scale(1.01)}
-.alert-section-title::after{content:'\f424';font-family:'Font Awesome 6 Free';font-weight:900;font-size:14px;margin-left:5px;opacity:.5}
-.focused .alert-section-title::after{content:'\f422'}
-.alert-section-title .count{margin-left:auto;min-width:26px;text-align:center;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.12);font-size:12px}
-.alert-range{font-family:'Poppins',sans-serif;font-size:11px;color:#a5c3e0;margin:0 0 12px 4px}
-.title-upcoming{background:rgba(255,212,0,.12);border:1px solid #ffd400;color:#ffd400;box-shadow:0 0 15px rgba(255,212,0,.15)}
-.title-today{background:rgba(0,243,255,.12);border:1px solid #00f3ff;color:#00f3ff;box-shadow:0 0 15px rgba(0,243,255,.2)}
-.title-current{background:rgba(255,140,0,.12);border:1px solid #ff8c00;color:#ff8c00;box-shadow:0 0 15px rgba(255,140,0,.2)}
-.title-over{background:rgba(255,0,85,.15);border:1px solid #ff0055;color:#ff0055;box-shadow:0 0 15px rgba(255,0,85,.2)}
-.alert-list{display:flex;flex-direction:column;gap:10px;max-height:70vh;overflow-y:auto;padding-right:4px}
-.alert-list::-webkit-scrollbar{width:5px}
-.alert-list::-webkit-scrollbar-thumb{background:rgba(0,243,255,.3);border-radius:10px}
-.alert-card{display:flex;flex-direction:column;gap:10px;padding:14px;background:rgba(0,0,0,.4);border:1px solid rgba(0,243,255,.2);border-radius:10px;transition:.3s}
-.alert-card:hover{box-shadow:0 0 20px rgba(0,243,255,.2);background:rgba(0,243,255,.03);transform:translateY(-2px)}
-.card-top{display:flex;gap:10px;align-items:center}
-.avatar{width:38px;height:38px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:700;font-size:15px;color:#050914}
-.card-amt{margin-left:auto;text-align:right;font-family:'Orbitron',sans-serif;font-size:15px}
-.chip{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;font-family:'Poppins',sans-serif;border:1px solid currentColor}
-.urgency{height:4px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
-.urgency i{display:block;height:100%;border-radius:4px}
-.student-info h4{margin:0;font-size:14px;color:#00f3ff;font-family:'Orbitron',sans-serif;word-break:break-word}
-.student-info h4 small{font-size:11px;color:#a5c3e0;font-family:'Poppins',sans-serif}
-.student-info p{margin:5px 0 0;font-size:12px;color:#a5c3e0;font-family:'Poppins',sans-serif;line-height:1.6}
-.amt{color:#ff0055;font-weight:bold;text-shadow:0 0 5px rgba(255,0,85,.4)}
-.when{font-weight:600}
-.months-line{color:#ffd400}
-.alert-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.btn-notify{background:rgba(37,211,102,.15);color:#25D366;border:1px solid #25D366;padding:7px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:'Orbitron',sans-serif;transition:.3s;display:flex;align-items:center;gap:6px}
-.btn-notify:hover{background:#25D366;color:#fff;box-shadow:0 0 15px #25D366}
-.btn-critical-inactive{background:rgba(255,0,85,.15);color:#ff0055;border:1px solid #ff0055;padding:7px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;animation:pulseRed 2s infinite;transition:.3s}
-.btn-critical-inactive:hover{background:#ff0055;color:#fff;box-shadow:0 0 20px #ff0055}
-.btn-critical-inactive:disabled,.btn-notify:disabled{opacity:.5;cursor:wait;animation:none}
-@keyframes pulseRed{0%{box-shadow:0 0 0 0 rgba(255,0,85,.7)}70%{box-shadow:0 0 0 10px rgba(255,0,85,0)}100%{box-shadow:0 0 0 0 rgba(255,0,85,0)}}
-@media(prefers-reduced-motion:reduce){.btn-critical-inactive,.skel{animation:none}}
-.empty-msg{color:#a5c3e0;font-style:italic;padding:10px 4px;font-family:'Poppins',sans-serif;font-size:12px}
-.btn-retry{margin-left:8px;background:transparent;color:#00f3ff;border:1px solid #00f3ff;border-radius:6px;padding:3px 10px;cursor:pointer;font-size:11px}
-.skel{height:92px;border-radius:10px;background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(0,243,255,.09) 50%,rgba(255,255,255,.03) 75%);background-size:200% 100%;animation:shimmer 1.3s infinite}
-@keyframes shimmer{to{background-position:-200% 0}}
-.val-syncStatus{font-size:11px;color:#00ff88;font-family:'Poppins',sans-serif;padding:2px 8px;border-radius:12px;background:rgba(0,255,136,.1);margin-left:10px}
+    .alerts-wrapper { padding: 10px; }
+    .module-header { color: #00f3ff; font-family: 'Orbitron', sans-serif; margin: 0 0 25px; text-shadow: 0 0 10px rgba(0,243,255,0.5); display: flex; align-items: center; gap: 10px; }
+    .alerts-header { border-bottom: 1px solid rgba(0,243,255,0.2); padding-bottom: 10px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .alerts-header .module-header { margin: 0; font-size: 20px; flex-wrap: wrap; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .btn-refresh { background: rgba(0,243,255,.1); color: #00f3ff; border: 1px solid rgba(0,243,255,.5); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; transition: .3s; }
+    .btn-refresh:hover { background: #00f3ff; color: #050914; box-shadow: 0 0 15px #00f3ff; }
+    .btn-refresh.spinning i { animation: pxspin 1s linear infinite; }
+    @keyframes pxspin { to { transform: rotate(360deg); } }
+    #syncBadge { font-size: 11px; color: #00ff88; font-family: 'Poppins', sans-serif; padding: 2px 8px; border-radius: 12px; background: rgba(0,255,136,.1); }
+
+    .alerts-container { background: rgba(11,16,33,0.8); padding: 24px; border-radius: 12px; border: 1px solid rgba(0,243,255,0.2); box-shadow: inset 0 0 20px rgba(0,243,255,0.05); max-width: 1500px; margin: 0 auto; backdrop-filter: blur(5px); }
+
+    .summary-strip { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .sum-chip { flex: 1; min-width: 150px; padding: 12px 16px; border-radius: 10px; background: linear-gradient(135deg, rgba(0,243,255,.08), rgba(179,102,255,.06)); border: 1px solid rgba(0,243,255,.18); font-family: 'Poppins', sans-serif; }
+    .sum-chip small { display: block; color: #a5c3e0; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; }
+    .sum-chip b { font-family: 'Orbitron', sans-serif; font-size: 20px; color: #fff; }
+    .sum-chip b.red { color: #ff0055; text-shadow: 0 0 8px rgba(255,0,85,.4); }
+
+    .alerts-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start; }
+    @media (max-width: 1250px) { .alerts-board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 700px)  { .alerts-board { grid-template-columns: minmax(0, 1fr); } }
+
+    .alert-section-title { padding: 12px 14px; border-radius: 8px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 0.5px; }
+    .alert-section-title .count { margin-left: auto; min-width: 26px; text-align: center; padding: 2px 8px; border-radius: 20px; background: rgba(255,255,255,0.12); font-size: 12px; }
+    .alert-range { font-family: 'Poppins', sans-serif; font-size: 11px; color: #a5c3e0; margin: 0 0 12px 4px; }
+    .title-upcoming { background: rgba(255,212,0,0.12); border: 1px solid #ffd400; color: #ffd400; box-shadow: 0 0 15px rgba(255,212,0,0.15); }
+    .title-today    { background: rgba(0,243,255,0.12); border: 1px solid #00f3ff; color: #00f3ff; box-shadow: 0 0 15px rgba(0,243,255,0.2); }
+    .title-current  { background: rgba(255,140,0,0.12); border: 1px solid #ff8c00; color: #ff8c00; box-shadow: 0 0 15px rgba(255,140,0,0.2); }
+    .title-over     { background: rgba(255,0,85,0.15); border: 1px solid #ff0055; color: #ff0055; box-shadow: 0 0 15px rgba(255,0,85,0.2); }
+
+    .alert-list { display: flex; flex-direction: column; gap: 10px; max-height: 70vh; overflow-y: auto; padding-right: 4px; }
+    .alert-list::-webkit-scrollbar { width: 5px; }
+    .alert-list::-webkit-scrollbar-thumb { background: rgba(0,243,255,.3); border-radius: 10px; }
+
+    .alert-card { display: flex; flex-direction: column; gap: 10px; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(0,243,255,0.2); border-radius: 10px; transition: 0.3s; }
+    .alert-card:hover { box-shadow: 0 0 20px rgba(0,243,255,0.2); background: rgba(0,243,255,0.03); transform: translateY(-2px); }
+    .card-top { display: flex; gap: 10px; align-items: center; }
+    .avatar { width: 38px; height: 38px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 15px; color: #050914; }
+    .card-amt { margin-left: auto; text-align: right; font-family: 'Orbitron', sans-serif; font-size: 15px; }
+    .chip { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: 'Poppins', sans-serif; border: 1px solid currentColor; }
+    .urgency { height: 4px; border-radius: 4px; background: rgba(255,255,255,.08); overflow: hidden; }
+    .urgency i { display: block; height: 100%; border-radius: 4px; }
+
+    .student-info h4 { margin: 0; font-size: 14px; color: #00f3ff; font-family: 'Orbitron', sans-serif; word-break: break-word; }
+    .student-info h4 small { font-size: 11px; color: #a5c3e0; font-family: 'Poppins', sans-serif; }
+    .student-info p { margin: 5px 0 0; font-size: 12px; color: #a5c3e0; font-family: 'Poppins', sans-serif; line-height: 1.6; }
+    .amt { color: #ff0055; font-weight: bold; text-shadow: 0 0 5px rgba(255,0,85,0.4); }
+    .when { font-weight: 600; }
+    .months-line { color: #ffd400; }
+    .alert-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .btn-notify { background: rgba(37,211,102,0.15); color: #25D366; border: 1px solid #25D366; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: 'Orbitron', sans-serif; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
+    .btn-notify:hover { background: #25D366; color: #fff; box-shadow: 0 0 15px #25D366; }
+    .btn-critical-inactive { background: rgba(255,0,85,0.15); color: #ff0055; border: 1px solid #ff0055; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; animation: pulseRed 2s infinite; transition: 0.3s; }
+    .btn-critical-inactive:hover { background: #ff0055; color: #fff; box-shadow: 0 0 20px #ff0055; }
+    .btn-critical-inactive:disabled, .btn-notify:disabled { opacity: 0.5; cursor: wait; animation: none; }
+    @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(255,0,85,0.7); } 70% { box-shadow: 0 0 0 10px rgba(255,0,85,0); } 100% { box-shadow: 0 0 0 0 rgba(255,0,85,0); } }
+    @media (prefers-reduced-motion: reduce) { .btn-critical-inactive { animation: none; } }
+    .empty-msg { color: #a5c3e0; font-style: italic; padding: 10px 4px; font-family: 'Poppins', sans-serif; font-size: 12px; }
+    .btn-retry { margin-left: 8px; background: transparent; color: #00f3ff; border: 1px solid #00f3ff; border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 11px; }
 </style>
 
 <div class="alerts-wrapper">
-  <div class="alerts-container">
-    <div class="alerts-header">
-      <h2 class="module-header"><i class="fa-solid fa-bell"></i> PAYMENT ALERTS SYSTEM <span class="val-syncStatus" style="display:none;"></span></h2>
-      <div class="header-right">
-        <span class="val-currentDateDisplay" style="color:#a5c3e0;font-weight:500;font-family:'Orbitron',sans-serif;font-size:12px;"></span>
-        <button class="btn-refresh" data-action="refresh" title="Fresh data lao"><i class="fa-solid fa-rotate"></i></button>
-      </div>
+    <div class="alerts-container">
+        <div class="alerts-header">
+            <h2 class="module-header"><i class="fa-solid fa-bell"></i> PAYMENT ALERTS SYSTEM <span id="syncBadge" style="display:none;"></span></h2>
+            <div class="header-right">
+                <span id="currentDateDisplay" style="color: #a5c3e0; font-weight: 500; font-family: 'Orbitron', sans-serif; font-size: 12px;"></span>
+                <button class="btn-refresh" id="refreshBtn" title="Fresh data lao"><i class="fa-solid fa-rotate"></i></button>
+            </div>
+        </div>
+
+        <div class="summary-strip">
+            <div class="sum-chip"><small>Total Pending</small><b class="red" id="totalPending">₹0</b></div>
+            <div class="sum-chip"><small>Students in Alerts</small><b id="totalCount">0</b></div>
+            <div class="sum-chip"><small>Last Updated</small><b id="lastUpdated" style="font-size:16px">--</b></div>
+        </div>
+
+        <div class="alerts-board">
+            <div class="alert-col">
+                <div class="alert-section-title title-upcoming"><i class="fa-solid fa-clock-rotate-left"></i> Upcoming <span class="count" id="countUpcoming">0</span></div>
+                <p class="alert-range">Due date me 1 se 5 din baaki</p>
+                <div class="alert-list" id="upcomingList"><div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading data...</div></div>
+            </div>
+            <div class="alert-col">
+                <div class="alert-section-title title-today"><i class="fa-solid fa-calendar-day"></i> Today <span class="count" id="countToday">0</span></div>
+                <p class="alert-range">Due date aaj hai</p>
+                <div class="alert-list" id="todayList"><div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading data...</div></div>
+            </div>
+            <div class="alert-col">
+                <div class="alert-section-title title-current"><i class="fa-solid fa-hourglass-half"></i> Current Dues <span class="count" id="countCurrent">0</span></div>
+                <p class="alert-range">Due nikle 1 se 30 din tak</p>
+                <div class="alert-list" id="currentList"><div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading data...</div></div>
+            </div>
+            <div class="alert-col">
+                <div class="alert-section-title title-over"><i class="fa-solid fa-triangle-exclamation"></i> Over Dues <span class="count" id="countOver">0</span></div>
+                <p class="alert-range">31 din ya zyada late (60 din par Deactivate)</p>
+                <div class="alert-list" id="overList"><div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading data...</div></div>
+            </div>
+        </div>
     </div>
-    <div class="summary-strip">
-      <div class="sum-chip"><small>Total Pending</small><b class="red val-totalPending">₹0</b></div>
-      <div class="sum-chip"><small>Students in Alerts</small><b class="val-totalCount">0</b></div>
-      <div class="sum-chip"><small>Last Updated</small><b class="val-lastUpdated" style="font-size:16px">--</b></div>
-    </div>
-    <div class="alerts-board">
-      <div class="alert-col col-upcoming">
-        <div class="alert-section-title title-upcoming" onclick="window.toggleFocus('upcoming', this)"><i class="fa-solid fa-clock-rotate-left"></i> Upcoming <span class="count val-countUpcoming">0</span></div>
-        <p class="alert-range">Due date me 1 se 5 din baaki</p>
-        <div class="alert-list val-upcomingList"><div class="skel"></div><div class="skel"></div></div>
-      </div>
-      <div class="alert-col col-today">
-        <div class="alert-section-title title-today" onclick="window.toggleFocus('today', this)"><i class="fa-solid fa-calendar-day"></i> Today <span class="count val-countToday">0</span></div>
-        <p class="alert-range">Due date aaj hai</p>
-        <div class="alert-list val-todayList"><div class="skel"></div><div class="skel"></div></div>
-      </div>
-      <div class="alert-col col-current">
-        <div class="alert-section-title title-current" onclick="window.toggleFocus('current', this)"><i class="fa-solid fa-hourglass-half"></i> Current Dues <span class="count val-countCurrent">0</span></div>
-        <p class="alert-range">Due nikle 1 se 30 din tak</p>
-        <div class="alert-list val-currentList"><div class="skel"></div><div class="skel"></div></div>
-      </div>
-      <div class="alert-col col-over">
-        <div class="alert-section-title title-over" onclick="window.toggleFocus('over', this)"><i class="fa-solid fa-triangle-exclamation"></i> Over Dues <span class="count val-countOver">0</span></div>
-        <p class="alert-range">31 din ya zyada late (60 din par Deactivate)</p>
-        <div class="alert-list val-overList"><div class="skel"></div><div class="skel"></div></div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
-window.toggleFocus = function(colId, btnEl) {
-    const board = btnEl.closest('.alerts-board');
-    if (!board) return;
-    const cols = ['upcoming', 'today', 'current', 'over'];
-    if (board.getAttribute('data-focus') === colId) {
-        board.classList.remove('focus-mode');
-        board.removeAttribute('data-focus');
-        cols.forEach(id => { const c = board.querySelector('.col-' + id); if (c) c.classList.remove('hidden', 'focused'); });
-    } else {
-        board.classList.add('focus-mode');
-        board.setAttribute('data-focus', colId);
-        cols.forEach(id => {
-            const c = board.querySelector('.col-' + id);
-            if (!c) return;
-            if (id === colId) { c.classList.remove('hidden'); c.classList.add('focused'); }
-            else { c.classList.remove('focused'); c.classList.add('hidden'); }
-        });
-    }
-}
-
 (function () {
     const MS_DAY = 86400000;
-    const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const UPCOMING_DAYS = 5, CURRENT_MAX_LATE = 30, DEACTIVATE_LATE = 60;
-    const LISTS = ['val-upcomingList', 'val-todayList', 'val-currentList', 'val-overList'];
+    const LIST_IDS = ['upcomingList', 'todayList', 'currentList', 'overList'];
+    const $ = function (id) { return document.getElementById(id); };
+
     let records = [];
 
-    function setText(cls, txt) { document.querySelectorAll('.' + cls).forEach(el => el.textContent = txt); }
-    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
-    function startOfDay(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
-    function fmtDate(d) { return d.toLocaleDateString('en-GB'); }
-    function fmtMoney(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
-    function toNumber(v) { const n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.\-]/g, '')); return isNaN(n) ? 0 : n; }
-    function hhmm(ms) { return new Date(ms).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }); }
+    function setText(id, t) { const el = $(id); if (el) el.textContent = t; }
 
+    const dateDisplay = $('currentDateDisplay');
+    if (dateDisplay) {
+        dateDisplay.innerText = 'SYSTEM DATE: ' + new Date()
+            .toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+    }
+
+    /* ---------- helpers ---------- */
+    function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+    function startOfDay(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
     function parseDate(v) {
         if (v instanceof Date) return isNaN(v.getTime()) ? null : startOfDay(v);
         if (typeof v === 'number') {
@@ -154,6 +143,10 @@ window.toggleFocus = function(colId, btnEl) {
         const d = new Date(s);
         return isNaN(d.getTime()) ? null : startOfDay(d);
     }
+    function fmtDate(d) { return d.toLocaleDateString('en-GB'); }
+    function fmtMoney(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
+    function toNumber(v) { const n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.\-]/g, '')); return isNaN(n) ? 0 : n; }
+    function hhmm(ms) { return new Date(ms).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }); }
 
     function pendingMonthsText(due, today) {
         const names = [];
@@ -170,6 +163,7 @@ window.toggleFocus = function(colId, btnEl) {
         return names.slice(0, -1).join(', ') + ' aur ' + names[names.length - 1];
     }
 
+    /* ---------- bucket logic (same as before) ---------- */
     function buildRecords(rows) {
         const today = startOfDay(new Date());
         const out = [];
@@ -197,6 +191,7 @@ window.toggleFocus = function(colId, btnEl) {
         return out;
     }
 
+    /* ---------- render ---------- */
     function cardHtml(r) {
         const color = { upcoming: '#ffd400', today: '#00f3ff', current: '#ff8c00', over: '#ff0055' }[r.cat];
         let whenText = '';
@@ -208,52 +203,57 @@ window.toggleFocus = function(colId, btnEl) {
         const pct = r.late > 0 ? Math.min(100, Math.round(r.late / DEACTIVATE_LATE * 100)) : 0;
         const bar = r.late > 0 ? '<div class="urgency" title="' + r.late + '/' + DEACTIVATE_LATE + ' din"><i style="width:' + pct + '%;background:' + color + ';box-shadow:0 0 8px ' + color + '"></i></div>' : '';
         const initial = esc((r.name || '?').trim().charAt(0).toUpperCase());
+
         return '' +
-            '<div class="alert-card" data-uid="' + esc(r.uid) + '" style="border-left:4px solid ' + color + '">' +
-              '<div class="card-top"><div class="avatar" style="background:' + color + '">' + initial + '</div>' +
+            '<div class="alert-card" data-uid="' + esc(r.uid) + '" style="border-left: 4px solid ' + color + '">' +
+              '<div class="card-top">' +
+                '<div class="avatar" style="background:' + color + '">' + initial + '</div>' +
                 '<div class="student-info"><h4>' + esc(r.name) + ' <small>(UID: ' + esc(r.uid) + ')</small></h4></div>' +
-                '<div class="card-amt amt">' + fmtMoney(r.dues) + '</div></div>' +
+                '<div class="card-amt amt">' + fmtMoney(r.dues) + '</div>' +
+              '</div>' +
               '<div class="student-info"><p>Class: ' + esc(r.cls) + ' | Plan: <strong style="color:' + (r.plan === 'Monthly' ? '#00f3ff' : '#b366ff') + '">' + esc(r.plan) + '</strong><br>' +
                 'Due: <strong>' + fmtDate(r.due) + '</strong> <span class="chip when" style="color:' + color + '">' + whenText + '</span>' + monthsLine + '</p></div>' +
               bar +
               '<div class="alert-actions">' +
                 '<button class="btn-notify" data-action="notify" data-uid="' + esc(r.uid) + '"><i class="fa-brands fa-whatsapp"></i> NOTIFY</button>' +
                 (canDeactivate ? '<button class="btn-critical-inactive" data-action="deactivate" data-uid="' + esc(r.uid) + '" title="2 mahine se default"><i class="fa-solid fa-user-slash"></i> DEACTIVATE</button>' : '') +
-              '</div></div>';
+              '</div>' +
+            '</div>';
     }
 
     function render() {
         const cfg = {
-            upcoming: { cls: 'val-upcomingList', cnt: 'val-countUpcoming', empty: '<i class="fa-solid fa-check-circle" style="color:#00ff88;margin-right:5px;"></i> Koi upcoming payment nahi.', sort: (a, b) => a.diff - b.diff },
-            today:    { cls: 'val-todayList',    cnt: 'val-countToday',    empty: '<i class="fa-regular fa-calendar-check" style="color:#00f3ff;margin-right:5px;"></i> Aaj kisi ki payment due nahi.', sort: (a, b) => b.dues - a.dues },
-            current:  { cls: 'val-currentList',  cnt: 'val-countCurrent',  empty: '<i class="fa-solid fa-check-double" style="color:#ff8c00;margin-right:5px;"></i> Koi current dues nahi.', sort: (a, b) => b.late - a.late },
-            over:     { cls: 'val-overList',     cnt: 'val-countOver',     empty: '<i class="fa-solid fa-shield-halved" style="color:#ff0055;margin-right:5px;"></i> All clear! Koi over dues nahi.', sort: (a, b) => b.late - a.late }
+            upcoming: { list: 'upcomingList', count: 'countUpcoming', empty: '<i class="fa-solid fa-check-circle" style="color:#00ff88; margin-right:5px;"></i> Koi upcoming payment nahi.', sort: function (a, b) { return a.diff - b.diff; } },
+            today:    { list: 'todayList',    count: 'countToday',    empty: '<i class="fa-regular fa-calendar-check" style="color:#00f3ff; margin-right:5px;"></i> Aaj kisi ki payment due nahi.', sort: function (a, b) { return b.dues - a.dues; } },
+            current:  { list: 'currentList',  count: 'countCurrent',  empty: '<i class="fa-solid fa-check-double" style="color:#ff8c00; margin-right:5px;"></i> Koi current dues nahi.', sort: function (a, b) { return b.late - a.late; } },
+            over:     { list: 'overList',     count: 'countOver',     empty: '<i class="fa-solid fa-shield-halved" style="color:#ff0055; margin-right:5px;"></i> All clear! Koi over dues nahi.', sort: function (a, b) { return b.late - a.late; } }
         };
         Object.keys(cfg).forEach(function (cat) {
             const c = cfg[cat];
-            const items = records.filter(r => r.cat === cat).sort(c.sort);
-            const htmlStr = items.length ? items.map(cardHtml).join('') : '<div class="empty-msg">' + c.empty + '</div>';
-            document.querySelectorAll('.' + c.cls).forEach(el => el.innerHTML = htmlStr);
-            document.querySelectorAll('.' + c.cnt).forEach(el => el.textContent = items.length);
+            const items = records.filter(function (r) { return r.cat === cat; }).sort(c.sort);
+            const listEl = $(c.list);
+            if (listEl) listEl.innerHTML = items.length ? items.map(cardHtml).join('') : '<div class="empty-msg">' + c.empty + '</div>';
+            setText(c.count, items.length);
         });
-        setText('val-totalPending', fmtMoney(records.reduce((t, r) => t + r.dues, 0)));
-        setText('val-totalCount', records.length);
+        setText('totalPending', fmtMoney(records.reduce(function (t, r) { return t + r.dues; }, 0)));
+        setText('totalCount', records.length);
     }
 
     function setBadge(kind) {
         const t = parseInt(localStorage.getItem('purix_alerts_time') || '0', 10);
         const stamp = t ? hhmm(t) : '';
-        document.querySelectorAll('.val-syncStatus').forEach(el => {
-            el.style.display = 'inline-block';
-            if (kind === 'cache') { el.innerHTML = '<i class="fa-solid fa-bolt"></i> Cached • ' + stamp; el.style.color = '#00ff88'; }
-            else { el.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Live' + (stamp ? ' • ' + stamp : ''); el.style.color = '#00f3ff'; }
-        });
-        setText('val-lastUpdated', stamp || '--');
+        const b = $('syncBadge');
+        if (b) {
+            b.style.display = 'inline-block';
+            if (kind === 'cache') { b.innerHTML = '<i class="fa-solid fa-bolt"></i> Cached • ' + stamp; b.style.color = '#00ff88'; }
+            else { b.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Live' + (stamp ? ' • ' + stamp : ''); b.style.color = '#00f3ff'; }
+        }
+        setText('lastUpdated', stamp || '--');
     }
-    function spin(on) { document.querySelectorAll('.btn-refresh').forEach(b => b.classList.toggle('spinning', on)); }
+    function spin(on) { const b = $('refreshBtn'); if (b) b.classList.toggle('spinning', on); }
 
     /* ---------- actions ---------- */
-    function findRecord(uid) { return records.find(r => r.uid === uid); }
+    function findRecord(uid) { return records.find(function (r) { return r.uid === uid; }); }
 
     function sendWhatsAppAlert(r) {
         const digits = String(r.mobile == null ? '' : r.mobile).replace(/\D/g, '').slice(-10);
@@ -261,13 +261,16 @@ window.toggleFocus = function(colId, btnEl) {
             Swal.fire({ title: 'Mobile number sahi nahi hai', text: r.name + ' ka mobile number Sheet me check karein.', icon: 'warning', background: '#050914', color: '#fff' });
             return;
         }
-        const message = r.plan === 'Monthly'
-            ? 'Dear ' + r.name + ', aapka ' + r.monthsText + ' mahine ka fee dues (Rs. ' + r.dues + ') baki hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.'
-            : 'Dear ' + r.name + ', aapki aagami Installment (kist) Rs. ' + r.dues + ' due hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.';
+        let message;
+        if (r.plan === 'Monthly') {
+            message = 'Dear ' + r.name + ', aapka ' + r.monthsText + ' mahine ka fee dues (Rs. ' + r.dues + ') baki hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.';
+        } else {
+            message = 'Dear ' + r.name + ', aapki aagami Installment (kist) Rs. ' + r.dues + ' due hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.';
+        }
         window.open('https://wa.me/91' + digits + '?text=' + encodeURIComponent(message), '_blank');
     }
 
-    function deactivate(r, btn) {
+    function deactivate(r) {
         Swal.fire({
             title: 'Student ko Inactive karein?',
             text: r.name + ' (UID: ' + r.uid + ') ko Inactive mark kiya jayega.',
@@ -275,147 +278,111 @@ window.toggleFocus = function(colId, btnEl) {
             confirmButtonText: 'Haan, Inactive karo', cancelButtonText: 'Cancel', background: '#050914', color: '#fff'
         }).then(function (result) {
             if (!result.isConfirmed) return;
-            btn.disabled = true;
-            records = records.filter(x => x.uid !== r.uid);
+            records = records.filter(function (x) { return x.uid !== r.uid; });
             render();
             fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'toggleStatus', uid: r.uid, status: 'Inactive' }) })
-            .then(res => res.json())
+            .then(function (res) { return res.json(); })
             .then(function (data) {
                 if (data && data.status === 'success') {
                     try {
-                        const raw = localStorage.getItem("purix_alerts_data");
-                        if (raw) localStorage.setItem("purix_alerts_data", JSON.stringify(JSON.parse(raw).filter(item => String(item.uid) !== r.uid)));
+                        const raw = localStorage.getItem('purix_alerts_data');
+                        if (raw) localStorage.setItem('purix_alerts_data', JSON.stringify(JSON.parse(raw).filter(function (i) { return String(i.uid) !== r.uid; })));
                     } catch (e) {}
                     Swal.fire({ title: 'Sheet Updated!', text: r.name + ' ab Admission Sheet me Inactive ho gaya hai.', icon: 'success', background: '#050914', color: '#00ff88', timer: 2000, showConfirmButton: false });
-                } else throw new Error((data && data.message) || 'Status update nahi hua');
+                } else {
+                    throw new Error((data && data.message) || 'Status update nahi hua');
+                }
             })
             .catch(function (err) {
                 console.error('Deactivate error:', err);
-                load(true);
+                fetchLive();
                 Swal.fire({ title: 'Error', text: 'Sheet update nahi hui: ' + String(err.message || err), icon: 'error', background: '#050914', color: '#fff' });
             });
         });
     }
 
+    const board = document.querySelector('.alerts-board');
+    if (board) board.addEventListener('click', function (e) {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        if (btn.getAttribute('data-action') === 'refresh') { fetchLive(); return; }
+        const r = findRecord(btn.getAttribute('data-uid'));
+        if (!r) return;
+        if (btn.getAttribute('data-action') === 'notify') sendWhatsAppAlert(r);
+        else if (btn.getAttribute('data-action') === 'deactivate') deactivate(r);
+    });
+    const refreshBtn = $('refreshBtn');
+    if (refreshBtn) refreshBtn.addEventListener('click', function () { fetchLive(); });
+
     /* ---------- load ---------- */
-    function showLoading() {
-        LISTS.forEach(cls => document.querySelectorAll('.' + cls).forEach(el => el.innerHTML = '<div class="skel"></div><div class="skel"></div>'));
-    }
     function showErrorState(msg) {
-        LISTS.forEach(cls => document.querySelectorAll('.' + cls).forEach(el => {
-            el.innerHTML = '<div class="empty-msg" style="color:#ff0055;">' + esc(msg || 'Database connection error.') + ' <button class="btn-retry" data-action="refresh">Retry</button></div>';
-        }));
+        LIST_IDS.forEach(function (id) {
+            const el = $(id);
+            if (el) el.innerHTML = '<div class="empty-msg" style="color:#ff0055;">' + esc(msg || 'Database connection error.') + ' <button class="btn-retry" data-action="refresh">Retry</button></div>';
+        });
     }
 
-    // Ek hi fetch sabke liye. 90 sec timeout + 1 auto-retry (hung request se loader nahi atkega)
-    function fetchFresh(force) {
-        if (!window.__purixAlertsInflight) {
-            if (typeof API_URL === 'undefined') return Promise.reject(new Error('API_URL define nahi hai'));
-            const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
-            const t0 = Date.now();
-            const slowTimer = setTimeout(function () {
-                LISTS.forEach(cls => document.querySelectorAll('.' + cls).forEach(el => {
-                    if (el.querySelector('.skel') && !el.querySelector('.slow-note')) el.insertAdjacentHTML('afterbegin', '<div class="empty-msg slow-note">Data aane me thoda time lag raha hai… ⏳</div>');
-                }));
-            }, 12000);
-            const attempt = function () {
-                const ctrl = new AbortController();
-                const killer = setTimeout(function () { ctrl.abort(); }, 90000);
-                return fetch(API_URL + sep + 'action=getAlerts' + (force ? '&fresh=1' : '') + '&timestamp=' + Date.now(), { signal: ctrl.signal })
-                    .then(res => res.text())
-                    .then(function (txt) {
-                        let d;
-                        try { d = JSON.parse(txt); }
-                        catch (e) { throw new Error('Server ne JSON nahi diya (deployment/permission check karein): ' + txt.slice(0, 60)); }
-                        return d;
-                    })
-                    .finally(function () { clearTimeout(killer); });
-            };
-            window.__purixAlertsInflight = attempt()
-                .catch(function () { return attempt(); })
-                .then(function (data) {
-                    if (!data || data.status !== 'success') throw new Error((data && data.message) || 'Server ne sahi response nahi diya');
+    // LIVE fetch: pehle jaisa hi simple fetch (+ 90 sec safety timeout)
+    function fetchLive() {
+        LIST_IDS.forEach(function (id) {
+            const el = $(id);
+            if (el) el.innerHTML = '<div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Fetching Live Data...</div>';
+        });
+        spin(true);
+
+        const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
+        const ctrl = new AbortController();
+        const killer = setTimeout(function () { ctrl.abort(); }, 90000);
+
+        fetch(API_URL + sep + 'action=getAlerts&timestamp=' + Date.now(), { signal: ctrl.signal })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (data && data.status === 'success') {
                     try {
-                        localStorage.setItem("purix_alerts_date", new Date().toDateString());
-                        localStorage.setItem("purix_alerts_data", JSON.stringify(data.data));
-                        localStorage.setItem("purix_alerts_time", String(Date.now()));
+                        localStorage.setItem('purix_alerts_date', new Date().toDateString());
+                        localStorage.setItem('purix_alerts_data', JSON.stringify(data.data));
+                        localStorage.setItem('purix_alerts_time', String(Date.now()));
                     } catch (e) {}
-                    return data.data;
-                })
-                .catch(function (err) { err.message = err.message + ' (' + Math.round((Date.now() - t0) / 1000) + ' sec)'; throw err; })
-                .finally(function () { clearTimeout(slowTimer); window.__purixAlertsInflight = null; });
-        }
-        return window.__purixAlertsInflight;
+                    records = buildRecords(data.data);
+                    render();
+                    setBadge('live');
+                } else {
+                    showErrorState((data && data.message) ? 'Server: ' + data.message : null);
+                }
+            })
+            .catch(function (err) {
+                console.error('Alerts Error:', err);
+                showErrorState(err && err.name === 'AbortError' ? 'Server bahut slow hai (90 sec).' : null);
+            })
+            .finally(function () { clearTimeout(killer); spin(false); });
     }
 
-    function load(forceFresh) {
+    // Aaj ka cache hai to wahi dikhao, warna live fetch
+    function loadAlerts() {
         try {
-            setText('val-currentDateDisplay', 'SYSTEM DATE: ' + new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase());
-            if (!forceFresh && localStorage.getItem("purix_alerts_date") === new Date().toDateString()) {
-                const raw = localStorage.getItem("purix_alerts_data");
+            if (localStorage.getItem('purix_alerts_date') === new Date().toDateString()) {
+                const raw = localStorage.getItem('purix_alerts_data');
                 if (raw) {
-                    try {
-                        records = buildRecords(JSON.parse(raw));
-                        render(); setBadge('cache');
-                        return;
-                    } catch (e) { console.error("Cache kharab, fresh la rahe hain"); }
+                    records = buildRecords(JSON.parse(raw));
+                    render();
+                    setBadge('cache');
+                    return;
                 }
             }
-            showLoading(); spin(true); setBadge('live');
-            fetchFresh(forceFresh).then(function (rows) {
-                records = buildRecords(rows);
-                render(); setBadge('live');
-            }).catch(function (err) {
-                console.error('Alerts Error:', err);
-                showErrorState('Data load nahi hua: ' + (err && err.message ? err.message : err));
-            }).finally(function () { spin(false); });
-        } catch (err) {
-            console.error('Load crash:', err);
-            spin(false);
-            showErrorState('Error: ' + (err && err.message ? err.message : err));
-        }
-    }
-
-    function whenMounted(cb, tries) {
-        tries = tries || 0;
-        if (document.querySelector('.val-upcomingList') || tries > 100) return cb();
-        setTimeout(function () { whenMounted(cb, tries + 1); }, 50);
+        } catch (e) { console.error('Cache kharab, live le rahe hain'); }
+        fetchLive();
     }
 
     /* ---------- daily 12 AM refresh ---------- */
     function scheduleMidnight() {
-        clearTimeout(window.__purixAlertsTimer);
+        clearTimeout(window.__pxAlertsTimer);
         const now = new Date();
         const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
-        window.__purixAlertsTimer = setTimeout(function () { load(true); scheduleMidnight(); }, next.getTime() - now.getTime());
+        window.__pxAlertsTimer = setTimeout(function () { fetchLive(); scheduleMidnight(); }, next.getTime() - now.getTime());
     }
-
-    window.__purixAlertsApi = {
-        click: function (btn) {
-            const action = btn.getAttribute('data-action');
-            if (action === 'refresh') return load(true);
-            const r = findRecord(btn.getAttribute('data-uid'));
-            if (!r) return;
-            if (action === 'notify') sendWhatsAppAlert(r);
-            else if (action === 'deactivate') deactivate(r, btn);
-        },
-        checkDay: function () {
-            if (!document.querySelector('.val-upcomingList')) return;
-            if (localStorage.getItem("purix_alerts_date") !== new Date().toDateString()) load(true);
-        }
-    };
-    if (!window.__purixAlertsBound) {
-        window.__purixAlertsBound = true;
-        document.body.addEventListener('click', function (e) {
-            const btn = e.target.closest('.alerts-wrapper button[data-action]');
-            if (btn && window.__purixAlertsApi) window.__purixAlertsApi.click(btn);
-        });
-        document.addEventListener('visibilitychange', function () {
-            if (!document.hidden && window.__purixAlertsApi) window.__purixAlertsApi.checkDay();
-        });
-    }
-
     scheduleMidnight();
-    whenMounted(function () { load(false); });
+
+    // Cache wala render async rakha hai (jaise live fetch), taaki DOM attach hone ke baad hi chale
+    setTimeout(loadAlerts, 60);
 })();
 </script>
