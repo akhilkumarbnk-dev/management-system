@@ -39,7 +39,7 @@
 
     .alert-section-title {
         padding: 12px 14px; border-radius: 8px; font-weight: 600; margin-bottom: 8px;
-        display: flex; align-items: center; gap: 10px; cursor: pointer; /* 🔥 Cursor Pointer for Click */
+        display: flex; align-items: center; gap: 10px; cursor: pointer;
         font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 0.5px;
         transition: 0.2s;
     }
@@ -48,7 +48,7 @@
         content: '\f424'; font-family: 'Font Awesome 6 Free'; font-weight: 900; 
         font-size: 14px; margin-left: 5px; opacity: 0.5; transition: 0.3s;
     }
-    .focused .alert-section-title::after { content: '\f422'; } /* Change icon on focus */
+    .focused .alert-section-title::after { content: '\f422'; }
 
     .alert-section-title .count {
         margin-left: auto; min-width: 26px; text-align: center; padding: 2px 8px; border-radius: 20px;
@@ -103,8 +103,7 @@
 
     .empty-msg { color: #a5c3e0; font-style: italic; padding: 10px 4px; font-family: 'Poppins', sans-serif; font-size: 12px; }
     
-    /* Small sync indicator */
-    #syncStatus {
+    .val-syncStatus {
         font-size: 11px; color: #00ff88; font-family: 'Poppins', sans-serif; padding: 2px 8px; border-radius: 12px; background: rgba(0, 255, 136, 0.1); margin-left: 10px;
     }
 </style>
@@ -112,51 +111,51 @@
 <div class="alerts-wrapper">
     <div class="alerts-container">
         <div class="alerts-header">
-            <h2 class="module-header"><i class="fa-solid fa-bell"></i> PAYMENT ALERTS SYSTEM <span id="syncStatus" style="display:none;"><i class="fa-solid fa-bolt"></i> Cached</span></h2>
-            <span id="currentDateDisplay" style="color: #a5c3e0; font-weight: 500; font-family: 'Orbitron', sans-serif; font-size: 12px;"></span>
+            <h2 class="module-header"><i class="fa-solid fa-bell"></i> PAYMENT ALERTS SYSTEM <span class="val-syncStatus" style="display:none;"><i class="fa-solid fa-bolt"></i> Cached</span></h2>
+            <span class="val-currentDateDisplay" style="color: #a5c3e0; font-weight: 500; font-family: 'Orbitron', sans-serif; font-size: 12px;"></span>
         </div>
 
-        <div class="alerts-board" id="alertsBoard">
+        <div class="alerts-board">
             <!-- 1. Upcoming -->
             <div class="alert-col col-upcoming">
-                <div class="alert-section-title title-upcoming" onclick="toggleFocus('upcoming', this)">
-                    <i class="fa-solid fa-clock-rotate-left"></i> Upcoming <span class="count" id="countUpcoming">0</span>
+                <div class="alert-section-title title-upcoming" onclick="window.toggleFocus('upcoming', this)">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Upcoming <span class="count val-countUpcoming">0</span>
                 </div>
                 <p class="alert-range">Due date me 1 se 5 din baaki</p>
-                <div class="alert-list" id="upcomingList">
+                <div class="alert-list val-upcomingList">
                     <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading data...</div>
                 </div>
             </div>
 
             <!-- 2. Today -->
             <div class="alert-col col-today">
-                <div class="alert-section-title title-today" onclick="toggleFocus('today', this)">
-                    <i class="fa-solid fa-calendar-day"></i> Today <span class="count" id="countToday">0</span>
+                <div class="alert-section-title title-today" onclick="window.toggleFocus('today', this)">
+                    <i class="fa-solid fa-calendar-day"></i> Today <span class="count val-countToday">0</span>
                 </div>
                 <p class="alert-range">Due date aaj hai</p>
-                <div class="alert-list" id="todayList">
+                <div class="alert-list val-todayList">
                     <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading data...</div>
                 </div>
             </div>
 
             <!-- 3. Current Dues -->
             <div class="alert-col col-current">
-                <div class="alert-section-title title-current" onclick="toggleFocus('current', this)">
-                    <i class="fa-solid fa-hourglass-half"></i> Current Dues <span class="count" id="countCurrent">0</span>
+                <div class="alert-section-title title-current" onclick="window.toggleFocus('current', this)">
+                    <i class="fa-solid fa-hourglass-half"></i> Current Dues <span class="count val-countCurrent">0</span>
                 </div>
                 <p class="alert-range">Due nikle 1 se 30 din tak</p>
-                <div class="alert-list" id="currentList">
+                <div class="alert-list val-currentList">
                     <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading data...</div>
                 </div>
             </div>
 
             <!-- 4. Over Dues -->
             <div class="alert-col col-over">
-                <div class="alert-section-title title-over" onclick="toggleFocus('over', this)">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Over Dues <span class="count" id="countOver">0</span>
+                <div class="alert-section-title title-over" onclick="window.toggleFocus('over', this)">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Over Dues <span class="count val-countOver">0</span>
                 </div>
                 <p class="alert-range">31 din ya zyada late (60 din par Deactivate)</p>
-                <div class="alert-list" id="overList">
+                <div class="alert-list val-overList">
                     <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading data...</div>
                 </div>
             </div>
@@ -165,14 +164,12 @@
 </div>
 
 <script>
-// 🔥 NEW FOCUS LOGIC (Works perfectly in SPA)
 window.toggleFocus = function(colId, btnEl) {
     const board = btnEl.closest('.alerts-board');
     if (!board) return;
     const cols = ['upcoming', 'today', 'current', 'over'];
     
     if (board.getAttribute('data-focus') === colId) {
-        // Reset everything to normal
         board.classList.remove('focus-mode');
         board.removeAttribute('data-focus');
         cols.forEach(id => {
@@ -180,7 +177,6 @@ window.toggleFocus = function(colId, btnEl) {
             if(col) col.classList.remove('hidden', 'focused');
         });
     } else {
-        // Focus specific column
         board.classList.add('focus-mode');
         board.setAttribute('data-focus', colId);
         cols.forEach(id => {
@@ -207,8 +203,8 @@ window.toggleFocus = function(colId, btnEl) {
 
     let records = []; 
 
-    // 🔥 Fix for SPA Multiple DOMs
-    document.querySelectorAll('#currentDateDisplay').forEach(el => {
+    // Update all matching classes in DOM
+    document.querySelectorAll('.val-currentDateDisplay').forEach(el => {
         el.innerText = 'SYSTEM DATE: ' + new Date()
             .toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
     });
@@ -329,19 +325,19 @@ window.toggleFocus = function(colId, btnEl) {
 
     function render() {
         const cfg = {
-            upcoming: { list: 'upcomingList', count: 'countUpcoming', empty: '<i class="fa-solid fa-check-circle" style="color:#00ff88; margin-right:5px;"></i> Koi upcoming payment nahi.', sort: function (a, b) { return a.diff - b.diff; } },
-            today:    { list: 'todayList',    count: 'countToday',    empty: '<i class="fa-regular fa-calendar-check" style="color:#00f3ff; margin-right:5px;"></i> Aaj kisi ki payment due nahi.', sort: function (a, b) { return b.dues - a.dues; } },
-            current:  { list: 'currentList',  count: 'countCurrent',  empty: '<i class="fa-solid fa-check-double" style="color:#ff8c00; margin-right:5px;"></i> Koi current dues nahi.', sort: function (a, b) { return b.late - a.late; } },
-            over:     { list: 'overList',     count: 'countOver',     empty: '<i class="fa-solid fa-shield-halved" style="color:#ff0055; margin-right:5px;"></i> All clear! Koi over dues nahi.', sort: function (a, b) { return b.late - a.late; } }
+            upcoming: { cls: 'val-upcomingList', cnt: 'val-countUpcoming', empty: '<i class="fa-solid fa-check-circle" style="color:#00ff88; margin-right:5px;"></i> Koi upcoming payment nahi.', sort: function (a, b) { return a.diff - b.diff; } },
+            today:    { cls: 'val-todayList',    cnt: 'val-countToday',    empty: '<i class="fa-regular fa-calendar-check" style="color:#00f3ff; margin-right:5px;"></i> Aaj kisi ki payment due nahi.', sort: function (a, b) { return b.dues - a.dues; } },
+            current:  { cls: 'val-currentList',  cnt: 'val-countCurrent',  empty: '<i class="fa-solid fa-check-double" style="color:#ff8c00; margin-right:5px;"></i> Koi current dues nahi.', sort: function (a, b) { return b.late - a.late; } },
+            over:     { cls: 'val-overList',     cnt: 'val-countOver',     empty: '<i class="fa-solid fa-shield-halved" style="color:#ff0055; margin-right:5px;"></i> All clear! Koi over dues nahi.', sort: function (a, b) { return b.late - a.late; } }
         };
         Object.keys(cfg).forEach(function (cat) {
             const c = cfg[cat];
             const items = records.filter(function (r) { return r.cat === cat; }).sort(c.sort);
-            const htmlString = items.length ? items.map(cardHtml).join('') : '<div class="empty-msg">' + c.empty + '</div>';
+            const htmlStr = items.length ? items.map(cardHtml).join('') : '<div class="empty-msg">' + c.empty + '</div>';
             
-            // 🔥 UPDATE ALL INSTANCES (Fixes SPA Navigation issues)
-            document.querySelectorAll('#' + c.list).forEach(el => el.innerHTML = htmlString);
-            document.querySelectorAll('#' + c.count).forEach(el => el.textContent = items.length);
+            // 🔥 THE FIX: Use querySelectorAll to update ALL instances across Ghost DOM pages
+            document.querySelectorAll('.' + c.cls).forEach(el => el.innerHTML = htmlStr);
+            document.querySelectorAll('.' + c.cnt).forEach(el => el.textContent = items.length);
         });
     }
 
@@ -378,11 +374,9 @@ window.toggleFocus = function(colId, btnEl) {
             if (!result.isConfirmed) return;
             btn.disabled = true;
 
-            // Turant screen aur records se uda do
             records = records.filter(function (x) { return x.uid !== r.uid; });
             render();
             
-            // Backend Update
             fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action: 'toggleStatus', uid: r.uid, status: 'Inactive' })
@@ -390,7 +384,6 @@ window.toggleFocus = function(colId, btnEl) {
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 if (data && data.status === 'success') {
-                    // Update LocalStorage Daily Cache so it stays hidden on tab switches
                     try {
                         const todayStr = new Date().toDateString();
                         let rawCache = localStorage.getItem("purix_alerts_data");
@@ -400,7 +393,6 @@ window.toggleFocus = function(colId, btnEl) {
                             localStorage.setItem("purix_alerts_data", JSON.stringify(updated));
                         }
                     } catch(e) {}
-
                     Swal.fire({ title: 'Sheet Updated!', text: r.name + ' ab Admission Sheet me Inactive ho gaya hai.', icon: 'success', background: '#050914', color: '#00ff88', timer: 2000, showConfirmButton: false });
                 } else {
                     throw new Error((data && data.message) || 'Status update nahi hua');
@@ -408,13 +400,12 @@ window.toggleFocus = function(colId, btnEl) {
             })
             .catch(function (err) {
                 console.error('Deactivate error:', err);
-                fetchAndGenerateAlerts(true); // Force fresh load on error
+                fetchAndGenerateAlerts(true);
                 Swal.fire({ title: 'Error', text: 'Sheet update nahi hui: ' + String(err.message || err), icon: 'error', background: '#050914', color: '#fff' });
             });
         });
     }
 
-    // Attach listener globally to work with multiple DOM copies
     document.body.addEventListener('click', function (e) {
         const btn = e.target.closest('.alerts-board button[data-action]');
         if (!btn) return;
@@ -426,46 +417,43 @@ window.toggleFocus = function(colId, btnEl) {
 
     /* ---------- load ---------- */
     function showErrorState() {
-        ['upcomingList', 'todayList', 'currentList', 'overList'].forEach(function (id) {
-            document.querySelectorAll('#' + id).forEach(el => {
+        ['val-upcomingList', 'val-todayList', 'val-currentList', 'val-overList'].forEach(function (cls) {
+            document.querySelectorAll('.' + cls).forEach(el => {
                 el.innerHTML = '<div class="empty-msg" style="color:#ff0055;">Database connection error.</div>';
             });
         });
     }
 
-    // 🔥 NEW: Midnight Daily Cache Logic to save API calls
     function fetchAndGenerateAlerts(forceFresh = false) {
         const todayStr = new Date().toDateString(); 
         const cachedDate = localStorage.getItem("purix_alerts_date");
         const cachedDataStr = localStorage.getItem("purix_alerts_data");
 
         if (!forceFresh && cachedDate === todayStr && cachedDataStr) {
-            // Load from daily cache
-            console.log("Loading Alerts from Daily Cache ⚡ (Will auto-refresh at Midnight)");
+            console.log("Loading Alerts from Daily Cache ⚡");
             try {
                 const parsedData = JSON.parse(cachedDataStr);
                 records = buildRecords(parsedData);
                 render();
                 
-                document.querySelectorAll('#syncStatus').forEach(el => {
+                document.querySelectorAll('.val-syncStatus').forEach(el => {
                     el.style.display = 'inline-block';
                     el.innerHTML = '<i class="fa-solid fa-bolt"></i> Cached';
                     el.style.color = '#00ff88';
                 });
-                return; // 🛑 DO NOT FETCH
+                return;
             } catch(e) { console.error("Cache parse error"); }
         }
 
-        // Needs fresh load
         console.log("Fetching FRESH Alerts from Sheet...");
-        document.querySelectorAll('#syncStatus').forEach(el => {
+        document.querySelectorAll('.val-syncStatus').forEach(el => {
             el.style.display = 'inline-block';
             el.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Live';
             el.style.color = '#00f3ff';
         });
 
-        ['upcomingList', 'todayList', 'currentList', 'overList'].forEach(function (id) {
-            document.querySelectorAll('#' + id).forEach(el => {
+        ['val-upcomingList', 'val-todayList', 'val-currentList', 'val-overList'].forEach(function (cls) {
+            document.querySelectorAll('.' + cls).forEach(el => {
                 el.innerHTML = '<div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Fetching Live Data...</div>';
             });
         });
@@ -476,7 +464,6 @@ window.toggleFocus = function(colId, btnEl) {
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 if (data && data.status === 'success') {
-                    // Save for today
                     try {
                         localStorage.setItem("purix_alerts_date", todayStr);
                         localStorage.setItem("purix_alerts_data", JSON.stringify(data.data));
