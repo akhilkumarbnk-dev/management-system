@@ -7,195 +7,226 @@
         display: flex; align-items: center; gap: 10px;
     }
     .alerts-header {
-        border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 10px; margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 10px; margin-bottom: 20px;
         display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
     }
-    .alerts-header .module-header { margin: 0; font-size: 20px; flex-wrap: wrap; }
-    
-    .header-right { display: flex; align-items: center; gap: 12px; }
-    .btn-refresh {
-        background: rgba(0, 243, 255, .1); color: #00f3ff; border: 1px solid rgba(0, 243, 255, .5);
-        width: 34px; height: 34px; border-radius: 8px; cursor: pointer; transition: .3s;
-    }
-    .btn-refresh:hover { background: #00f3ff; color: #050914; box-shadow: 0 0 15px #00f3ff; }
-    .btn-refresh.spinning i { animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .alerts-header .module-header { margin: 0; font-size: 20px; }
 
     .alerts-container {
-        background: rgba(11, 16, 33, .8); padding: 24px; border-radius: 12px;
-        border: 1px solid rgba(0, 243, 255, .2); box-shadow: inset 0 0 20px rgba(0, 243, 255, .05);
+        background: rgba(11, 16, 33, 0.8); padding: 24px; border-radius: 12px;
+        border: 1px solid rgba(0, 243, 255, 0.2); box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.05);
         max-width: 1500px; margin: 0 auto; backdrop-filter: blur(5px);
     }
 
-    .summary-strip { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
-    .sum-chip {
-        flex: 1; min-width: 160px; padding: 12px 16px; border-radius: 10px;
-        background: linear-gradient(135deg, rgba(0, 243, 255, .08), rgba(179, 102, 255, .06));
-        border: 1px solid rgba(0, 243, 255, .18); font-family: 'Poppins', sans-serif;
-    }
-    .sum-chip small { display: block; color: #a5c3e0; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; }
-    .sum-chip b { font-family: 'Orbitron', sans-serif; font-size: 20px; color: #fff; }
-    .sum-chip b.red { color: #ff0055; text-shadow: 0 0 8px rgba(255, 0, 85, .4); }
+    /* 4 columns board */
+    .alerts-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start; transition: 0.3s; }
+    @media (max-width: 1250px) { .alerts-board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 700px)  { .alerts-board { grid-template-columns: minmax(0, 1fr); } }
 
-    .alerts-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start; transition: .3s; }
-    @media(max-width:1250px) { .alerts-board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media(max-width:700px) { .alerts-board { grid-template-columns: minmax(0, 1fr); } }
-    
+    /* 🔥 FOCUS MODE STYLES */
     .alerts-board.focus-mode { display: block; }
-    .alert-col { transition: .3s; }
+    .alert-col { transition: 0.3s; }
     .alert-col.hidden { display: none; }
-    .alert-col.focused { width: 100%; max-width: 800px; margin: 0 auto; animation: fadeIn .4s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .alert-col.focused { 
+        width: 100%; max-width: 800px; margin: 0 auto; 
+        animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
     .alert-section-title {
         padding: 12px 14px; border-radius: 8px; font-weight: 600; margin-bottom: 8px;
-        display: flex; align-items: center; gap: 10px; cursor: pointer;
-        font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: .5px; transition: .2s;
+        display: flex; align-items: center; gap: 10px; cursor: pointer; 
+        font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 0.5px;
+        transition: 0.2s;
     }
     .alert-section-title:hover { filter: brightness(1.2); transform: scale(1.01); }
-    .alert-section-title::after { content: '\f424'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 14px; margin-left: 5px; opacity: .5; transition: .3s; }
-    .focused .alert-section-title::after { content: '\f422'; }
-    
+    .alert-section-title::after {
+        content: '\f424'; font-family: 'Font Awesome 6 Free'; font-weight: 900; 
+        font-size: 14px; margin-left: 5px; opacity: 0.5; transition: 0.3s;
+    }
+    .focused .alert-section-title::after { content: '\f422'; } 
+
     .alert-section-title .count {
         margin-left: auto; min-width: 26px; text-align: center; padding: 2px 8px; border-radius: 20px;
-        background: rgba(255,255,255,.12); font-size: 12px;
+        background: rgba(255,255,255,0.12); font-size: 12px;
     }
     .alert-range { font-family: 'Poppins', sans-serif; font-size: 11px; color: #a5c3e0; margin: 0 0 12px 4px; }
-    
-    .title-upcoming { background: rgba(255, 212, 0, .12); border: 1px solid #ffd400; color: #ffd400; box-shadow: 0 0 15px rgba(255, 212, 0, .15); }
-    .title-today { background: rgba(0, 243, 255, .12); border: 1px solid #00f3ff; color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, .2); }
-    .title-current { background: rgba(255, 140, 0, .12); border: 1px solid #ff8c00; color: #ff8c00; box-shadow: 0 0 15px rgba(255, 140, 0, .2); }
-    .title-over { background: rgba(255, 0, 85, .15); border: 1px solid #ff0055; color: #ff0055; box-shadow: 0 0 15px rgba(255, 0, 85, .2); }
 
-    .alert-list { display: flex; flex-direction: column; gap: 10px; max-height: 70vh; overflow-y: auto; padding-right: 4px; }
-    .alert-list::-webkit-scrollbar { width: 5px; }
-    .alert-list::-webkit-scrollbar-thumb { background: rgba(0, 243, 255, .3); border-radius: 10px; }
+    .title-upcoming { background: rgba(255, 212, 0, 0.12); border: 1px solid #ffd400; color: #ffd400; box-shadow: 0 0 15px rgba(255, 212, 0, 0.15); }
+    .title-today    { background: rgba(0, 243, 255, 0.12); border: 1px solid #00f3ff; color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); }
+    .title-current  { background: rgba(255, 140, 0, 0.12); border: 1px solid #ff8c00; color: #ff8c00; box-shadow: 0 0 15px rgba(255, 140, 0, 0.2); }
+    .title-over     { background: rgba(255, 0, 85, 0.15); border: 1px solid #ff0055; color: #ff0055; box-shadow: 0 0 15px rgba(255, 0, 85, 0.2); }
+
+    .alert-list { display: flex; flex-direction: column; gap: 10px; }
 
     .alert-card {
-        display: flex; flex-direction: column; gap: 10px; padding: 14px;
-        background: rgba(0, 0, 0, .4); border: 1px solid rgba(0, 243, 255, .2); border-radius: 10px; transition: .3s;
+        display: flex; flex-direction: column; gap: 10px;
+        padding: 14px; background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; transition: 0.3s;
     }
-    .alert-card:hover { box-shadow: 0 0 20px rgba(0, 243, 255, .2); background: rgba(0, 243, 255, .03); transform: translateY(-2px); }
-    
-    .card-top { display: flex; gap: 10px; align-items: center; }
-    .avatar { width: 38px; height: 38px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 15px; color: #050914; }
-    .card-amt { margin-left: auto; text-align: right; font-family: 'Orbitron', sans-serif; font-size: 15px; }
-    .chip { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: 'Poppins', sans-serif; border: 1px solid currentColor; }
-    
-    .urgency { height: 4px; border-radius: 4px; background: rgba(255, 255, 255, .08); overflow: hidden; }
-    .urgency i { display: block; height: 100%; border-radius: 4px; }
+    .alert-card:hover { box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); background: rgba(0, 243, 255, 0.03); }
 
     .student-info h4 { margin: 0; font-size: 14px; color: #00f3ff; font-family: 'Orbitron', sans-serif; word-break: break-word; }
     .student-info h4 small { font-size: 11px; color: #a5c3e0; font-family: 'Poppins', sans-serif; }
-    .student-info p { margin: 5px 0 0; font-size: 12px; color: #a5c3e0; font-family: 'Poppins', sans-serif; line-height: 1.6; }
-    .amt { color: #ff0055; font-weight: bold; text-shadow: 0 0 5px rgba(255, 0, 85, .4); }
+    .student-info p { margin: 5px 0 0; font-size: 12px; color: #a5c3e0; font-family: 'Poppins', sans-serif; line-height: 1.5; }
+    .amt { color: #ff0055; font-weight: bold; text-shadow: 0 0 5px rgba(255,0,85,0.4); }
     .when { font-weight: 600; }
     .months-line { color: #ffd400; }
-    
+
     .alert-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .btn-notify { background: rgba(37, 211, 102, .15); color: #25D366; border: 1px solid #25D366; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: 'Orbitron', sans-serif; transition: .3s; display: flex; align-items: center; gap: 6px; }
+
+    .btn-notify {
+        background: rgba(37, 211, 102, 0.15); color: #25D366; border: 1px solid #25D366;
+        padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;
+        font-family: 'Orbitron', sans-serif; transition: 0.3s; display: flex; align-items: center; gap: 6px;
+    }
     .btn-notify:hover { background: #25D366; color: #fff; box-shadow: 0 0 15px #25D366; }
-    .btn-critical-inactive { background: rgba(255, 0, 85, .15); color: #ff0055; border: 1px solid #ff0055; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; animation: pulseRed 2s infinite; transition: .3s; }
+
+    .btn-critical-inactive {
+        background: rgba(255, 0, 85, 0.15); color: #ff0055; border: 1px solid #ff0055;
+        padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;
+        animation: pulseRed 2s infinite; transition: 0.3s;
+    }
     .btn-critical-inactive:hover { background: #ff0055; color: #fff; box-shadow: 0 0 20px #ff0055; }
-    .btn-critical-inactive:disabled, .btn-notify:disabled { opacity: .5; cursor: wait; animation: none; }
-    
-    @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(255, 0, 85, .7); } 70% { box-shadow: 0 0 0 10px rgba(255, 0, 85, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); } }
-    @media(prefers-reduced-motion: reduce) { .btn-critical-inactive, .skel { animation: none; } }
-    
+    .btn-critical-inactive:disabled, .btn-notify:disabled { opacity: 0.5; cursor: wait; animation: none; }
+
+    @keyframes pulseRed {
+        0% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(255, 0, 85, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); }
+    }
+    @media (prefers-reduced-motion: reduce) { .btn-critical-inactive { animation: none; } }
+
     .empty-msg { color: #a5c3e0; font-style: italic; padding: 10px 4px; font-family: 'Poppins', sans-serif; font-size: 12px; }
-    .btn-retry { margin-left: 8px; background: transparent; color: #00f3ff; border: 1px solid #00f3ff; border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 11px; }
     
-    .skel { height: 92px; border-radius: 10px; background: linear-gradient(90deg, rgba(255, 255, 255, .03) 25%, rgba(0, 243, 255, .09) 50%, rgba(255, 255, 255, .03) 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite; }
-    @keyframes shimmer { to { background-position: -200% 0; } }
-    
-    .val-syncStatus { font-size: 11px; color: #00ff88; font-family: 'Poppins', sans-serif; padding: 2px 8px; border-radius: 12px; background: rgba(0, 255, 136, .1); margin-left: 10px; }
+    /* Small sync indicator */
+    .val-syncStatus {
+        font-size: 11px; color: #00ff88; font-family: 'Poppins', sans-serif; padding: 2px 8px; border-radius: 12px; background: rgba(0, 255, 136, 0.1); margin-left: 10px;
+    }
 </style>
 
 <div class="alerts-wrapper">
-  <div class="alerts-container">
-    <div class="alerts-header">
-      <h2 class="module-header"><i class="fa-solid fa-bell"></i> PAYMENT ALERTS SYSTEM <span class="val-syncStatus" style="display:none;"></span></h2>
-      <div class="header-right">
-        <span class="val-currentDateDisplay" style="color:#a5c3e0;font-weight:500;font-family:'Orbitron',sans-serif;font-size:12px;"></span>
-        <button class="btn-refresh" data-action="refresh" title="Fresh data lao"><i class="fa-solid fa-rotate"></i></button>
-      </div>
-    </div>
+    <div class="alerts-container">
+        <div class="alerts-header">
+            <h2 class="module-header"><i class="fa-solid fa-bell"></i> PAYMENT ALERTS SYSTEM <span class="val-syncStatus" style="display:none;"><i class="fa-solid fa-bolt"></i> Cached</span></h2>
+            <span class="val-currentDateDisplay" style="color: #a5c3e0; font-weight: 500; font-family: 'Orbitron', sans-serif; font-size: 12px;"></span>
+        </div>
 
-    <div class="summary-strip">
-      <div class="sum-chip"><small>Total Pending</small><b class="red val-totalPending">₹0</b></div>
-      <div class="sum-chip"><small>Students in Alerts</small><b class="val-totalCount">0</b></div>
-      <div class="sum-chip"><small>Last Updated</small><b class="val-lastUpdated" style="font-size:16px">--</b></div>
-    </div>
+        <div class="alerts-board">
+            <!-- 1. Upcoming -->
+            <div class="alert-col col-upcoming">
+                <div class="alert-section-title title-upcoming" onclick="window.toggleFocus('upcoming', this)">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Upcoming <span class="count val-countUpcoming">0</span>
+                </div>
+                <p class="alert-range">Due date me 1 se 5 din baaki</p>
+                <div class="alert-list val-upcomingList">
+                    <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Fetching records...</div>
+                </div>
+            </div>
 
-    <div class="alerts-board">
-      <div class="alert-col col-upcoming">
-        <div class="alert-section-title title-upcoming" onclick="window.toggleFocus('upcoming', this)"><i class="fa-solid fa-clock-rotate-left"></i> Upcoming <span class="count val-countUpcoming">0</span></div>
-        <p class="alert-range">Due date me 1 se 5 din baaki</p>
-        <div class="alert-list val-upcomingList"><div class="skel"></div><div class="skel"></div></div>
-      </div>
-      <div class="alert-col col-today">
-        <div class="alert-section-title title-today" onclick="window.toggleFocus('today', this)"><i class="fa-solid fa-calendar-day"></i> Today <span class="count val-countToday">0</span></div>
-        <p class="alert-range">Due date aaj hai</p>
-        <div class="alert-list val-todayList"><div class="skel"></div><div class="skel"></div></div>
-      </div>
-      <div class="alert-col col-current">
-        <div class="alert-section-title title-current" onclick="window.toggleFocus('current', this)"><i class="fa-solid fa-hourglass-half"></i> Current Dues <span class="count val-countCurrent">0</span></div>
-        <p class="alert-range">Due nikle 1 se 30 din tak</p>
-        <div class="alert-list val-currentList"><div class="skel"></div><div class="skel"></div></div>
-      </div>
-      <div class="alert-col col-over">
-        <div class="alert-section-title title-over" onclick="window.toggleFocus('over', this)"><i class="fa-solid fa-triangle-exclamation"></i> Over Dues <span class="count val-countOver">0</span></div>
-        <p class="alert-range">31 din ya zyada late (60 din par Deactivate)</p>
-        <div class="alert-list val-overList"><div class="skel"></div><div class="skel"></div></div>
-      </div>
+            <!-- 2. Today -->
+            <div class="alert-col col-today">
+                <div class="alert-section-title title-today" onclick="window.toggleFocus('today', this)">
+                    <i class="fa-solid fa-calendar-day"></i> Today <span class="count val-countToday">0</span>
+                </div>
+                <p class="alert-range">Due date aaj hai</p>
+                <div class="alert-list val-todayList">
+                    <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Fetching records...</div>
+                </div>
+            </div>
+
+            <!-- 3. Current Dues -->
+            <div class="alert-col col-current">
+                <div class="alert-section-title title-current" onclick="window.toggleFocus('current', this)">
+                    <i class="fa-solid fa-hourglass-half"></i> Current Dues <span class="count val-countCurrent">0</span>
+                </div>
+                <p class="alert-range">Due nikle 1 se 30 din tak</p>
+                <div class="alert-list val-currentList">
+                    <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Fetching records...</div>
+                </div>
+            </div>
+
+            <!-- 4. Over Dues -->
+            <div class="alert-col col-over">
+                <div class="alert-section-title title-over" onclick="window.toggleFocus('over', this)">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Over Dues <span class="count val-countOver">0</span>
+                </div>
+                <p class="alert-range">31 din ya zyada late (60 din par Deactivate)</p>
+                <div class="alert-list val-overList">
+                    <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Fetching records...</div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <script>
+// 🔥 FIX: Added Semicolon here so script doesn't crash!
 window.toggleFocus = function(colId, btnEl) {
     const board = btnEl.closest('.alerts-board');
     if (!board) return;
     const cols = ['upcoming', 'today', 'current', 'over'];
+    
     if (board.getAttribute('data-focus') === colId) {
         board.classList.remove('focus-mode');
         board.removeAttribute('data-focus');
-        cols.forEach(id => { const col = board.querySelector('.col-' + id); if (col) col.classList.remove('hidden', 'focused'); });
+        cols.forEach(id => {
+            const col = board.querySelector('.col-' + id);
+            if(col) col.classList.remove('hidden', 'focused');
+        });
     } else {
         board.classList.add('focus-mode');
         board.setAttribute('data-focus', colId);
         cols.forEach(id => {
             const col = board.querySelector('.col-' + id);
-            if (!col) return;
-            if (id === colId) { col.classList.remove('hidden'); col.classList.add('focused'); }
-            else { col.classList.remove('focused'); col.classList.add('hidden'); }
+            if(col) {
+                if (id === colId) {
+                    col.classList.remove('hidden');
+                    col.classList.add('focused');
+                } else {
+                    col.classList.remove('focused');
+                    col.classList.add('hidden');
+                }
+            }
         });
     }
-}
+}; // <--- YAHI CHHUT GAYA THA!
 
-(function () {
+// Defensive semicolon lagaya gaya hai taaki aage kabhi error na aaye
+;(function () {
     const MS_DAY = 86400000;
     const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const UPCOMING_DAYS = 5, CURRENT_MAX_LATE = 30, DEACTIVATE_LATE = 60;
-    const FETCH_TIMEOUT = 40000;
-    const LISTS = ['val-upcomingList', 'val-todayList', 'val-currentList', 'val-overList'];
+    const UPCOMING_DAYS = 5;      
+    const CURRENT_MAX_LATE = 30;  
+    const DEACTIVATE_LATE = 60;   
 
-    let records = [];
+    let records = []; 
 
-    function setText(cls, txt) { document.querySelectorAll('.' + cls).forEach(el => el.textContent = txt); }
-    function updateDateDisplay() {
-        setText('val-currentDateDisplay', 'SYSTEM DATE: ' + new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase());
-    }
+    document.querySelectorAll('.val-currentDateDisplay').forEach(el => {
+        el.innerText = 'SYSTEM DATE: ' + new Date()
+            .toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+    });
 
     /* ---------- helpers ---------- */
     function esc(s) {
-        return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
     }
+
     function startOfDay(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+
     function parseDate(v) {
         if (v instanceof Date) return isNaN(v.getTime()) ? null : startOfDay(v);
         if (typeof v === 'number') {
-            if (v > 20000) { const u = new Date(Math.round((v - 25569) * MS_DAY)); return new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate()); }
+            if (v > 20000) { 
+                const u = new Date(Math.round((v - 25569) * MS_DAY));
+                return new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate());
+            }
             return null;
         }
         if (typeof v !== 'string') return null;
@@ -203,15 +234,21 @@ window.toggleFocus = function(colId, btnEl) {
         if (!s || s === '-') return null;
         let m;
         if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/))) return new Date(+m[1], +m[2] - 1, +m[3]);
-        if (/^\d{4}-\d{2}-\d{2}T/.test(s)) { const d = new Date(s); return isNaN(d.getTime()) ? null : startOfDay(d); }
+        if (/^\d{4}-\d{2}-\d{2}T/.test(s)) {
+            const d = new Date(s);
+            return isNaN(d.getTime()) ? null : startOfDay(d);
+        }
         if ((m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/))) return new Date(+m[3], +m[2] - 1, +m[1]);
         const d = new Date(s);
         return isNaN(d.getTime()) ? null : startOfDay(d);
     }
+
     function fmtDate(d) { return d.toLocaleDateString('en-GB'); }
-    function fmtMoney(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
-    function toNumber(v) { const n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.\-]/g, '')); return isNaN(n) ? 0 : n; }
-    function hhmm(ms) { return new Date(ms).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }); }
+
+    function toNumber(v) {
+        const n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.\-]/g, ''));
+        return isNaN(n) ? 0 : n;
+    }
 
     function pendingMonthsText(due, today) {
         const names = [];
@@ -233,14 +270,17 @@ window.toggleFocus = function(colId, btnEl) {
         const today = startOfDay(new Date());
         const out = [];
         (rows || []).forEach(function (s) {
+            
             const status = String(s.status == null ? '' : s.status).trim().toLowerCase();
-            if (status !== 'active') return;
+            if (status !== 'active') return; 
+
             const dues = toNumber(s.dues);
             if (dues <= 0) return;
+
             const due = parseDate(s.dueDate);
             if (!due) return;
-            
-            const diff = Math.round((due.getTime() - today.getTime()) / MS_DAY);
+
+            const diff = Math.round((due.getTime() - today.getTime()) / MS_DAY); 
             const late = -diff;
             let cat = null;
             if (diff >= 1 && diff <= UPCOMING_DAYS) cat = 'upcoming';
@@ -248,7 +288,7 @@ window.toggleFocus = function(colId, btnEl) {
             else if (late >= 1 && late <= CURRENT_MAX_LATE) cat = 'current';
             else if (late > CURRENT_MAX_LATE) cat = 'over';
             if (!cat) return;
-            
+
             out.push({
                 uid: String(s.uid), name: s.name || '', cls: s.class || '', plan: s.feePlan || 'Monthly',
                 mobile: s.mobile, dues: dues, due: due, diff: diff, late: late, cat: cat,
@@ -266,22 +306,18 @@ window.toggleFocus = function(colId, btnEl) {
         else if (r.cat === 'today') whenText = 'Aaj due hai';
         else whenText = r.late + ' din late';
 
-        const monthsLine = (r.plan === 'Monthly' && r.late > 0) ? '<br><span class="months-line">Pending: ' + esc(r.monthsText) + '</span>' : '';
+        const monthsLine = (r.plan === 'Monthly' && r.late > 0)
+            ? '<br><span class="months-line">Pending: ' + esc(r.monthsText) + '</span>' : '';
         const canDeactivate = r.cat === 'over' && r.late >= DEACTIVATE_LATE;
-        const pct = r.late > 0 ? Math.min(100, Math.round(r.late / DEACTIVATE_LATE * 100)) : 0;
-        const bar = r.late > 0 ? '<div class="urgency" title="' + r.late + '/' + DEACTIVATE_LATE + ' din"><i style="width:' + pct + '%;background:' + color + ';box-shadow:0 0 8px ' + color + '"></i></div>' : '';
-        const initial = esc((r.name || '?').trim().charAt(0).toUpperCase());
 
         return '' +
-            '<div class="alert-card" data-uid="' + esc(r.uid) + '" style="border-left:4px solid ' + color + '">' +
-              '<div class="card-top">' +
-                '<div class="avatar" style="background:' + color + '">' + initial + '</div>' +
-                '<div class="student-info"><h4>' + esc(r.name) + ' <small>(UID: ' + esc(r.uid) + ')</small></h4></div>' +
-                '<div class="card-amt amt">' + fmtMoney(r.dues) + '</div>' +
+            '<div class="alert-card" data-uid="' + esc(r.uid) + '" style="border-left: 4px solid ' + color + '">' +
+              '<div class="student-info">' +
+                '<h4>' + esc(r.name) + ' <small>(UID: ' + esc(r.uid) + ')</small></h4>' +
+                '<p>Class: ' + esc(r.cls) + ' | Plan: <strong style="color:' + (r.plan === 'Monthly' ? '#00f3ff' : '#b366ff') + '">' + esc(r.plan) + '</strong><br>' +
+                'Due: <strong>' + fmtDate(r.due) + '</strong> | <span class="when" style="color:' + color + '">' + whenText + '</span><br>' +
+                'Amount: <span class="amt">₹' + esc(r.dues) + '</span>' + monthsLine + '</p>' +
               '</div>' +
-              '<div class="student-info"><p>Class: ' + esc(r.cls) + ' | Plan: <strong style="color:' + (r.plan === 'Monthly' ? '#00f3ff' : '#b366ff') + '">' + esc(r.plan) + '</strong><br>' +
-                'Due: <strong>' + fmtDate(r.due) + '</strong> <span class="chip when" style="color:' + color + '">' + whenText + '</span>' + monthsLine + '</p></div>' +
-              bar +
               '<div class="alert-actions">' +
                 '<button class="btn-notify" data-action="notify" data-uid="' + esc(r.uid) + '"><i class="fa-brands fa-whatsapp"></i> NOTIFY</button>' +
                 (canDeactivate ? '<button class="btn-critical-inactive" data-action="deactivate" data-uid="' + esc(r.uid) + '" title="2 mahine se default"><i class="fa-solid fa-user-slash"></i> DEACTIVATE</button>' : '') +
@@ -291,36 +327,23 @@ window.toggleFocus = function(colId, btnEl) {
 
     function render() {
         const cfg = {
-            upcoming: { cls: 'val-upcomingList', cnt: 'val-countUpcoming', empty: '<i class="fa-solid fa-check-circle" style="color:#00ff88;margin-right:5px;"></i> Koi upcoming payment nahi.', sort: (a, b) => a.diff - b.diff },
-            today:    { cls: 'val-todayList',    cnt: 'val-countToday',    empty: '<i class="fa-regular fa-calendar-check" style="color:#00f3ff;margin-right:5px;"></i> Aaj kisi ki payment due nahi.', sort: (a, b) => b.dues - a.dues },
-            current:  { cls: 'val-currentList',  cnt: 'val-countCurrent',  empty: '<i class="fa-solid fa-check-double" style="color:#ff8c00;margin-right:5px;"></i> Koi current dues nahi.', sort: (a, b) => b.late - a.late },
-            over:     { cls: 'val-overList',     cnt: 'val-countOver',     empty: '<i class="fa-solid fa-shield-halved" style="color:#ff0055;margin-right:5px;"></i> All clear! Koi over dues nahi.', sort: (a, b) => b.late - a.late }
+            upcoming: { cls: 'val-upcomingList', cnt: 'val-countUpcoming', empty: '<i class="fa-solid fa-check-circle" style="color:#00ff88; margin-right:5px;"></i> Koi upcoming payment nahi.', sort: function (a, b) { return a.diff - b.diff; } },
+            today:    { cls: 'val-todayList',    cnt: 'val-countToday',    empty: '<i class="fa-regular fa-calendar-check" style="color:#00f3ff; margin-right:5px;"></i> Aaj kisi ki payment due nahi.', sort: function (a, b) { return b.dues - a.dues; } },
+            current:  { cls: 'val-currentList',  cnt: 'val-countCurrent',  empty: '<i class="fa-solid fa-check-double" style="color:#ff8c00; margin-right:5px;"></i> Koi current dues nahi.', sort: function (a, b) { return b.late - a.late; } },
+            over:     { cls: 'val-overList',     cnt: 'val-countOver',     empty: '<i class="fa-solid fa-shield-halved" style="color:#ff0055; margin-right:5px;"></i> All clear! Koi over dues nahi.', sort: function (a, b) { return b.late - a.late; } }
         };
         Object.keys(cfg).forEach(function (cat) {
             const c = cfg[cat];
-            const items = records.filter(r => r.cat === cat).sort(c.sort);
+            const items = records.filter(function (r) { return r.cat === cat; }).sort(c.sort);
             const htmlStr = items.length ? items.map(cardHtml).join('') : '<div class="empty-msg">' + c.empty + '</div>';
+            
             document.querySelectorAll('.' + c.cls).forEach(el => el.innerHTML = htmlStr);
             document.querySelectorAll('.' + c.cnt).forEach(el => el.textContent = items.length);
         });
-        setText('val-totalPending', fmtMoney(records.reduce((t, r) => t + r.dues, 0)));
-        setText('val-totalCount', records.length);
     }
-
-    function setBadge(kind) {
-        const t = parseInt(localStorage.getItem('purix_alerts_time') || '0', 10);
-        const stamp = t ? hhmm(t) : '';
-        document.querySelectorAll('.val-syncStatus').forEach(el => {
-            el.style.display = 'inline-block';
-            if (kind === 'cache') { el.innerHTML = '<i class="fa-solid fa-bolt"></i> Cached • ' + stamp; el.style.color = '#00ff88'; }
-            else { el.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Live' + (stamp ? ' • ' + stamp : ''); el.style.color = '#00f3ff'; }
-        });
-        setText('val-lastUpdated', stamp || '--');
-    }
-    function spin(on) { document.querySelectorAll('.btn-refresh').forEach(b => b.classList.toggle('spinning', on)); }
 
     /* ---------- actions ---------- */
-    function findRecord(uid) { return records.find(r => r.uid === uid); }
+    function findRecord(uid) { return records.find(function (r) { return r.uid === uid; }); }
 
     function sendWhatsAppAlert(r) {
         const digits = String(r.mobile == null ? '' : r.mobile).replace(/\D/g, '').slice(-10);
@@ -329,8 +352,11 @@ window.toggleFocus = function(colId, btnEl) {
             return;
         }
         let message;
-        if (r.plan === 'Monthly') message = 'Dear ' + r.name + ', aapka ' + r.monthsText + ' mahine ka fee dues (Rs. ' + r.dues + ') baki hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.';
-        else message = 'Dear ' + r.name + ', aapki aagami Installment (kist) Rs. ' + r.dues + ' due hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.';
+        if (r.plan === 'Monthly') {
+            message = 'Dear ' + r.name + ', aapka ' + r.monthsText + ' mahine ka fee dues (Rs. ' + r.dues + ') baki hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.';
+        } else {
+            message = 'Dear ' + r.name + ', aapki aagami Installment (kist) Rs. ' + r.dues + ' due hai. Kripya jald se jald payment clear karein. Thank you - Purix Academy.';
+        }
         window.open('https://wa.me/91' + digits + '?text=' + encodeURIComponent(message), '_blank');
     }
 
@@ -338,131 +364,132 @@ window.toggleFocus = function(colId, btnEl) {
         Swal.fire({
             title: 'Student ko Inactive karein?',
             text: r.name + ' (UID: ' + r.uid + ') ko Inactive mark kiya jayega.',
-            icon: 'warning', showCancelButton: true, confirmButtonColor: '#ff0055', cancelButtonColor: '#334155',
-            confirmButtonText: 'Haan, Inactive karo', cancelButtonText: 'Cancel', background: '#050914', color: '#fff'
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff0055',
+            cancelButtonColor: '#334155',
+            confirmButtonText: 'Haan, Inactive karo',
+            cancelButtonText: 'Cancel',
+            background: '#050914', color: '#fff'
         }).then(function (result) {
             if (!result.isConfirmed) return;
             btn.disabled = true;
-            records = records.filter(x => x.uid !== r.uid);
+
+            records = records.filter(function (x) { return x.uid !== r.uid; });
             render();
-            fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'toggleStatus', uid: r.uid, status: 'Inactive' }) })
-            .then(res => res.json())
+            
+            fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'toggleStatus', uid: r.uid, status: 'Inactive' })
+            })
+            .then(function (res) { return res.json(); })
             .then(function (data) {
                 if (data && data.status === 'success') {
                     try {
-                        const rawCache = localStorage.getItem("purix_alerts_data");
-                        if (rawCache) localStorage.setItem("purix_alerts_data", JSON.stringify(JSON.parse(rawCache).filter(item => item.uid !== r.uid)));
-                    } catch (e) {}
+                        const todayStr = new Date().toDateString();
+                        let rawCache = localStorage.getItem("purix_alerts_data");
+                        if(rawCache) {
+                            let parsed = JSON.parse(rawCache);
+                            let updated = parsed.filter(item => item.uid !== r.uid);
+                            localStorage.setItem("purix_alerts_data", JSON.stringify(updated));
+                        }
+                    } catch(e) {}
                     Swal.fire({ title: 'Sheet Updated!', text: r.name + ' ab Admission Sheet me Inactive ho gaya hai.', icon: 'success', background: '#050914', color: '#00ff88', timer: 2000, showConfirmButton: false });
-                } else throw new Error((data && data.message) || 'Status update nahi hua');
+                } else {
+                    throw new Error((data && data.message) || 'Status update nahi hua');
+                }
             })
             .catch(function (err) {
                 console.error('Deactivate error:', err);
-                load(true);
+                fetchAndGenerateAlerts(true);
                 Swal.fire({ title: 'Error', text: 'Sheet update nahi hui: ' + String(err.message || err), icon: 'error', background: '#050914', color: '#fff' });
             });
         });
     }
 
-    /* ---------- load ---------- */
-    function showLoading() {
-        LISTS.forEach(cls => document.querySelectorAll('.' + cls).forEach(el => el.innerHTML = '<div class="skel"></div><div class="skel"></div>'));
-    }
-    function showErrorState() {
-        LISTS.forEach(cls => document.querySelectorAll('.' + cls).forEach(el => {
-            el.innerHTML = '<div class="empty-msg" style="color:#ff0055;">Database connection error. <button class="btn-retry" data-action="refresh">Retry</button></div>';
-        }));
-    }
-
-    function fetchFresh() {
-        if (!window.__purixAlertsInflight) {
-            const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
-            const req = fetch(API_URL + sep + 'action=getAlerts&timestamp=' + Date.now()).then(res => res.json());
-            const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Timeout')), FETCH_TIMEOUT));
-            window.__purixAlertsInflight = Promise.race([req, timeout]).then(function (data) {
-                if (!data || data.status !== 'success') throw new Error('Bad response');
-                try {
-                    localStorage.setItem("purix_alerts_date", new Date().toDateString());
-                    localStorage.setItem("purix_alerts_data", JSON.stringify(data.data));
-                    localStorage.setItem("purix_alerts_time", String(Date.now()));
-                } catch (e) {}
-                return data.data;
-            }).finally(function () { window.__purixAlertsInflight = null; });
-        }
-        return window.__purixAlertsInflight;
-    }
-
-    function load(forceFresh) {
-        updateDateDisplay();
-        const todayStr = new Date().toDateString();
-        if (!forceFresh) {
-            try {
-                if (localStorage.getItem("purix_alerts_date") === todayStr) {
-                    const raw = localStorage.getItem("purix_alerts_data");
-                    if (raw) {
-                        records = buildRecords(JSON.parse(raw));
-                        render(); setBadge('cache');
-                        return;
-                    }
-                }
-            } catch (e) { console.error("Cache parse error"); }
-        }
-        showLoading(); spin(true); setBadge('live');
-        fetchFresh().then(function (rows) {
-            records = buildRecords(rows);
-            render(); setBadge('live');
-        }).catch(function (err) {
-            console.error('Alerts Error:', err);
-            showErrorState();
-        }).finally(function () { spin(false); });
-    }
-
-    /* ---------- DOM ready wait (page switch fix) ---------- */
-    function whenMounted(cb, tries) {
-        tries = tries || 0;
-        if (document.querySelector('.val-upcomingList')) return cb();
-        if (tries > 100) return;
-        setTimeout(function () { whenMounted(cb, tries + 1); }, 50);
-    }
-
-    /* ---------- daily 12 AM refresh ---------- */
-    function scheduleMidnight() {
-        clearTimeout(window.__purixAlertsTimer);
-        const now = new Date();
-        const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
-        window.__purixAlertsTimer = setTimeout(function () {
-            load(true);
-            scheduleMidnight();
-        }, next.getTime() - now.getTime());
-    }
-
-    // Latest instance ke handlers
-    window.__purixAlertsApi = {
-        click: function (btn) {
-            const action = btn.getAttribute('data-action');
-            if (action === 'refresh') return load(true);
+    if (!window.hasAlertListener) {
+        window.hasAlertListener = true;
+        document.body.addEventListener('click', function (e) {
+            const btn = e.target.closest('.alerts-board button[data-action]');
+            if (!btn) return;
             const r = findRecord(btn.getAttribute('data-uid'));
             if (!r) return;
-            if (action === 'notify') sendWhatsAppAlert(r);
-            else if (action === 'deactivate') deactivate(r, btn);
-        },
-        checkDay: function () {
-            if (!document.querySelector('.val-upcomingList')) return;
-            if (localStorage.getItem("purix_alerts_date") !== new Date().toDateString()) load(true);
-        }
-    };
-    if (!window.__purixAlertsBound) {
-        window.__purixAlertsBound = true;
-        document.body.addEventListener('click', function (e) {
-            const btn = e.target.closest('.alerts-wrapper button[data-action]');
-            if (btn && window.__purixAlertsApi) window.__purixAlertsApi.click(btn);
-        });
-        document.addEventListener('visibilitychange', function () {
-            if (!document.hidden && window.__purixAlertsApi) window.__purixAlertsApi.checkDay();
+            if (btn.getAttribute('data-action') === 'notify') sendWhatsAppAlert(r);
+            else if (btn.getAttribute('data-action') === 'deactivate') deactivate(r, btn);
         });
     }
 
-    scheduleMidnight();
-    whenMounted(function () { load(false); });
+    /* ---------- load ---------- */
+    function showErrorState() {
+        ['val-upcomingList', 'val-todayList', 'val-currentList', 'val-overList'].forEach(function (cls) {
+            document.querySelectorAll('.' + cls).forEach(el => {
+                el.innerHTML = '<div class="empty-msg" style="color:#ff0055;">Database connection error.</div>';
+            });
+        });
+    }
+
+    function fetchAndGenerateAlerts(forceFresh = false) {
+        // Sirf tab load karo jab screen par dabbe exist karte ho
+        if(document.querySelectorAll('.val-upcomingList').length === 0) return;
+
+        const todayStr = new Date().toDateString(); 
+        const cachedDate = localStorage.getItem("purix_alerts_date");
+        const cachedDataStr = localStorage.getItem("purix_alerts_data");
+
+        if (!forceFresh && cachedDate === todayStr && cachedDataStr) {
+            console.log("Loading Alerts from Daily Cache ⚡");
+            try {
+                const parsedData = JSON.parse(cachedDataStr);
+                records = buildRecords(parsedData);
+                render();
+                
+                document.querySelectorAll('.val-syncStatus').forEach(el => {
+                    el.style.display = 'inline-block';
+                    el.innerHTML = '<i class="fa-solid fa-bolt"></i> Cached';
+                    el.style.color = '#00ff88';
+                });
+                return;
+            } catch(e) { console.error("Cache parse error"); }
+        }
+
+        console.log("Fetching FRESH Alerts from Sheet...");
+        document.querySelectorAll('.val-syncStatus').forEach(el => {
+            el.style.display = 'inline-block';
+            el.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Live';
+            el.style.color = '#00f3ff';
+        });
+
+        ['val-upcomingList', 'val-todayList', 'val-currentList', 'val-overList'].forEach(function (cls) {
+            document.querySelectorAll('.' + cls).forEach(el => {
+                el.innerHTML = '<div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Fetching Live Data...</div>';
+            });
+        });
+
+        const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
+        
+        fetch(API_URL + sep + 'action=getAlerts&timestamp=' + Date.now())
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (data && data.status === 'success') {
+                    try {
+                        localStorage.setItem("purix_alerts_date", todayStr);
+                        localStorage.setItem("purix_alerts_data", JSON.stringify(data.data));
+                    } catch(e) {}
+                    
+                    records = buildRecords(data.data);
+                    render();
+                } else {
+                    showErrorState();
+                }
+            })
+            .catch(function (err) {
+                console.error('Alerts Error:', err);
+                showErrorState();
+            });
+    }
+
+    // Aage badhne se pehle 50 miliseconds ruko (SPA Safety)
+    setTimeout(() => { fetchAndGenerateAlerts(); }, 50);
+
 })();
 </script>
