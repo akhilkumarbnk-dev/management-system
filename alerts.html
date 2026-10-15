@@ -118,8 +118,8 @@
 
         <div class="alerts-board" id="alertsBoard">
             <!-- 1. Upcoming -->
-            <div class="alert-col" id="col-upcoming">
-                <div class="alert-section-title title-upcoming" onclick="toggleFocus('upcoming')">
+            <div class="alert-col col-upcoming">
+                <div class="alert-section-title title-upcoming" onclick="toggleFocus('upcoming', this)">
                     <i class="fa-solid fa-clock-rotate-left"></i> Upcoming <span class="count" id="countUpcoming">0</span>
                 </div>
                 <p class="alert-range">Due date me 1 se 5 din baaki</p>
@@ -129,8 +129,8 @@
             </div>
 
             <!-- 2. Today -->
-            <div class="alert-col" id="col-today">
-                <div class="alert-section-title title-today" onclick="toggleFocus('today')">
+            <div class="alert-col col-today">
+                <div class="alert-section-title title-today" onclick="toggleFocus('today', this)">
                     <i class="fa-solid fa-calendar-day"></i> Today <span class="count" id="countToday">0</span>
                 </div>
                 <p class="alert-range">Due date aaj hai</p>
@@ -140,8 +140,8 @@
             </div>
 
             <!-- 3. Current Dues -->
-            <div class="alert-col" id="col-current">
-                <div class="alert-section-title title-current" onclick="toggleFocus('current')">
+            <div class="alert-col col-current">
+                <div class="alert-section-title title-current" onclick="toggleFocus('current', this)">
                     <i class="fa-solid fa-hourglass-half"></i> Current Dues <span class="count" id="countCurrent">0</span>
                 </div>
                 <p class="alert-range">Due nikle 1 se 30 din tak</p>
@@ -151,8 +151,8 @@
             </div>
 
             <!-- 4. Over Dues -->
-            <div class="alert-col" id="col-over">
-                <div class="alert-section-title title-over" onclick="toggleFocus('over')">
+            <div class="alert-col col-over">
+                <div class="alert-section-title title-over" onclick="toggleFocus('over', this)">
                     <i class="fa-solid fa-triangle-exclamation"></i> Over Dues <span class="count" id="countOver">0</span>
                 </div>
                 <p class="alert-range">31 din ya zyada late (60 din par Deactivate)</p>
@@ -165,33 +165,36 @@
 </div>
 
 <script>
-// 🔥 NEW FOCUS LOGIC
-let currentFocus = null;
-function toggleFocus(colId) {
-    const board = document.getElementById('alertsBoard');
+// 🔥 NEW FOCUS LOGIC (Works perfectly in SPA)
+window.toggleFocus = function(colId, btnEl) {
+    const board = btnEl.closest('.alerts-board');
+    if (!board) return;
     const cols = ['upcoming', 'today', 'current', 'over'];
     
-    if (currentFocus === colId) {
+    if (board.getAttribute('data-focus') === colId) {
         // Reset everything to normal
         board.classList.remove('focus-mode');
+        board.removeAttribute('data-focus');
         cols.forEach(id => {
-            document.getElementById(`col-${id}`).classList.remove('hidden', 'focused');
+            const col = board.querySelector('.col-' + id);
+            if(col) col.classList.remove('hidden', 'focused');
         });
-        currentFocus = null;
     } else {
         // Focus specific column
         board.classList.add('focus-mode');
+        board.setAttribute('data-focus', colId);
         cols.forEach(id => {
-            const col = document.getElementById(`col-${id}`);
-            if (id === colId) {
-                col.classList.remove('hidden');
-                col.classList.add('focused');
-            } else {
-                col.classList.remove('focused');
-                col.classList.add('hidden');
+            const col = board.querySelector('.col-' + id);
+            if(col) {
+                if (id === colId) {
+                    col.classList.remove('hidden');
+                    col.classList.add('focused');
+                } else {
+                    col.classList.remove('focused');
+                    col.classList.add('hidden');
+                }
             }
         });
-        currentFocus = colId;
     }
 }
 
@@ -204,11 +207,11 @@ function toggleFocus(colId) {
 
     let records = []; 
 
-    const dateDisplay = document.getElementById('currentDateDisplay');
-    if (dateDisplay) {
-        dateDisplay.innerText = 'SYSTEM DATE: ' + new Date()
+    // 🔥 Fix for SPA Multiple DOMs
+    document.querySelectorAll('#currentDateDisplay').forEach(el => {
+        el.innerText = 'SYSTEM DATE: ' + new Date()
             .toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
-    }
+    });
 
     /* ---------- helpers ---------- */
     function esc(s) {
@@ -334,10 +337,11 @@ function toggleFocus(colId) {
         Object.keys(cfg).forEach(function (cat) {
             const c = cfg[cat];
             const items = records.filter(function (r) { return r.cat === cat; }).sort(c.sort);
-            document.getElementById(c.list).innerHTML = items.length
-                ? items.map(cardHtml).join('')
-                : '<div class="empty-msg">' + c.empty + '</div>';
-            document.getElementById(c.count).textContent = items.length;
+            const htmlString = items.length ? items.map(cardHtml).join('') : '<div class="empty-msg">' + c.empty + '</div>';
+            
+            // 🔥 UPDATE ALL INSTANCES (Fixes SPA Navigation issues)
+            document.querySelectorAll('#' + c.list).forEach(el => el.innerHTML = htmlString);
+            document.querySelectorAll('#' + c.count).forEach(el => el.textContent = items.length);
         });
     }
 
@@ -410,8 +414,9 @@ function toggleFocus(colId) {
         });
     }
 
-    document.querySelector('.alerts-board').addEventListener('click', function (e) {
-        const btn = e.target.closest('button[data-action]');
+    // Attach listener globally to work with multiple DOM copies
+    document.body.addEventListener('click', function (e) {
+        const btn = e.target.closest('.alerts-board button[data-action]');
         if (!btn) return;
         const r = findRecord(btn.getAttribute('data-uid'));
         if (!r) return;
@@ -422,7 +427,9 @@ function toggleFocus(colId) {
     /* ---------- load ---------- */
     function showErrorState() {
         ['upcomingList', 'todayList', 'currentList', 'overList'].forEach(function (id) {
-            document.getElementById(id).innerHTML = '<div class="empty-msg" style="color:#ff0055;">Database connection error.</div>';
+            document.querySelectorAll('#' + id).forEach(el => {
+                el.innerHTML = '<div class="empty-msg" style="color:#ff0055;">Database connection error.</div>';
+            });
         });
     }
 
@@ -431,7 +438,6 @@ function toggleFocus(colId) {
         const todayStr = new Date().toDateString(); 
         const cachedDate = localStorage.getItem("purix_alerts_date");
         const cachedDataStr = localStorage.getItem("purix_alerts_data");
-        const syncBadge = document.getElementById("syncStatus");
 
         if (!forceFresh && cachedDate === todayStr && cachedDataStr) {
             // Load from daily cache
@@ -440,17 +446,28 @@ function toggleFocus(colId) {
                 const parsedData = JSON.parse(cachedDataStr);
                 records = buildRecords(parsedData);
                 render();
-                if(syncBadge) syncBadge.style.display = 'inline-block';
-                return;
+                
+                document.querySelectorAll('#syncStatus').forEach(el => {
+                    el.style.display = 'inline-block';
+                    el.innerHTML = '<i class="fa-solid fa-bolt"></i> Cached';
+                    el.style.color = '#00ff88';
+                });
+                return; // 🛑 DO NOT FETCH
             } catch(e) { console.error("Cache parse error"); }
         }
 
         // Needs fresh load
         console.log("Fetching FRESH Alerts from Sheet...");
-        if(syncBadge) syncBadge.style.display = 'none';
+        document.querySelectorAll('#syncStatus').forEach(el => {
+            el.style.display = 'inline-block';
+            el.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Live';
+            el.style.color = '#00f3ff';
+        });
 
         ['upcomingList', 'todayList', 'currentList', 'overList'].forEach(function (id) {
-            document.getElementById(id).innerHTML = '<div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Fetching Live Data...</div>';
+            document.querySelectorAll('#' + id).forEach(el => {
+                el.innerHTML = '<div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Fetching Live Data...</div>';
+            });
         });
 
         const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
