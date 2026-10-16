@@ -380,8 +380,14 @@
         const old = $('pxPrintDoc'); if (old) old.remove();
         const doc = document.createElement('div');
         doc.id = 'pxPrintDoc';
+        doc.style.display = 'none'; // screen par kabhi na dikhe (print CSS !important se isse override karti hai)
         doc.innerHTML = buildPrintHtml();
         document.body.appendChild(doc);
+        const cleanup = function () {
+            window.removeEventListener('afterprint', cleanup);
+            const d = $('pxPrintDoc'); if (d) d.remove();
+        };
+        window.addEventListener('afterprint', cleanup);
         const img = doc.querySelector('.pd-logo');
         new Promise(function (res) {
             if (!img || img.complete) return res();
