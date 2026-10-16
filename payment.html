@@ -1,126 +1,78 @@
 <style>
     .payment-wrapper { padding: 10px; }
-    
-    .module-header { 
-        color: #00f3ff; font-family: 'Orbitron', sans-serif; margin-bottom: 25px; 
-        text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); border-bottom: 1px solid rgba(0, 243, 255, 0.2); 
-        padding-bottom: 10px; display: flex; align-items: center; gap: 15px;
-    }
-
-    .payment-container {
-        background: rgba(11, 16, 33, 0.8); padding: 30px; border-radius: 12px;
-        border: 1px solid rgba(0, 243, 255, 0.2); box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.05);
-        max-width: 900px; margin: 0 auto; backdrop-filter: blur(5px);
-    }
-    
-    /* Cyber Search Section */
-    .search-section {
-        display: flex; gap: 15px; margin-bottom: 30px;
-    }
-    .search-section input {
-        flex: 1; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(0, 243, 255, 0.3);
-        padding: 12px 18px; border-radius: 8px; color: #fff; font-size: 15px;
-        font-family: 'Poppins', sans-serif; outline: none; transition: 0.3s;
-    }
-    .search-section input:focus {
-        border-color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
-        background: rgba(0, 243, 255, 0.05);
-    }
-    .cyber-search-btn {
-        background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; color: #00f3ff;
-        padding: 0 30px; border-radius: 8px; cursor: pointer; font-family: 'Orbitron', sans-serif;
-        font-weight: bold; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-    }
-    .cyber-search-btn:hover {
-        background: #00f3ff; color: #050914; box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
-        transform: translateY(-2px);
-    }
-
-    /* Search Results - Student Cards */
+    .module-header { color: #00f3ff; font-family: 'Orbitron', sans-serif; margin-bottom: 25px; text-shadow: 0 0 10px rgba(0,243,255,0.5); border-bottom: 1px solid rgba(0,243,255,0.2); padding-bottom: 10px; display: flex; align-items: center; gap: 15px; }
+    .payment-container { background: rgba(11,16,33,0.8); padding: 30px; border-radius: 12px; border: 1px solid rgba(0,243,255,0.2); box-shadow: inset 0 0 20px rgba(0,243,255,0.05); max-width: 900px; margin: 0 auto; backdrop-filter: blur(5px); }
+    .search-section { display: flex; gap: 15px; margin-bottom: 30px; }
+    .search-section input { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(0,243,255,0.3); padding: 12px 18px; border-radius: 8px; color: #fff; font-size: 15px; font-family: 'Poppins', sans-serif; outline: none; transition: 0.3s; }
+    .search-section input:focus { border-color: #00f3ff; box-shadow: 0 0 15px rgba(0,243,255,0.3); background: rgba(0,243,255,0.05); }
+    .cyber-search-btn { background: rgba(0,243,255,0.1); border: 1px solid #00f3ff; color: #00f3ff; padding: 0 30px; border-radius: 8px; cursor: pointer; font-family: 'Orbitron', sans-serif; font-weight: bold; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 0 10px rgba(0,243,255,0.2); }
+    .cyber-search-btn:hover { background: #00f3ff; color: #050914; box-shadow: 0 0 20px rgba(0,243,255,0.6); transform: translateY(-2px); }
     .results-container { display: flex; flex-direction: column; gap: 15px; }
-    
-    .student-card {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 18px 22px; background: rgba(0, 0, 0, 0.4);
-        border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; cursor: pointer; transition: 0.3s;
-    }
-    .student-card:hover {
-        border-color: #00f3ff; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-        background: rgba(0, 243, 255, 0.05); transform: translateY(-3px);
-    }
+    .student-card { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; background: rgba(0,0,0,0.4); border: 1px solid rgba(0,243,255,0.2); border-radius: 8px; cursor: pointer; transition: 0.3s; }
+    .student-card:hover { border-color: #00f3ff; box-shadow: 0 0 20px rgba(0,243,255,0.2); background: rgba(0,243,255,0.05); transform: translateY(-3px); }
     .student-info h4 { color: #00f3ff; margin-bottom: 5px; font-size: 18px; font-family: 'Orbitron', sans-serif; }
     .student-info p { color: #a5c3e0; font-size: 14px; margin: 3px 0; font-family: 'Poppins', sans-serif; }
-    
-    /* Add Payment Box */
-    .add-payment-box {
-        display: none; background: rgba(0, 255, 136, 0.03);
-        border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 12px;
-        padding: 25px; margin-top: 25px; box-shadow: inset 0 0 15px rgba(0, 255, 136, 0.05);
-        animation: fadeIn 0.4s ease-in-out;
-    }
-    .selected-student-details {
-        margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(0, 255, 136, 0.2);
-    }
+    .add-payment-box { display: none; background: rgba(0,255,136,0.03); border: 1px solid rgba(0,255,136,0.3); border-radius: 12px; padding: 25px; margin-top: 25px; box-shadow: inset 0 0 15px rgba(0,255,136,0.05); animation: fadeIn 0.4s ease-in-out; }
+    .selected-student-details { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(0,255,136,0.2); }
     .selected-student-details h3 { color: #00ff88; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 10px rgba(0,255,136,0.3); }
     .selected-student-details p { color: #a5c3e0; font-family: 'Poppins', sans-serif; }
-    
     .payment-form-group { display: flex; gap: 20px; align-items: flex-end; }
     .payment-form-group div { flex: 1; }
-    .payment-form-group label {
-        display: block; margin-bottom: 8px; font-family: 'Orbitron', sans-serif;
-        font-size: 13px; color: #a5c3e0; letter-spacing: 1px;
-    }
-    .payment-form-group input {
-        width: 100%; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(0, 255, 136, 0.4);
-        padding: 12px 15px; border-radius: 6px; color: #fff; font-size: 16px; outline: none;
-        font-family: 'Poppins', sans-serif; transition: 0.3s;
-    }
-    .payment-form-group input:focus {
-        border-color: #00ff88; box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
-    }
-    
-    .cyber-pay-btn {
-        background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; color: #00ff88;
-        padding: 12px 30px; border-radius: 8px; cursor: pointer; font-family: 'Orbitron', sans-serif;
-        font-size: 15px; font-weight: bold; letter-spacing: 1px; height: 48px; transition: 0.3s;
-        box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
-    }
-    .cyber-pay-btn:hover {
-        background: #00ff88; color: #050914; box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
-        transform: translateY(-2px);
-    }
+    .payment-form-group label { display: block; margin-bottom: 8px; font-family: 'Orbitron', sans-serif; font-size: 13px; color: #a5c3e0; letter-spacing: 1px; }
+    .payment-form-group input { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(0,255,136,0.4); padding: 12px 15px; border-radius: 6px; color: #fff; font-size: 16px; outline: none; font-family: 'Poppins', sans-serif; transition: 0.3s; }
+    .payment-form-group input:focus { border-color: #00ff88; box-shadow: 0 0 15px rgba(0,255,136,0.4); }
+    .mode-toggle { display: flex; gap: 8px; }
+    .mode-btn { flex: 1; height: 48px; background: rgba(0,0,0,0.6); border: 1px solid rgba(0,255,136,0.3); color: #a5c3e0; border-radius: 6px; cursor: pointer; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; transition: 0.3s; }
+    .mode-btn.active { background: rgba(0,255,136,0.15); border-color: #00ff88; color: #00ff88; box-shadow: 0 0 15px rgba(0,255,136,0.3); }
+    .cyber-pay-btn { background: rgba(0,255,136,0.1); border: 1px solid #00ff88; color: #00ff88; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: bold; letter-spacing: 1px; height: 48px; transition: 0.3s; box-shadow: 0 0 15px rgba(0,255,136,0.2); }
+    .cyber-pay-btn:hover { background: #00ff88; color: #050914; box-shadow: 0 0 25px rgba(0,255,136,0.6); transform: translateY(-2px); }
+    @media (max-width: 700px) { .payment-form-group { flex-direction: column; align-items: stretch; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+    /* ===== Receipt ===== */
+    #pxReceiptOverlay { position: fixed; inset: 0; background: rgba(5,9,20,.88); z-index: 99999; overflow: auto; display: flex; justify-content: center; padding: 20px 12px; font-family: 'Poppins', sans-serif; }
+    .px-wrap { width: 100%; max-width: 440px; height: fit-content; }
+    .px-paper { background: #fff; color: #1a2238; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,.5); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .px-head { background: linear-gradient(135deg,#0b1535,#16336b); color: #fff; padding: 18px 20px; display: flex; align-items: center; gap: 12px; }
+    .px-logo { width: 44px; height: 44px; flex: none; border-radius: 50%; background: #00f3ff; color: #0b1535; display: flex; align-items: center; justify-content: center; font: 700 20px 'Orbitron', sans-serif; }
+    .px-org { font: 700 17px 'Orbitron', sans-serif; letter-spacing: 1px; }
+    .px-sub { font-size: 11px; opacity: .8; line-height: 1.4; }
+    .px-badge { margin-left: auto; border: 2px solid #2ee59d; color: #2ee59d; padding: 2px 10px; border-radius: 6px; font-weight: 700; font-size: 12px; transform: rotate(-6deg); }
+    .px-body { padding: 18px 20px; }
+    .px-title { text-align: center; font-weight: 700; letter-spacing: 3px; font-size: 13px; color: #16336b; margin-bottom: 12px; }
+    .px-meta { display: flex; justify-content: space-between; gap: 10px; background: #f3f6fb; border-radius: 8px; padding: 10px 12px; font-size: 12px; margin-bottom: 14px; }
+    .px-meta small { display: block; color: #6b7a99; font-size: 10px; text-transform: uppercase; }
+    .px-sec { font-size: 11px; font-weight: 700; color: #16336b; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #e3e9f5; padding-bottom: 4px; margin: 12px 0 6px; }
+    .px-row { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; padding: 4px 0; }
+    .px-row span { color: #6b7a99; } .px-row b { text-align: right; }
+    .px-amount { text-align: center; background: #eefaf4; border: 1px dashed #2ee59d; border-radius: 10px; padding: 12px; margin: 14px 0; }
+    .px-amount small { display: block; color: #4b6b5d; font-size: 11px; text-transform: uppercase; }
+    .px-amount strong { font-size: 28px; color: #0a8f5a; }
+    .px-words { font-size: 11px; color: #4b6b5d; font-style: italic; }
+    .px-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; margin-top: 22px; font-size: 10px; color: #6b7a99; }
+    .px-sign { border-top: 1px solid #9aa7c2; padding-top: 3px; min-width: 120px; text-align: center; }
+    .px-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .px-actions button { flex: 1; padding: 11px; border: 0; border-radius: 8px; font: 600 13px 'Poppins', sans-serif; cursor: pointer; }
+    .px-wa { background: #25D366; color: #fff; } .px-pr { background: #00f3ff; color: #050914; } .px-cl { background: #334155; color: #fff; }
+    @media print { body > *:not(#pxReceiptOverlay) { display: none !important; } #pxReceiptOverlay { position: static; background: #fff; padding: 0; } .px-actions { display: none !important; } .px-paper { box-shadow: none; } }
 </style>
 
 <div class="payment-wrapper">
     <h2 class="module-header"><i class="fa-solid fa-indian-rupee-sign"></i> COLLECT FEE PAYMENT</h2>
 
     <div class="payment-container">
-        <!-- Search Box -->
         <div class="search-section">
-            <input type="text" id="searchInput" placeholder="Enter UID or Mobile No.">
+            <input type="text" id="searchInput" placeholder="Enter UID or Mobile No." autocomplete="off">
             <button class="cyber-search-btn" id="searchBtn" onclick="searchStudent()"><i class="fa-solid fa-magnifying-glass"></i> SEARCH</button>
         </div>
 
-        <!-- 🔥 NEW: Universal Fast Radar Loader (Hidden by default) -->
         <div class="hud-radar-loader-wrapper" id="loadingIndicatorPayment" style="display: none;">
-            <div class="hud-fast-radar">
-                <div class="radar-cross"></div>
-                <div class="radar-core"></div>
-            </div>
+            <div class="hud-fast-radar"><div class="radar-cross"></div><div class="radar-core"></div></div>
             <div class="hud-loading-text">SCANNING DATABASE...</div>
         </div>
 
-        <!-- Search Results List -->
-        <div id="resultsContainer" class="results-container">
-            <!-- Student cards will appear here -->
-        </div>
+        <div id="resultsContainer" class="results-container"></div>
 
-        <!-- Add Payment Box (Hidden until student is selected) -->
         <div id="addPaymentBox" class="add-payment-box">
             <div class="selected-student-details">
                 <h3 id="selectedName">Student Name</h3>
@@ -130,11 +82,17 @@
                     Current Dynamic Dues: ₹<span id="selectedDues">0</span>
                 </p>
             </div>
-            
             <div class="payment-form-group">
                 <div>
                     <label>ENTER AMOUNT (₹)</label>
                     <input type="number" id="paymentAmount" placeholder="Amount to pay">
+                </div>
+                <div>
+                    <label>PAYMENT MODE</label>
+                    <div class="mode-toggle">
+                        <button type="button" class="mode-btn active" data-mode="Cash"><i class="fa-solid fa-money-bill-wave"></i> Cash</button>
+                        <button type="button" class="mode-btn" data-mode="Online"><i class="fa-solid fa-mobile-screen-button"></i> Online</button>
+                    </div>
                 </div>
                 <button class="cyber-pay-btn" id="payBtn" onclick="submitPayment()">SUBMIT PAYMENT</button>
             </div>
@@ -143,112 +101,214 @@
 </div>
 
 <script>
-(function() {
-    window.searchStudent = function() {
-        const query = document.getElementById('searchInput').value.trim();
-        const resultsContainer = document.getElementById('resultsContainer');
-        const addPaymentBox = document.getElementById('addPaymentBox');
-        const searchBtn = document.getElementById('searchBtn');
-        const loader = document.getElementById('loadingIndicatorPayment'); // 🔥 NEW: Get Loader
-        
-        resultsContainer.innerHTML = '';
-        addPaymentBox.style.display = 'none';
+(function () {
+    // ===== Receipt par dikhne wali academy details (khali chhodo to line nahi dikhegi) =====
+    const ACADEMY = { name: 'PURIX ACADEMY', line1: '', line2: '' }; // line1 = address, line2 = phone / email
 
-        if(query === '') {
+    const $ = function (id) { return document.getElementById(id); };
+    const esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+    const money = function (n) { return '₹' + Number(n || 0).toLocaleString('en-IN'); };
+    const NOMATCH = '<p style="color:#a5c3e0; font-family: Poppins;">No records match this UID or Mobile Number.</p>';
+    const FRESH_MS = 120000;
+    let payMode = 'Cash', liveTimer = null;
+    const idx = { rows: null, at: 0, promise: null };
+
+    /* ---------- student index (ek baar load, phir browser me search) ---------- */
+    function loadIndex(force) {
+        if (idx.promise) return idx.promise;
+        if (!force && idx.rows && Date.now() - idx.at < FRESH_MS) return Promise.resolve(idx.rows);
+        idx.promise = fetch(API_URL + "?action=getReports")
+            .then(function (res) { return res.json(); })
+            .then(function (d) {
+                if (d && d.status === "success" && Array.isArray(d.data)) { idx.rows = d.data; idx.at = Date.now(); return idx.rows; }
+                throw new Error((d && d.message) || 'Bad response');
+            })
+            .finally(function () { idx.promise = null; });
+        return idx.promise;
+    }
+
+    // Wahi purana rule: UID exact YA mobile me query mile. (Live typing me 3 se kam akshar par sirf exact UID)
+    function matches(rows, q, live) {
+        const ql = q.toLowerCase(), strict = live && q.length < 3;
+        return rows.filter(function (s) { return String(s.uid).toLowerCase() === ql || (!strict && String(s.mobile).includes(q)); });
+    }
+
+    function renderResults(list) {
+        const box = $('resultsContainer');
+        box.innerHTML = '';
+        list.forEach(function (s) {
+            const card = document.createElement('div');
+            card.className = 'student-card';
+            card.innerHTML =
+                '<div class="student-info"><h4>' + esc(s.name) + '</h4>' +
+                '<p>Father: ' + esc(s.father) + ' | Class: ' + esc(s.class) + '</p>' +
+                '<p><strong>UID: ' + esc(s.uid) + '</strong> | Mobile: ' + esc(s.mobile) + '</p></div>' +
+                '<div><i class="fa-solid fa-chevron-right" style="color:#00f3ff; text-shadow: 0 0 10px #00f3ff;"></i></div>';
+            card.addEventListener('click', function () { window.openPaymentBox(s.uid, s.name, s.father, s.dues, s.mobile, s.class); });
+            box.appendChild(card);
+        });
+    }
+
+    /* ---------- live search (typing ke saath) ---------- */
+    function onType() {
+        clearTimeout(liveTimer);
+        liveTimer = setTimeout(function () {
+            const q = $('searchInput').value.trim();
+            const box = $('resultsContainer');
+            if (!q) { box.innerHTML = ''; return; }
+            if (!idx.rows || Date.now() - idx.at >= FRESH_MS) { loadIndex().then(onType).catch(function () {}); return; }
+            $('addPaymentBox').style.display = 'none';
+            const m = matches(idx.rows, q, true);
+            if (m.length) renderResults(m); else box.innerHTML = q.length >= 3 ? NOMATCH : '';
+        }, 150);
+    }
+
+    /* ---------- search (Enter / button) ---------- */
+    window.searchStudent = function () {
+        const query = $('searchInput').value.trim();
+        const resultsContainer = $('resultsContainer');
+        const searchBtn = $('searchBtn');
+        const loader = $('loadingIndicatorPayment');
+
+        resultsContainer.innerHTML = '';
+        $('addPaymentBox').style.display = 'none';
+
+        if (query === '') {
             resultsContainer.innerHTML = '<p style="color:#ff0055; font-family: Orbitron; font-size: 13px;">PLEASE ENTER UID OR MOBILE NO.</p>';
             return;
         }
 
-        // Add loading state
+        const run = function (rows) {
+            if (!rows.length) { resultsContainer.innerHTML = '<p style="color:#a5c3e0; font-family: Poppins;">Database is empty or could not be reached.</p>'; return; }
+            const found = matches(rows, query, false);
+            if (!found.length) resultsContainer.innerHTML = NOMATCH; else renderResults(found);
+        };
+
+        if (idx.rows && !idx.promise && Date.now() - idx.at < FRESH_MS) { run(idx.rows); return; }
+
         searchBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SCANNING...';
         searchBtn.style.opacity = '0.7';
-        
-        // 🔥 NEW: Show Radar Loader safely
-        if(loader) loader.style.display = 'flex';
+        if (loader) loader.style.display = 'flex';
 
-        // Fetching Data from Google Sheet Backend
-        fetch(API_URL + "?action=getReports") // getReports returns all students with their dues and mobile numbers
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === "success" && data.data.length > 0) {
-                    
-                    // Filter by Exact UID OR Mobile Number containing the query
-                    const filteredStudents = data.data.filter(student => 
-                        String(student.uid).toLowerCase() === query.toLowerCase() || 
-                        String(student.mobile).includes(query)
-                    );
-
-                    if(filteredStudents.length === 0) {
-                        resultsContainer.innerHTML = '<p style="color:#a5c3e0; font-family: Poppins;">No records match this UID or Mobile Number.</p>';
-                    } else {
-                        // Display Sibling Cards or Single Card
-                        filteredStudents.forEach(student => {
-                            const card = document.createElement('div');
-                            card.className = 'student-card';
-                            
-                            // Prevent JS errors by properly escaping strings in onclick
-                            const safeName = student.name.replace(/'/g, "\\'");
-                            const safeFather = student.father.replace(/'/g, "\\'");
-                            const safeMobile = student.mobile;
-                            
-                            card.setAttribute('onclick', `openPaymentBox('${student.uid}', '${safeName}', '${safeFather}', ${student.dues}, '${safeMobile}', '${student.class}')`);
-                            
-                            card.innerHTML = `
-                                <div class="student-info">
-                                    <h4>${student.name}</h4>
-                                    <p>Father: ${student.father} | Class: ${student.class}</p>
-                                    <p><strong>UID: ${student.uid}</strong> | Mobile: ${student.mobile}</p>
-                                </div>
-                                <div>
-                                    <i class="fa-solid fa-chevron-right" style="color:#00f3ff; text-shadow: 0 0 10px #00f3ff;"></i>
-                                </div>
-                            `;
-                            resultsContainer.appendChild(card);
-                        });
-                    }
-                } else {
-                    resultsContainer.innerHTML = '<p style="color:#a5c3e0; font-family: Poppins;">Database is empty or could not be reached.</p>';
-                }
-            })
-            .catch(err => {
+        loadIndex(false).then(run)
+            .catch(function (err) {
                 console.error("Search Error:", err);
                 resultsContainer.innerHTML = '<p style="color:#ff0055; font-family: Orbitron; font-size: 13px;">NETWORK ERROR: CANNOT REACH DATABASE</p>';
             })
-            .finally(() => {
+            .finally(function () {
                 searchBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> SEARCH';
                 searchBtn.style.opacity = '1';
-                
-                // 🔥 NEW: Hide Radar Loader safely
-                if(loader) loader.style.display = 'none';
+                if (loader) loader.style.display = 'none';
             });
     };
 
-    window.openPaymentBox = function(uid, name, father, dues, mobile, stdClass) {
-        document.getElementById('selectedName').innerText = name;
-        document.getElementById('selectedFather').innerText = father;
-        document.getElementById('selectedUID').innerText = uid;
-        document.getElementById('selectedMobile').innerText = mobile;
-        document.getElementById('selectedClass').innerText = stdClass;
-        
-        // Ensure dues is treated as a number
-        const formattedDues = parseFloat(dues) || 0;
-        document.getElementById('selectedDues').innerText = formattedDues;
-        
-        document.getElementById('paymentAmount').value = formattedDues > 0 ? formattedDues : '';
+    /* ---------- payment box ---------- */
+    function setMode(m) {
+        payMode = m;
+        document.querySelectorAll('.mode-btn').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-mode') === m); });
+    }
 
-        document.getElementById('resultsContainer').innerHTML = '';
-        document.getElementById('addPaymentBox').style.display = 'block';
+    window.openPaymentBox = function (uid, name, father, dues, mobile, stdClass) {
+        $('selectedName').innerText = name;
+        $('selectedFather').innerText = father;
+        $('selectedUID').innerText = uid;
+        $('selectedMobile').innerText = mobile;
+        $('selectedClass').innerText = stdClass;
+        const formattedDues = parseFloat(dues) || 0;
+        $('selectedDues').innerText = formattedDues;
+        $('paymentAmount').value = formattedDues > 0 ? formattedDues : '';
+        setMode('Cash');
+        $('resultsContainer').innerHTML = '';
+        $('addPaymentBox').style.display = 'block';
     };
 
-    window.submitPayment = function() {
-        const amount = parseFloat(document.getElementById('paymentAmount').value);
-        const name = document.getElementById('selectedName').innerText;
-        const uid = document.getElementById('selectedUID').innerText;
-        const mobile = document.getElementById('selectedMobile').innerText;
-        const currentDues = parseFloat(document.getElementById('selectedDues').innerText) || 0;
-        const payBtn = document.getElementById('payBtn');
-        
-        if(!amount || amount <= 0) {
+    /* ---------- receipt ---------- */
+    function inWords(n) {
+        n = Math.floor(n);
+        if (!n) return 'Zero';
+        const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+        const two = function (x) { return x < 20 ? a[x] : b[Math.floor(x / 10)] + (x % 10 ? ' ' + a[x % 10] : ''); };
+        const three = function (x) { return (x > 99 ? a[Math.floor(x / 100)] + ' Hundred' + (x % 100 ? ' ' : '') : '') + (x % 100 ? two(x % 100) : ''); };
+        const out = [];
+        const cr = Math.floor(n / 1e7); n %= 1e7;
+        const lk = Math.floor(n / 1e5); n %= 1e5;
+        const th = Math.floor(n / 1e3); n %= 1e3;
+        if (cr) out.push(three(cr) + ' Crore');
+        if (lk) out.push(two(lk) + ' Lakh');
+        if (th) out.push(two(th) + ' Thousand');
+        if (n) out.push(three(n));
+        return out.join(' ');
+    }
+    function fmtDT(s) {
+        let d = s ? new Date(String(s).replace(' ', 'T')) : new Date();
+        if (isNaN(d.getTime())) d = new Date();
+        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    }
+    function fmtD(s) {
+        const m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+        return m ? new Date(+m[1], +m[2] - 1, +m[3]).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
+    }
+
+    function showReceipt(o) {
+        const old = $('pxReceiptOverlay'); if (old) old.remove();
+        const paise = Math.round((o.amount - Math.floor(o.amount)) * 100);
+        const words = inWords(o.amount) + ' Rupees' + (paise ? ' and ' + inWords(paise) + ' Paise' : '') + ' Only';
+        const nextDue = o.nextDue ? fmtD(o.nextDue) : '';
+        const row = function (k, v) { return v ? '<div class="px-row"><span>' + k + '</span><b>' + esc(v) + '</b></div>' : ''; };
+        const sub = [ACADEMY.line1, ACADEMY.line2].filter(Boolean).map(esc).join('<br>');
+
+        const ov = document.createElement('div');
+        ov.id = 'pxReceiptOverlay';
+        ov.innerHTML =
+            '<div class="px-wrap"><div class="px-paper">' +
+              '<div class="px-head"><div class="px-logo">' + esc(ACADEMY.name.charAt(0)) + '</div>' +
+                '<div><div class="px-org">' + esc(ACADEMY.name) + '</div>' + (sub ? '<div class="px-sub">' + sub + '</div>' : '') + '</div>' +
+                '<div class="px-badge">PAID</div></div>' +
+              '<div class="px-body"><div class="px-title">FEE RECEIPT</div>' +
+                '<div class="px-meta"><div><small>Receipt No.</small><b>' + esc(o.receiptNo) + '</b></div><div style="text-align:right"><small>Date &amp; Time</small><b>' + esc(o.dateText) + '</b></div></div>' +
+                '<div class="px-sec">Student Details</div>' +
+                row('Name', o.name) + row('Father', o.father) + row('UID', o.uid) + row('Class', o.cls) + row('Mobile', o.mobile) +
+                '<div class="px-amount"><small>Amount Received</small><strong>' + money(o.amount) + '</strong><div class="px-words">' + esc(words) + '</div></div>' +
+                '<div class="px-sec">Payment Details</div>' +
+                row('Payment Mode', o.mode) + row('Remaining Dues', money(o.remaining)) + (nextDue && o.remaining > 0 ? row('Next Due Date', nextDue) : '') +
+                '<div class="px-foot"><div>This is a computer generated receipt.<br>Fees once paid are non-refundable.</div><div class="px-sign">Authorised Signatory</div></div>' +
+              '</div></div>' +
+              '<div class="px-actions"><button class="px-wa" id="pxWa"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button><button class="px-pr" id="pxPr"><i class="fa-solid fa-print"></i> Print / PDF</button><button class="px-cl" id="pxCl">Close</button></div>' +
+            '</div>';
+        document.body.appendChild(ov);
+
+        const close = function () { ov.remove(); };
+        ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+        $('pxCl').addEventListener('click', close);
+        $('pxPr').addEventListener('click', function () { window.print(); });
+        $('pxWa').addEventListener('click', function () {
+            const digits = String(o.mobile || '').replace(/\D/g, '').slice(-10);
+            if (digits.length !== 10) {
+                Swal.fire({ title: 'Mobile number sahi nahi hai', text: 'Student ka mobile number check karein.', icon: 'warning', background: '#050914', color: '#fff' });
+                return;
+            }
+            const msg = 'Dear ' + o.name + ', ' + ACADEMY.name + ' me aapki fee Rs. ' + o.amount + ' (' + o.mode + ') prapt hui. ' +
+                'Receipt No: ' + o.receiptNo + ', Date: ' + o.dateText + '. ' +
+                (o.remaining > 0 ? 'Baaki dues: Rs. ' + o.remaining + '. ' + (nextDue ? 'Agli due date: ' + nextDue + '. ' : '') : 'Aapka koi dues baaki nahi hai. ') +
+                'Dhanyawad - ' + ACADEMY.name + '.';
+            window.open('https://wa.me/91' + digits + '?text=' + encodeURIComponent(msg), '_blank');
+        });
+    }
+
+    /* ---------- submit ---------- */
+    window.submitPayment = function () {
+        const amount = parseFloat($('paymentAmount').value);
+        const name = $('selectedName').innerText;
+        const uid = $('selectedUID').innerText;
+        const mobile = $('selectedMobile').innerText;
+        const father = $('selectedFather').innerText;
+        const cls = $('selectedClass').innerText;
+        const currentDues = parseFloat($('selectedDues').innerText) || 0;
+        const mode = payMode;
+        const payBtn = $('payBtn');
+
+        if (!amount || amount <= 0) {
             Swal.fire({ icon: 'warning', title: 'Invalid Amount', text: 'Please enter a valid payment amount.', background: '#050914', color: '#00f3ff' });
             return;
         }
@@ -257,51 +317,53 @@
         payBtn.style.opacity = '0.7';
         payBtn.disabled = true;
 
-        const payload = {
-            action: 'addPayment',
-            uid: uid,
-            amount: amount,
-            mode: 'Cash', // Default to cash for now
-            remarks: 'Fee Payment via Terminal'
-        };
+        fetch(API_URL, { method: "POST", body: JSON.stringify({ action: 'addPayment', uid: uid, amount: amount, mode: mode, remarks: 'Fee Payment via Terminal' }) })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+            if (data.status === "success") {
+                const newDues = (typeof data.remainingDues === 'number') ? data.remainingDues : Math.max(0, currentDues - amount);
 
-        fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.status === "success") {
-                // Calculate remaining dues for the WhatsApp receipt logic
-                let newDues = currentDues - amount;
-                if(newDues < 0) newDues = 0;
+                $('addPaymentBox').style.display = 'none';
+                $('searchInput').value = '';
+                $('resultsContainer').innerHTML = '';
 
-                document.getElementById('addPaymentBox').style.display = 'none';
-                document.getElementById('searchInput').value = '';
-                
-                // CALL GLOBAL FUNCTION FROM SCRIPT.JS (WhatsApp Receipt)
-                if (typeof showPaymentSuccess === "function") {
-                    showPaymentSuccess(name, amount, newDues, mobile);
-                } else {
-                    Swal.fire('Success!', `Amount ₹${amount} collected for ${name}.`, 'success');
+                idx.at = 0; loadIndex(true).catch(function () {}); // agli search me naya dues aaye
+
+                try {
+                    showReceipt({
+                        name: name, father: father, uid: uid, cls: cls, mobile: mobile, amount: amount, mode: mode,
+                        receiptNo: data.txnId || ('RCPT' + Date.now()), dateText: fmtDT(data.timestamp),
+                        remaining: newDues, nextDue: data.nextDuesDate || ''
+                    });
+                } catch (e) {
+                    console.error('Receipt error:', e);
+                    if (typeof showPaymentSuccess === "function") showPaymentSuccess(name, amount, newDues, mobile);
+                    else Swal.fire('Success!', 'Amount ₹' + amount + ' collected for ' + name + '.', 'success');
                 }
-                
-                // Update Home Dashboard stats if available
-                if (typeof fetchHomeStats === "function") fetchHomeStats();
 
+                if (typeof fetchHomeStats === "function") fetchHomeStats();
             } else {
                 Swal.fire({ icon: 'error', title: 'Transaction Failed', text: data.message, background: '#050914', color: '#ff0055' });
             }
         })
-        .catch(err => {
+        .catch(function (err) {
             console.error(err);
             Swal.fire({ icon: 'error', title: 'Network Error', text: 'Failed to process payment.', background: '#050914', color: '#ff0055' });
         })
-        .finally(() => {
+        .finally(function () {
             payBtn.innerText = "SUBMIT PAYMENT";
             payBtn.style.opacity = '1';
             payBtn.disabled = false;
         });
     };
+
+    /* ---------- wiring ---------- */
+    document.querySelectorAll('.mode-btn').forEach(function (b) { b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); }); });
+    const input = $('searchInput');
+    if (input) {
+        input.addEventListener('input', onType);
+        input.addEventListener('keydown', function (e) { if (e.key === 'Enter') window.searchStudent(); });
+    }
+    loadIndex().catch(function () {}); // page khulte hi background me index tayyar
 })();
 </script>
