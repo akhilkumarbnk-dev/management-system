@@ -1,234 +1,90 @@
 <style>
     .reports-wrapper { padding: 10px; }
-
-    .module-header { 
-        color: #00f3ff; font-family: 'Orbitron', sans-serif; margin-bottom: 25px; 
-        text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); border-bottom: 1px solid rgba(0, 243, 255, 0.2); 
-        padding-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
-    }
+    .module-header { color: #00f3ff; font-family: 'Orbitron', sans-serif; margin-bottom: 25px; text-shadow: 0 0 10px rgba(0,243,255,0.5); border-bottom: 1px solid rgba(0,243,255,0.2); padding-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
     .module-header h2 { margin: 0; color: #00f3ff; font-size: 20px; font-family: 'Orbitron', sans-serif; }
+    .reports-container { background: rgba(11,16,33,0.8); padding: 30px; border-radius: 12px; border: 1px solid rgba(0,243,255,0.2); box-shadow: inset 0 0 20px rgba(0,243,255,0.05); max-width: 1200px; margin: 0 auto; position: relative; backdrop-filter: blur(5px); }
 
-    .reports-container {
-        background: rgba(11, 16, 33, 0.8); padding: 30px; border-radius: 12px;
-        border: 1px solid rgba(0, 243, 255, 0.2); box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.05);
-        max-width: 1200px; margin: 0 auto; position: relative; backdrop-filter: blur(5px);
-    }
-    
-    /* Summary Cards */
     .summary-cards { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
-    
-    .summary-card {
-        flex: 1; min-width: 220px; padding: 20px; border-radius: 10px; text-align: center;
-        color: white; font-weight: bold; position: relative; overflow: hidden; backdrop-filter: blur(5px);
-        transition: 0.3s;
-    }
-    .card-collection { background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.4); box-shadow: 0 0 15px rgba(0, 255, 136, 0.15); }
+    .summary-card { flex: 1; min-width: 220px; padding: 20px; border-radius: 10px; text-align: center; color: white; font-weight: bold; position: relative; overflow: hidden; backdrop-filter: blur(5px); transition: 0.3s; }
+    .card-collection { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.4); box-shadow: 0 0 15px rgba(0,255,136,0.15); }
     .card-collection h2 { color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.5); }
-
-    .card-dues { background: rgba(255, 0, 85, 0.1); border: 1px solid rgba(255, 0, 85, 0.4); box-shadow: 0 0 15px rgba(255, 0, 85, 0.15); }
+    .card-dues { background: rgba(255,0,85,0.1); border: 1px solid rgba(255,0,85,0.4); box-shadow: 0 0 15px rgba(255,0,85,0.15); }
     .card-dues h2 { color: #ff0055; text-shadow: 0 0 10px rgba(255,0,85,0.5); }
-    
-    .card-inactive { background: rgba(100, 116, 139, 0.15); border: 1px solid rgba(148, 163, 184, 0.3); cursor: pointer; box-shadow: 0 0 15px rgba(100,116,139,0.1); }
+    .card-inactive { background: rgba(100,116,139,0.15); border: 1px solid rgba(148,163,184,0.3); cursor: pointer; box-shadow: 0 0 15px rgba(100,116,139,0.1); }
     .card-inactive h2 { color: #cbd5e1; text-shadow: 0 0 10px rgba(203,213,225,0.4); }
-    .card-inactive:hover { transform: translateY(-3px); border-color: #00f3ff; box-shadow: 0 0 20px rgba(0, 243, 255, 0.3); background: rgba(0, 243, 255, 0.05); }
-    
+    .card-inactive:hover { transform: translateY(-3px); border-color: #00f3ff; box-shadow: 0 0 20px rgba(0,243,255,0.3); background: rgba(0,243,255,0.05); }
     .summary-card h3 { font-size: 13px; margin-bottom: 8px; text-transform: uppercase; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; color: #a5c3e0; }
     .summary-card h2 { font-size: 24px; margin: 0; font-family: 'Orbitron', sans-serif; }
 
-    /* Advance Filter Section */
-    .filter-section {
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 25px;
-        background: rgba(0, 0, 0, 0.5); padding: 18px; border-radius: 8px; border: 1px solid rgba(0, 243, 255, 0.2);
-    }
-    .filter-section select, .filter-section input {
-        width: 100%; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(0, 243, 255, 0.3); padding: 10px 12px;
-        border-radius: 6px; color: #00f3ff; font-family: 'Poppins', sans-serif; outline: none; transition: 0.3s;
-    }
+    .filter-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 25px; background: rgba(0,0,0,0.5); padding: 18px; border-radius: 8px; border: 1px solid rgba(0,243,255,0.2); }
+    .filter-section select, .filter-section input { width: 100%; background: rgba(0,0,0,0.8); border: 1px solid rgba(0,243,255,0.3); padding: 10px 12px; border-radius: 6px; color: #00f3ff; font-family: 'Poppins', sans-serif; outline: none; transition: 0.3s; }
     .filter-section select option { background: #050914; color: #00f3ff; }
-    .filter-section select:focus, .filter-section input:focus { border-color: #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
-    
+    .filter-section select:focus, .filter-section input:focus { border-color: #00f3ff; box-shadow: 0 0 10px rgba(0,243,255,0.3); }
     .filter-controls { display: flex; justify-content: flex-end; gap: 10px; margin-top: 5px; grid-column: 1 / -1; }
+    .btn-download { background: rgba(0,243,255,0.1); border: 1px solid #00f3ff; color: #00f3ff; padding: 10px 22px; border-radius: 6px; cursor: pointer; font-weight: bold; font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 0 10px rgba(0,243,255,0.2); display: flex; align-items: center; gap: 8px; justify-content: center; }
+    .btn-download:hover { background: #00f3ff; color: #050914; box-shadow: 0 0 20px rgba(0,243,255,0.6); }
+    .btn-csv { background: rgba(0,255,136,0.1); border-color: #00ff88; color: #00ff88; box-shadow: 0 0 10px rgba(0,255,136,0.2); }
+    .btn-csv:hover { background: #00ff88; color: #050914; box-shadow: 0 0 20px rgba(0,255,136,0.6); }
 
-    .btn-download {
-        background: rgba(0, 243, 255, 0.1); border: 1px solid #00f3ff; color: #00f3ff;
-        padding: 10px 22px; border-radius: 6px; cursor: pointer; font-weight: bold;
-        font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 1px; transition: 0.3s;
-        box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); display: flex; align-items: center; gap: 8px; justify-content: center;
-    }
-    .btn-download:hover { background: #00f3ff; color: #050914; box-shadow: 0 0 20px rgba(0, 243, 255, 0.6); }
-
-    .btn-csv { background: rgba(0, 255, 136, 0.1); border-color: #00ff88; color: #00ff88; box-shadow: 0 0 10px rgba(0, 255, 136, 0.2); }
-    .btn-csv:hover { background: #00ff88; color: #050914; box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); }
-
-    /* Sortable Reports Table */
-    .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid rgba(0, 243, 255, 0.2); min-height: 200px; position: relative;}
+    .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid rgba(0,243,255,0.2); min-height: 200px; position: relative; }
     .reports-table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.4); }
-    .reports-table th, .reports-table td {
-        padding: 14px 15px; text-align: left; border-bottom: 1px solid rgba(0, 243, 255, 0.15);
-        font-family: 'Poppins', sans-serif; color: #a5c3e0; font-size: 13px;
-    }
-    .reports-table th {
-        background: rgba(0, 243, 255, 0.1); color: #00f3ff; font-weight: 500; cursor: pointer;
-        font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 1px; white-space: nowrap; position: sticky; top:0; z-index: 10;
-    }
-    .reports-table th:hover { background: rgba(0, 243, 255, 0.2); }
-    .reports-table tr:hover td { background-color: rgba(0, 243, 255, 0.05); }
-    
+    .reports-table th, .reports-table td { padding: 14px 15px; text-align: left; border-bottom: 1px solid rgba(0,243,255,0.15); font-family: 'Poppins', sans-serif; color: #a5c3e0; font-size: 13px; }
+    .reports-table th { background: rgba(0,243,255,0.1); color: #00f3ff; font-weight: 500; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 1px; white-space: nowrap; position: sticky; top: 0; z-index: 10; }
+    .reports-table th:hover { background: rgba(0,243,255,0.2); }
+    .reports-table tr:hover td { background-color: rgba(0,243,255,0.05); }
     .action-btns { display: flex; gap: 10px; }
-    .btn-icon {
-        border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer;
-        color: white; font-size: 12px; transition: 0.2s; display: flex; align-items: center; gap: 5px;
-    }
-    .btn-whatsapp { background: rgba(37, 211, 102, 0.15); border: 1px solid #25D366; color: #25D366; }
+    .btn-icon { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; color: white; font-size: 12px; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+    .btn-whatsapp { background: rgba(37,211,102,0.15); border: 1px solid #25D366; color: #25D366; }
     .btn-whatsapp:hover { background: #25D366; color: #fff; box-shadow: 0 0 10px #25D366; }
-    
-    .btn-inactive { background: rgba(255, 170, 0, 0.15); border: 1px solid #ffaa00; color: #ffaa00; }
+    .btn-inactive { background: rgba(255,170,0,0.15); border: 1px solid #ffaa00; color: #ffaa00; }
     .btn-inactive:hover { background: #ffaa00; color: #050914; box-shadow: 0 0 10px #ffaa00; }
-    
-    .btn-active { background: rgba(0, 255, 136, 0.15); border: 1px solid #00ff88; color: #00ff88; }
+    .btn-active { background: rgba(0,255,136,0.15); border: 1px solid #00ff88; color: #00ff88; }
     .btn-active:hover { background: #00ff88; color: #050914; box-shadow: 0 0 10px #00ff88; }
 
-    /* Modal Styling */
-    .modal-overlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.7); display: none; justify-content: center;
-        align-items: center; z-index: 1000; backdrop-filter: blur(5px);
-    }
-    .modal-box {
-        background: #0b1021; width: 90%; max-width: 600px; border-radius: 12px;
-        padding: 25px; border: 1px solid rgba(255, 0, 85, 0.4); box-shadow: 0 0 30px rgba(255, 0, 85, 0.2);
-        max-height: 80vh; overflow-y: auto;
-    }
-    .modal-header-box {
-        display: flex; justify-content: space-between; align-items: center;
-        border-bottom: 1px solid rgba(255, 0, 85, 0.3); padding-bottom: 12px; margin-bottom: 15px;
-    }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+    .modal-box { background: #0b1021; width: 90%; max-width: 600px; border-radius: 12px; padding: 25px; border: 1px solid rgba(255,0,85,0.4); box-shadow: 0 0 30px rgba(255,0,85,0.2); max-height: 80vh; overflow-y: auto; }
+    .modal-header-box { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,0,85,0.3); padding-bottom: 12px; margin-bottom: 15px; }
     .modal-header-box h3 { color: #ff0055; margin: 0; font-family: 'Orbitron', sans-serif; font-size: 16px; }
     .close-modal-btn { background: none; border: none; font-size: 20px; color: #a5c3e0; cursor: pointer; }
     .close-modal-btn:hover { color: #ff0055; }
 
-    /* 🔥 PERFECT A4 PDF PRINT STYLES */
+    /* ===== Professional A4 report (alag print document) ===== */
+    #pxRptDoc { display: none; }
+    .rp-head { display: flex; align-items: center; gap: 14px; padding-bottom: 10px; }
+    .rp-logo { width: 62px; height: 62px; object-fit: contain; }
+    .rp-org b { display: block; font: 700 24px 'Orbitron', Arial, sans-serif; color: #0b1535; letter-spacing: 1px; }
+    .rp-org span { display: block; font-size: 12px; color: #16336b; letter-spacing: 1px; margin-top: 2px; }
+    .rp-org em { display: block; font-style: normal; font-size: 10px; color: #6b7a99; margin-top: 2px; }
+    .rp-ref { margin-left: auto; text-align: right; font-size: 10px; color: #6b7a99; line-height: 1.5; }
+    .rp-ref b { display: block; font-size: 11px; color: #0b1535; }
+    .rp-line { height: 4px; background: linear-gradient(90deg, #0b1535, #16336b 60%, #00b8d4); border-radius: 2px; margin-bottom: 12px; }
+    .rp-filters { background: #f3f6fb; border-left: 4px solid #16336b; padding: 7px 10px; font-size: 10.5px; color: #1a2238; margin-bottom: 12px; }
+    .rp-filters b { color: #16336b; }
+    .rp-stats { display: flex; gap: 8px; margin-bottom: 14px; }
+    .rp-stat { flex: 1; border: 1px solid #d5ddef; border-radius: 6px; padding: 8px 10px; background: #f6f8fd; }
+    .rp-stat small { display: block; font-size: 9px; color: #6b7a99; text-transform: uppercase; letter-spacing: .5px; }
+    .rp-stat b { font-size: 15px; color: #0b1535; }
+    .rp-tbl { width: 100%; border-collapse: collapse; }
+    .rp-tbl thead { display: table-header-group; }
+    .rp-tbl th { background: #16336b; color: #fff; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; text-align: left; padding: 7px 8px; }
+    .rp-tbl td { padding: 6px 8px; font-size: 10.5px; border-bottom: 1px solid #e3e9f5; color: #1a2238; }
+    .rp-tbl tbody tr:nth-child(even) td { background: #f7f9fd; }
+    .rp-tbl tr { page-break-inside: avoid; }
+    .rp-tbl .r { text-align: right; } .rp-tbl .c { text-align: center; }
+    .rp-tbl tfoot td { font-weight: 700; background: #eef2fa; border-top: 2px solid #16336b; border-bottom: 0; font-size: 11px; }
+    .rp-badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 9px; font-weight: 700; }
+    .rp-sign { display: flex; justify-content: space-between; margin-top: 46px; page-break-inside: avoid; }
+    .rp-sign div { width: 190px; border-top: 1px solid #6b7a99; text-align: center; padding-top: 4px; font-size: 10px; color: #6b7a99; }
+    .rp-note { margin-top: 14px; text-align: center; font-size: 9px; color: #8a97b3; }
     @media print {
-        @page { size: A4 portrait; margin: 15mm; }
-        
-        body, html { 
-            background: #fff !important; 
-            color: #000 !important; 
-            width: 100% !important; 
-            margin: 0 !important; 
-            padding: 0 !important; 
-        }
-        
-        body * { visibility: hidden; }
-        
-        .reports-container, .reports-container * { visibility: visible; }
-        
-        .reports-container { 
-            position: absolute; 
-            left: 0; 
-            top: 0; 
-            width: 100%; 
-            background: #fff !important; 
-            box-shadow: none !important; 
-            border: none !important; 
-            padding: 0 !important; 
-            margin: 0 !important;
-            transform: none !important;
-        }
-        
-        .report-header-pdf { 
-            display: block !important; 
-            text-align: center; 
-            margin-bottom: 25px; 
-            border-bottom: 2px solid #000; 
-            padding-bottom: 15px;
-        }
-        .report-header-pdf h1 { 
-            margin: 0 0 5px 0; 
-            font-family: 'Times New Roman', serif !important; 
-            font-size: 28px; 
-            color: #000 !important; 
-            font-weight: bold; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 15px;
-        }
-        .report-header-pdf p { 
-            margin: 5px 0 0; 
-            font-family: 'Arial', sans-serif; 
-            font-size: 14px; 
-            color: #333 !important;
-        }
-        
-        #printFilterInfo { font-size: 12px; color: #555 !important; font-style: italic; margin-top: 10px; }
-
-        /* Hide UI Elements during print */
-        .filter-section, .reports-header, .card-inactive, .action-th, .action-btns, .modal-overlay, #reportsLoadingRadar { display: none !important; }
-        
-        /* Summary Cards Print Styling */
-        .summary-cards { gap: 15px; margin-bottom: 20px; page-break-inside: avoid; }
-        .summary-card { 
-            background: #fff !important; 
-            color: #000 !important; 
-            border: 1px solid #000 !important; 
-            box-shadow: none !important;
-            padding: 15px;
-            flex: 1;
-            border-radius: 0;
-        }
-        .summary-card h2, .summary-card h3 { color: #000 !important; text-shadow: none !important; margin: 0; }
-        .summary-card h3 { font-size: 12px; margin-bottom: 5px; }
-        .summary-card h2 { font-size: 20px; }
-        
-        /* Table Print Styling */
-        .table-responsive { 
-            border: none !important; 
-            overflow: visible !important; 
-            min-height: auto !important;
-        }
-        .reports-table { 
-            width: 100% !important; 
-            border-collapse: collapse !important; 
-            page-break-inside: auto;
-        }
-        .reports-table tr { page-break-inside: avoid; page-break-after: auto; }
-        .reports-table th { 
-            background: #f0f0f0 !important; 
-            color: #000 !important; 
-            border: 1px solid #000 !important; 
-            font-weight: bold;
-            padding: 10px;
-            font-family: 'Arial', sans-serif;
-            font-size: 12px;
-            text-align: left;
-        }
-        .reports-table td { 
-            color: #000 !important; 
-            border: 1px solid #ccc !important; 
-            padding: 8px 10px;
-            font-family: 'Arial', sans-serif;
-            font-size: 11px;
-        }
-        .reports-table td span { 
-            border: none !important; 
-            background: transparent !important; 
-            color: #000 !important; 
-            padding: 0 !important; 
-            font-weight: normal;
-        }
+        @page { size: A4 portrait; margin: 14mm 12mm 16mm; @bottom-center { content: "Page " counter(page) " of " counter(pages); font: 9px Arial, sans-serif; color: #888; } }
+        body > *:not(#pxRptDoc) { display: none !important; }
+        #pxRptDoc { display: block !important; background: #fff; color: #1a2238; font-family: 'Poppins', Arial, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     }
 </style>
 
 <div class="reports-wrapper">
     <div class="reports-container" id="printableReportArea">
-        
-        <!-- Header visible only in PDF / Print -->
-        <div class="report-header-pdf" style="display: none;">
-            <h1><img src="logo.png" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;"> PURIX ACADEMY</h1>
-            <p>Management Financial Report | Generated on: <span id="reportDateTxt"></span></p>
-            <p id="printFilterInfo"></p> 
-        </div>
 
         <div class="reports-header">
             <h2 class="module-header"><i class="fa-solid fa-chart-pie"></i> COLLECTION & DUES REPORT</h2>
@@ -254,11 +110,11 @@
         <!-- SUPER ADVANCED FILTERS SECTION -->
         <div class="filter-section">
             <input type="text" id="filterSearch" placeholder="Search UID or Name..." oninput="filterReports()">
-            
+
             <select id="filterSession" onchange="filterReports()">
                 <option value="All">All Sessions</option>
             </select>
-            
+
             <select id="filterClass" onchange="filterReports()">
                 <option value="All">All Classes</option>
                 <option value="8th">8th</option>
@@ -267,7 +123,7 @@
                 <option value="11th">11th</option>
                 <option value="12th">12th</option>
             </select>
-            
+
             <select id="filterSubject" onchange="filterReports()">
                 <option value="All">All Subjects</option>
                 <option value="Math">Math</option>
@@ -278,7 +134,7 @@
                 <option value="Hindi">Hindi</option>
                 <option value="English">English</option>
             </select>
-            
+
             <select id="filterPlan" onchange="filterReports()">
                 <option value="All">All Fee Plans</option>
                 <option value="Monthly">Monthly</option>
@@ -291,7 +147,6 @@
                 <option value="All">All Status</option>
             </select>
 
-            <!-- Export Buttons -->
             <div class="filter-controls">
                 <button class="btn-download btn-csv" onclick="exportToCSV()"><i class="fa-solid fa-file-csv"></i> EXPORT CSV</button>
                 <button class="btn-download" onclick="generateManagementPDF()"><i class="fa-solid fa-file-pdf"></i> EXPORT PDF</button>
@@ -322,9 +177,7 @@
                         <th class="action-th">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="reportsBody">
-                    <!-- Data will populate here -->
-                </tbody>
+                <tbody id="reportsBody"></tbody>
             </table>
         </div>
 
@@ -346,8 +199,7 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody id="modalInactiveBody">
-                        </tbody>
+                        <tbody id="modalInactiveBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -357,17 +209,17 @@
 
 <script>
 (function() {
-    let reportData = []; 
-    let currentDisplayedData = []; 
-    let sortDirection = true; 
+    // Report ke header me dikhne wali details (khali = line nahi dikhegi)
+    const ACADEMY = { name: 'PURIX ACADEMY', logo: 'logo.png', line1: '', line2: '' };
 
-    document.getElementById('reportDateTxt').innerText = new Date().toLocaleDateString('en-GB');
+    let reportData = [];
+    let currentDisplayedData = [];
+    let sortDirection = true;
 
     // 🔥 SMART INITIALIZATION (RAM CACHE FOR TAB SWITCHING)
     initializeReportData();
 
     function initializeReportData() {
-        // Agar window memory me data hai (F5 nahi dabaya gaya), toh turant load karo
         if (window.cachedReportsData) {
             console.log("Loading Reports instantly from RAM ⚡");
             reportData = window.cachedReportsData;
@@ -375,8 +227,6 @@
             filterReports();
             return;
         }
-
-        // F5 dabaya gaya ya pehli baar khula hai -> Server se load karo
         console.log("Fetching FRESH Reports from Server... (F5 Hit)");
         setupDynamicFilters();
         fetchReportData();
@@ -385,20 +235,15 @@
     function fetchReportData() {
         const radar = document.getElementById('reportsLoadingRadar');
         const tbody = document.getElementById('reportsBody');
-        
         if(radar) radar.style.display = 'block';
-        if(tbody) tbody.innerHTML = ''; 
+        if(tbody) tbody.innerHTML = '';
 
-        // Cache buster in URL
         fetch(API_URL + "?action=getReports&timestamp=" + Date.now())
             .then(res => res.json())
             .then(data => {
                 if(data.status === "success" && Array.isArray(data.data)) {
                     reportData = data.data;
-                    
-                    // SAVE TO RAM CACHE
                     window.cachedReportsData = reportData;
-
                     filterReports();
                 } else if (tbody) {
                     tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ff0055;">Failed to load data. API Error.</td></tr>`;
@@ -417,23 +262,21 @@
     function setupDynamicFilters() {
         const sessionDropdown = document.getElementById('filterSession');
         if(!sessionDropdown) return;
-        
         sessionDropdown.innerHTML = '<option value="All" selected>All Sessions</option>';
-        
-        let year = new Date().getFullYear(); 
+        let year = new Date().getFullYear();
         let startYear = (new Date().getMonth() < 3) ? year - 1 : year;
         for (let i = startYear; i >= startYear - 2; i--) {
-            let sessionText = `${i}-${(i+1).toString().substring(2)}`; 
+            let sessionText = `${i}-${(i+1).toString().substring(2)}`;
             sessionDropdown.innerHTML += `<option value="${sessionText}">${sessionText}</option>`;
         }
     }
 
     function formatMoney(amount) {
-        return '₹' + parseFloat(amount).toLocaleString('en-IN');
+        return '₹' + (parseFloat(amount) || 0).toLocaleString('en-IN');
     }
 
     window.filterReports = function() {
-        if(!Array.isArray(reportData)) return; 
+        if(!Array.isArray(reportData)) return;
 
         const searchTxt = document.getElementById('filterSearch').value.toLowerCase();
         const sessionFilter = document.getElementById('filterSession').value;
@@ -442,21 +285,11 @@
         const planFilter = document.getElementById('filterPlan').value;
         const statusFilter = document.getElementById('filterStatus').value;
 
-        let filterStr = [];
-        if(sessionFilter !== 'All') filterStr.push(`Session: ${sessionFilter}`);
-        if(classFilter !== 'All') filterStr.push(`Class: ${classFilter}`);
-        if(subjectFilter !== 'All') filterStr.push(`Subject: ${subjectFilter}`);
-        if(planFilter !== 'All') filterStr.push(`Plan: ${planFilter}`);
-        if(statusFilter !== 'All') filterStr.push(`Status: ${statusFilter}`);
-        
-        const printInfo = document.getElementById('printFilterInfo');
-        if(printInfo) printInfo.innerText = filterStr.length > 0 ? "Filters applied: " + filterStr.join(" | ") : "Viewing: All Records";
-
         let totalColl = 0, totalDues = 0, inactiveCount = 0;
 
         let baseFiltered = reportData.filter(student => {
-            if (!student) return false; 
-            
+            if (!student) return false;
+
             const uidStr = String(student.uid || "").trim();
             const nameStr = String(student.name || "").toLowerCase();
             const sessionStr = String(student.session || "");
@@ -464,14 +297,14 @@
             const planStr = String(student.feePlan || "Monthly");
             const subjectsStr = String(student.subject || student.subjects || "").toLowerCase();
 
-            if (uidStr === "" || uidStr.toLowerCase().includes("uid")) return false; 
+            if (uidStr === "" || uidStr.toLowerCase().includes("uid")) return false;
 
             const matchesSearch = !searchTxt || nameStr.includes(searchTxt) || uidStr.toLowerCase().includes(searchTxt);
             const matchesSession = sessionFilter === "All" || sessionStr === sessionFilter;
             const matchesClass = classFilter === "All" || classStr === classFilter;
             const matchesPlan = planFilter === "All" || planStr === planFilter;
             const matchesSubject = subjectFilter === "All" || subjectsStr.includes(subjectFilter.toLowerCase());
-            
+
             return matchesSearch && matchesSession && matchesClass && matchesPlan && matchesSubject;
         });
 
@@ -481,7 +314,7 @@
                 totalColl += parseFloat(student.paid) || 0;
                 totalDues += parseFloat(student.dues) || 0;
             } else if (statusStr === "Inactive") {
-                inactiveCount++; 
+                inactiveCount++;
             }
         });
 
@@ -493,12 +326,12 @@
             const statusStr = String(student.status || "Active");
             return (statusFilter === "All" || statusStr === statusFilter);
         });
-        
+
         renderTable(currentDisplayedData);
     };
 
     window.sortTable = function(key) {
-        sortDirection = !sortDirection; 
+        sortDirection = !sortDirection;
         currentDisplayedData.sort((a, b) => {
             let valA = a[key]; let valB = b[key];
             if (key === 'paid' || key === 'dues') {
@@ -523,10 +356,10 @@
 
         data.forEach((student) => {
             const statusStr = String(student.status || "Active");
-            let actionBtn = statusStr === "Active" 
-                ? `<button class="btn-icon btn-inactive" onclick="toggleStatus('${student.uid}', 'Inactive')" title="Make Inactive"><i class="fa-solid fa-user-xmark"></i></button>` 
+            let actionBtn = statusStr === "Active"
+                ? `<button class="btn-icon btn-inactive" onclick="toggleStatus('${student.uid}', 'Inactive')" title="Make Inactive"><i class="fa-solid fa-user-xmark"></i></button>`
                 : `<button class="btn-icon btn-active" onclick="toggleStatus('${student.uid}', 'Active')" title="Make Active"><i class="fa-solid fa-user-check"></i></button>`;
-            
+
             let planBadgeColor = student.feePlan === "Monthly" ? "rgba(0, 243, 255, 0.15)" : "rgba(179, 102, 255, 0.15)";
             let planTextColor = student.feePlan === "Monthly" ? "#00f3ff" : "#b366ff";
             let planBorder = student.feePlan === "Monthly" ? "rgba(0, 243, 255, 0.3)" : "rgba(179, 102, 255, 0.3)";
@@ -550,25 +383,45 @@
         });
     }
 
+    /* ---------- professional file name + filters summary ---------- */
+    function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function getFilters() {
+        const g = id => document.getElementById(id).value;
+        const f = [];
+        if (g('filterSession') !== 'All') f.push(['Session', g('filterSession')]);
+        if (g('filterClass') !== 'All') f.push(['Class', g('filterClass')]);
+        if (g('filterSubject') !== 'All') f.push(['Subject', g('filterSubject')]);
+        if (g('filterPlan') !== 'All') f.push(['Fee Plan', g('filterPlan')]);
+        if (g('filterStatus') !== 'All') f.push(['Status', g('filterStatus')]);
+        const q = g('filterSearch').trim();
+        if (q) f.push(['Search', q]);
+        return f;
+    }
+    function reportFileName() {
+        const slug = s => String(s).trim().replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 20);
+        const parts = getFilters().map(p => (p[0] === 'Class' ? 'Class-' : p[0] === 'Search' ? 'Search-' : '') + slug(p[1])).filter(Boolean);
+        const d = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
+        return 'Purix_Academy_Fee_Report' + (parts.length ? '_' + parts.join('_') : '') + '_' + d;
+    }
+
     window.exportToCSV = function() {
         if(currentDisplayedData.length === 0) {
             Swal.fire('Empty Data', 'No data to export based on current filters.', 'warning'); return;
         }
         let csvContent = "data:text/csv;charset=utf-8,";
-        
         csvContent += "UID,Student Name,Class,Session,Fee Plan,Total Paid,Pending Dues,Status\n";
-        
         currentDisplayedData.forEach(s => {
             let row = [
                 s.uid, `"${s.name}"`, s.class, s.session, s.feePlan, s.paid || 0, s.dues || 0, s.status || 'Active'
             ].join(",");
             csvContent += row + "\n";
         });
-
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `Purix_Report_${new Date().toISOString().split('T')[0]}.csv`);
+        link.setAttribute("download", reportFileName() + ".csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -587,9 +440,8 @@
                 .then(data => {
                     if(data.status === 'success') {
                         Swal.fire({ title: 'Updated!', text: `Status changed to ${newStatus}.`, icon: 'success', background: '#050914', color: '#00ff88' });
-                        // Clear RAM Cache so next load fetches fresh
                         window.cachedReportsData = null;
-                        fetchReportData(); 
+                        fetchReportData();
                     } else { Swal.fire('Error', data.message, 'error'); }
                 });
             }
@@ -618,7 +470,7 @@
                 `;
             });
         }
-        modal.style.display = 'flex'; 
+        modal.style.display = 'flex';
     };
 
     window.closeInactiveModal = function() { document.getElementById('inactiveModal').style.display = 'none'; };
@@ -631,15 +483,76 @@
         window.open(`https://wa.me/91${mobile}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
-    window.generateManagementPDF = function() {
-        const originalTitle = document.title;
-        const fileName = `Purix_Financial_Report_${new Date().toLocaleDateString('en-GB').replace(/\//g, '-')}`;
-        document.title = fileName; 
-        
-        window.print();
-        
-        setTimeout(() => { document.title = originalTitle; }, 1000);
+    /* ---------- PROFESSIONAL PDF REPORT ---------- */
+    function buildReportHtml() {
+        const rows = currentDisplayedData;
+        let paid = 0, dues = 0, inactive = 0;
+        const body = rows.map((s, i) => {
+            const p = parseFloat(s.paid) || 0, d = parseFloat(s.dues) || 0;
+            paid += p; dues += d;
+            const st = String(s.status || 'Active');
+            if (st === 'Inactive') inactive++;
+            const on = st === 'Active';
+            return '<tr><td class="c">' + (i + 1) + '</td><td><b>' + esc(s.uid) + '</b></td><td>' + esc(s.name) + '</td><td>' + esc(s.class) + '</td>' +
+                '<td>' + esc(s.feePlan || 'Monthly') + '</td><td class="r">' + formatMoney(p) + '</td>' +
+                '<td class="r" style="color:' + (d > 0 ? '#d6194f' : '#0a8f5a') + ';font-weight:600;">' + formatMoney(d) + '</td>' +
+                '<td class="c"><span class="rp-badge" style="background:' + (on ? '#e3f8ee' : '#fde8ee') + ';color:' + (on ? '#0a8f5a' : '#d6194f') + ';">' + esc(st) + '</span></td></tr>';
+        }).join('');
+
+        const rate = (paid + dues) > 0 ? Math.round(paid / (paid + dues) * 100) : 0;
+        const now = new Date();
+        const dateTxt = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        const timeTxt = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+        const pad = n => String(n).padStart(2, '0');
+        const refNo = 'PA-RPT-' + now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + '-' + pad(now.getHours()) + pad(now.getMinutes());
+        const fl = getFilters();
+        const filterTxt = fl.length ? fl.map(p => '<b>' + p[0] + ':</b> ' + esc(p[1])).join(' &nbsp;|&nbsp; ') : '<b>Viewing:</b> All Records';
+        const sub = [ACADEMY.line1, ACADEMY.line2].filter(Boolean).map(esc).join(' | ');
+
+        return '<div class="rp-head"><img class="rp-logo" src="' + esc(ACADEMY.logo) + '" onerror="this.style.display=\'none\'" alt="">' +
+            '<div class="rp-org"><b>' + esc(ACADEMY.name) + '</b><span>FEE COLLECTION &amp; DUES REPORT</span>' + (sub ? '<em>' + sub + '</em>' : '') + '</div>' +
+            '<div class="rp-ref"><small>Report No.</small><b>' + refNo + '</b><small>Generated</small><b>' + dateTxt + ', ' + timeTxt + '</b></div></div><div class="rp-line"></div>' +
+            '<div class="rp-filters">' + filterTxt + '</div>' +
+            '<div class="rp-stats">' +
+            '<div class="rp-stat"><small>Students Listed</small><b>' + rows.length + '</b></div>' +
+            '<div class="rp-stat"><small>Total Collected</small><b style="color:#0a8f5a;">' + formatMoney(paid) + '</b></div>' +
+            '<div class="rp-stat"><small>Pending Dues</small><b style="color:#d6194f;">' + formatMoney(dues) + '</b></div>' +
+            '<div class="rp-stat"><small>Collection Rate</small><b>' + rate + '%</b></div>' +
+            (inactive ? '<div class="rp-stat"><small>Inactive Listed</small><b>' + inactive + '</b></div>' : '') + '</div>' +
+            '<table class="rp-tbl"><thead><tr><th class="c" style="width:5%">#</th><th>UID</th><th>Student Name</th><th>Class</th><th>Fee Plan</th><th class="r">Total Paid</th><th class="r">Dues</th><th class="c">Status</th></tr></thead>' +
+            '<tbody>' + body + '</tbody>' +
+            '<tfoot><tr><td colspan="5" class="r">GRAND TOTAL (' + rows.length + ' students)</td><td class="r">' + formatMoney(paid) + '</td><td class="r">' + formatMoney(dues) + '</td><td></td></tr></tfoot></table>' +
+            '<div class="rp-sign"><div>Prepared By</div><div>Authorised Signatory</div></div>' +
+            '<div class="rp-note">This is a computer generated report. Report No. ' + refNo + ' | Generated on ' + dateTxt + ', ' + timeTxt + '.</div>';
     }
+
+    window.generateManagementPDF = function() {
+        if (currentDisplayedData.length === 0) {
+            Swal.fire('Empty Data', 'No data to export based on current filters.', 'warning'); return;
+        }
+        const old = document.getElementById('pxRptDoc'); if (old) old.remove();
+        const doc = document.createElement('div');
+        doc.id = 'pxRptDoc';
+        doc.style.display = 'none'; // screen par kabhi na dikhe (print CSS !important se override karti hai)
+        doc.innerHTML = buildReportHtml();
+        document.body.appendChild(doc);
+
+        const originalTitle = document.title;
+        document.title = reportFileName(); // PDF save hote waqt yahi naam milega
+        const cleanup = function () {
+            window.removeEventListener('afterprint', cleanup);
+            document.title = originalTitle;
+            const d = document.getElementById('pxRptDoc'); if (d) d.remove();
+        };
+        window.addEventListener('afterprint', cleanup);
+
+        const img = doc.querySelector('.rp-logo');
+        new Promise(function (res) {
+            if (!img || img.complete) return res();
+            img.onload = img.onerror = res;
+            setTimeout(res, 2000);
+        }).then(function () { window.print(); });
+    };
 
 })();
 </script>
