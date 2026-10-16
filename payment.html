@@ -34,6 +34,7 @@
     .px-wrap { width: 100%; max-width: 440px; height: fit-content; }
     .px-paper { background: #fff; color: #1a2238; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,.5); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .px-head { background: linear-gradient(135deg,#0b1535,#16336b); color: #fff; padding: 18px 20px; display: flex; align-items: center; gap: 12px; }
+    .px-logo-img { width: 48px; height: 48px; flex: none; object-fit: contain; border-radius: 50%; background: #fff; padding: 2px; }
     .px-logo { width: 44px; height: 44px; flex: none; border-radius: 50%; background: #00f3ff; color: #0b1535; display: flex; align-items: center; justify-content: center; font: 700 20px 'Orbitron', sans-serif; }
     .px-org { font: 700 17px 'Orbitron', sans-serif; letter-spacing: 1px; }
     .px-sub { font-size: 11px; opacity: .8; line-height: 1.4; }
@@ -103,7 +104,7 @@
 <script>
 (function () {
     // ===== Receipt par dikhne wali academy details (khali chhodo to line nahi dikhegi) =====
-    const ACADEMY = { name: 'PURIX ACADEMY', line1: '', line2: '' }; // line1 = address, line2 = phone / email
+    const ACADEMY = { name: 'PURIX ACADEMY', logo: '', line1: '', line2: '' }; // logo = apne logo ka path/link ya data (khali = letter wala gol logo), line1 = address, line2 = phone / email
 
     const $ = function (id) { return document.getElementById(id); };
     const esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
@@ -262,7 +263,7 @@
         ov.id = 'pxReceiptOverlay';
         ov.innerHTML =
             '<div class="px-wrap"><div class="px-paper">' +
-              '<div class="px-head"><div class="px-logo">' + esc(ACADEMY.name.charAt(0)) + '</div>' +
+              '<div class="px-head">' + (ACADEMY.logo ? '<img class="px-logo-img" src="' + esc(ACADEMY.logo) + '" alt="">' : '<div class="px-logo">' + esc(ACADEMY.name.charAt(0)) + '</div>') +
                 '<div><div class="px-org">' + esc(ACADEMY.name) + '</div>' + (sub ? '<div class="px-sub">' + sub + '</div>' : '') + '</div>' +
                 '<div class="px-badge">PAID</div></div>' +
               '<div class="px-body"><div class="px-title">FEE RECEIPT</div>' +
