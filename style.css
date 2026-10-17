@@ -337,3 +337,23 @@ body {
 @keyframes radarFastReverse { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 @keyframes textPulse { 0% { opacity: 0.5; text-shadow: 0 0 5px rgba(0,243,255,0.5); } 100% { opacity: 1; text-shadow: 0 0 15px #00f3ff; } }
 @keyframes corePulse { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; } 100% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } }
+/* =========================================================
+   RESPONSIVE SHELL  (style.css ke ekdam END me paste karein)
+   Sirf chhote / portrait screen (820px se kam) par chalta hai.
+   Laptop aur desktop par kuch nahi badalta.
+   Sidebar upar ki ek line (horizontal menu) ban jata hai.
+   ========================================================= */
+@media (max-width: 820px) {
+    .app-container { flex-direction: column; height: 100vh; height: 100dvh; }
+    .sidebar { width: 100%; flex-direction: row; align-items: center; border-right: 0; border-bottom: 1px solid rgba(0, 243, 255, 0.2); box-shadow: 0 4px 25px rgba(0, 243, 255, 0.05); }
+    .sidebar-header { padding: 8px 12px; border-bottom: 0; flex: none; }
+    .sidebar-header img { width: 34px !important; height: 34px !important; }
+    .sidebar-header h2 { display: none; }
+    .nav-links { display: flex; margin: 0; padding: 6px; gap: 6px; overflow-x: auto; flex: 1; }
+    .nav-links li { margin: 0; padding: 8px 12px; white-space: nowrap; font-size: 13px; gap: 8px; flex: none; }
+    .nav-links li:hover { transform: none; }
+    .main-content { padding: 8px; min-height: 0; }
+    .top-header { padding: 8px 14px; margin-bottom: 10px; }
+    .top-header h3 { font-size: 15px; }
+    #module-container { padding: 4px; }
+}
