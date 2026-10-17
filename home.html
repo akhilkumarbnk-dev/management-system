@@ -1,7 +1,8 @@
 <style>
 /* =====================================================
-   PURIX ACADEMY — FUTURISTIC HUD DASHBOARD
-   Desktop-first | Ultra-Responsive Fit | Wide Cards | 3D Logo
+   PURIX ACADEMY — FUTURISTIC HUD DASHBOARD  (FINAL)
+   Auto-fit: desktop / laptop / tablet = scaled 16:9 HUD
+             phone / portrait = compact mobile HUD
 ===================================================== */
 
 .hud-master-container {
@@ -13,8 +14,8 @@
 
     position: relative;
     width: 100%;
-    height: calc(100vh - 10px);
-    min-height: 600px;
+    height: calc(100vh - 90px);   /* JS isse parent ki asli jagah ke hisaab se set karta hai */
+    min-height: 0;
     background: #020b18;
     overflow: hidden;
     isolation: isolate;
@@ -22,7 +23,6 @@
     font-family: 'Orbitron', 'Rajdhani', 'Arial', sans-serif;
 }
 
-/* Background grid and scanlines */
 .hud-master-container::before {
     content: "";
     position: absolute;
@@ -44,16 +44,19 @@
     opacity: .6;
 }
 
-/* =====================================================
-   FIXED CANVAS - NEVER CROPS
-===================================================== */
+/* edges par halka andhera: center par focus */
+.hud-master-container .hx2-vig {
+    position: absolute; inset: 0; z-index: 18; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 58%, rgba(0, 5, 12, .62) 100%);
+}
+
 .hud-master-container .hud-scaler {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 1600px; /* Fixed Base Width */
-    height: 900px; /* Fixed Base Height */
-    transform: translate(-50%, -50%); /* Javascript will add scale here */
+    width: 1600px;
+    height: 900px;
+    transform: translate(-50%, -50%);
     transform-origin: center center;
 }
 
@@ -68,7 +71,6 @@
     font-family: 'Orbitron', 'Rajdhani', 'Arial', sans-serif;
 }
 
-/* Corner brackets - Kept inside to show bounds */
 .hud-master-container .hud-corner {
     position: absolute;
     width: 30px;
@@ -81,7 +83,6 @@
 .hud-master-container .hud-corner.bl { bottom: 15px; left: 15px; border-bottom: 3px solid var(--hud-blue); border-left: 3px solid var(--hud-blue); }
 .hud-master-container .hud-corner.br { bottom: 15px; right: 15px; border-bottom: 3px solid var(--hud-blue); border-right: 3px solid var(--hud-blue); }
 
-/* Animation classes */
 .hud-master-container .hx-r { animation: hxSpin linear infinite; }
 .hud-master-container .hx-f { animation-direction: reverse; }
 .hud-master-container .hx-pulse { animation: hxPulse 3s ease-in-out infinite; }
@@ -96,15 +97,15 @@
 @keyframes hxScan { from { transform: translateY(-60px); } to { transform: translateY(960px); } }
 @keyframes hxMarch { to { stroke-dashoffset: -6.3; } }
 
-/* 🔥 NEW: 3D EARTH ROTATING LOGO */
+/* 3D EARTH ROTATING LOGO */
 .logo-3d-spin {
     position: absolute;
-    top: 430px;  /* Center Y of SVG */
-    left: 800px; /* Center X of SVG */
+    top: 430px;
+    left: 800px;
     width: 140px;
     height: 140px;
-    margin-top: -70px; /* Half of height to perfectly center */
-    margin-left: -70px; /* Half of width to perfectly center */
+    margin-top: -70px;
+    margin-left: -70px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid rgba(0, 229, 255, 0.8);
@@ -118,18 +119,75 @@
     100% { transform: perspective(800px) rotateY(360deg); }
 }
 
+/* ===== v2: tilt / boot / ripple / palette ===== */
+.hud-master-container .hx2-tilt { position: absolute; left: 0; top: 0; width: 1600px; height: 900px; transform-style: preserve-3d; will-change: transform; }
+.hud-master-container .hx2-tilt.assemble { animation: hx2Assemble 1.1s cubic-bezier(.2,.8,.2,1) backwards; }
+@keyframes hx2Assemble { from { opacity: 0; filter: blur(10px); transform: scale(.94); } }
+
+.hx2-boot { position: absolute; inset: 0; z-index: 60; background: #010812; display: flex; flex-direction: column; justify-content: center; padding: 0 12vw; gap: 10px; font: 600 14px 'Orbitron', monospace; color: #00e5ff; letter-spacing: 2px; transition: opacity .6s; cursor: pointer; }
+.hx2-boot div { opacity: 0; transform: translateX(-8px); animation: hx2Line .35s forwards; }
+.hx2-boot b { color: #00ff99; }
+.hx2-boot.out { opacity: 0; pointer-events: none; }
+@keyframes hx2Line { to { opacity: 1; transform: none; } }
+
+.hx2-rip { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; border: 2px solid #00e5ff; border-radius: 50%; pointer-events: none; z-index: 40; animation: hx2Rip .7s ease-out forwards; }
+@keyframes hx2Rip { to { transform: scale(11); opacity: 0; } }
+
+.hx2-hint { position: absolute; right: 18px; bottom: 14px; z-index: 30; font: 600 10px 'Orbitron', sans-serif; letter-spacing: 2px; color: #7fdcff; background: rgba(2,11,24,.8); border: 1px solid rgba(0,229,255,.4); padding: 6px 10px; border-radius: 4px; cursor: pointer; transition: .25s; }
+.hx2-hint:hover { color: #fff; border-color: #00e5ff; box-shadow: 0 0 14px rgba(0,229,255,.5); }
+
+.px-pal { position: fixed; inset: 0; z-index: 100000; background: rgba(1,6,14,.72); backdrop-filter: blur(6px); display: flex; justify-content: center; align-items: flex-start; padding-top: 16vh; animation: hx2Fade .2s; }
+.px-pal-box { width: min(520px, 92vw); background: rgba(4,14,30,.96); border: 1px solid #00e5ff; border-radius: 12px; box-shadow: 0 0 40px rgba(0,229,255,.3), inset 0 0 30px rgba(0,229,255,.05); overflow: hidden; font-family: 'Poppins', sans-serif; }
+.px-pal-box input { width: 100%; background: transparent; border: 0; border-bottom: 1px solid rgba(0,229,255,.3); padding: 16px 18px; color: #e0f7fa; font-size: 16px; outline: none; }
+.px-pal-item { display: flex; align-items: center; gap: 12px; padding: 12px 18px; color: #a5c3e0; cursor: pointer; font-size: 14px; }
+.px-pal-item i { width: 18px; color: #00e5ff; text-align: center; }
+.px-pal-item small { margin-left: auto; font-family: 'Orbitron', sans-serif; font-size: 10px; color: #647b9e; letter-spacing: 1px; }
+.px-pal-item.on { background: rgba(0,229,255,.12); color: #fff; box-shadow: inset 3px 0 0 #00e5ff; }
+@keyframes hx2Fade { from { opacity: 0; } }
+
+/* ===== MOBILE / PORTRAIT HUD (JS .hx-mobile class lagata hai) ===== */
+.hx-mob { display: none; position: absolute; inset: 0; z-index: 25; overflow-y: auto; padding: 16px 14px 26px; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; }
+.hx-mobile .hud-scaler, .hx-mobile .hx2-hint { display: none; }
+.hx-mobile .hx-mob { display: flex; }
+.hx-mob-hero { text-align: center; padding: 6px 0 2px; }
+.hx-mob-logo { width: 104px; height: 104px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(0,229,255,.8); box-shadow: 0 0 28px rgba(0,229,255,.55), inset 0 0 18px rgba(255,255,255,.2); animation: spinEarth3D 7s linear infinite; }
+.hx-mob-title { margin-top: 12px; font-weight: 900; font-size: clamp(20px, 6vw, 28px); letter-spacing: 4px; color: #fff; text-shadow: 0 0 12px #00e5ff; }
+.hx-mob-sub { margin-top: 4px; font-size: 8px; letter-spacing: 3px; color: #00e5ff; opacity: .75; }
+.hx-mob-live { margin-top: 8px; font-size: 9px; letter-spacing: 2px; color: #7fdcff; }
+.hx-mob-live i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #00ff99; box-shadow: 0 0 8px #00ff99; margin-right: 6px; animation: hxPulse 1.6s ease-in-out infinite; }
+.hx-mob-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.hx-mc { position: relative; background: rgba(2,11,24,.85); border: 1px solid rgba(0,229,255,.35); border-radius: 12px; padding: 14px 14px 12px; box-shadow: inset 0 0 22px rgba(0,229,255,.06), 0 0 16px rgba(0,229,255,.08); cursor: default; transition: .2s; min-width: 0; }
+.hx-mc::before { content: ""; position: absolute; left: 0; top: 0; width: 18px; height: 18px; border-top: 2px solid #00e5ff; border-left: 2px solid #00e5ff; border-top-left-radius: 12px; }
+.hx-mc small { display: block; font-size: 8.5px; letter-spacing: 1.5px; color: #9be8ff; font-weight: 700; }
+.hx-mc b { display: block; margin-top: 6px; font-size: clamp(22px, 7vw, 30px); font-weight: 800; color: #fff; text-shadow: 0 0 10px rgba(0,229,255,.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hx-mc.w { grid-column: 1 / -1; }
+.hx-mc.red { border-color: rgba(255,36,93,.6); box-shadow: inset 0 0 22px rgba(255,36,93,.08), 0 0 16px rgba(255,36,93,.12); }
+.hx-mc.red::before { border-color: #ff245d; }
+.hx-mc.red small { color: #ff9db4; }
+.hx-mc.red b { text-shadow: 0 0 10px rgba(255,36,93,.8); }
+.hx-mc[data-mod], .hx-mob-btns button { cursor: pointer; }
+.hx-mc[data-mod]:active, .hx-mob-btns button:active { transform: scale(.97); }
+.hx-bar { display: flex; height: 12px; margin-top: 10px; border-radius: 6px; overflow: hidden; background: #0a2442; gap: 2px; }
+.hx-bar i { display: block; flex: 0.0001 1 0; min-width: 0; transition: flex-grow .6s ease; box-shadow: 0 0 8px currentColor; }
+.hx-leg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; font-size: 8px; letter-spacing: .6px; color: #a5c3e0; text-align: center; }
+.hx-leg span b { display: block; margin: 0 0 2px; font-size: 16px; text-shadow: none; }
+.hx-mob-btns { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 10px; }
+.hx-mob-btns button { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 6px; background: radial-gradient(circle at 50% 35%, #0e4c8e, #041430 75%); border: 1px solid #2a8fe0; border-radius: 14px; color: #fff; font: 800 10px 'Orbitron', sans-serif; letter-spacing: 1px; transition: .2s; }
+.hx-mob-btns button i { font-size: 20px; color: #00e5ff; text-shadow: 0 0 10px #00e5ff; }
+.hx-mob-btns button:hover { border-color: #fff; box-shadow: 0 0 16px rgba(0,229,255,.5); }
+
 @media (prefers-reduced-motion: reduce) {
     .hud-master-container * { animation: none !important; }
+    .hx2-boot div, .hx2-rip { animation: none !important; }
 }
 </style>
 
 <div class="hud-master-container" id="hudContainer">
+    <div class="hx2-vig"></div>
     <div class="hud-scaler" id="hudScaler">
-        <!-- Corners added directly to Scaler to ensure they ALWAYS fit -->
         <div class="hud-corner tl"></div><div class="hud-corner tr"></div>
         <div class="hud-corner bl"></div><div class="hud-corner br"></div>
-        
-        <!-- 🔥 NEW: High-Res 3D HTML Logo -->
+
         <img src="logo.png" class="logo-3d-spin" alt="Purix Academy 3D Logo">
 
         <svg id="hxSvg" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
@@ -144,8 +202,7 @@
                 <linearGradient id="hxBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b8cff"/><stop offset="1" stop-color="#0e3a9a"/></linearGradient>
                 <pattern id="hxSeg" width="6" height="2.6" patternUnits="userSpaceOnUse"><rect y="1.8" width="6" height=".8" fill="#04122a" opacity=".85"/></pattern>
                 <radialGradient id="hxBtnG" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#0e4c8e"/><stop offset=".7" stop-color="#06224a"/><stop offset="1" stop-color="#041430"/></radialGradient>
-                <!-- Widened clip path for cartoon -->
-                <clipPath id="hxCartClip"><rect x="3.5" y="9" width="236" height="72"/></clipPath> 
+                <clipPath id="hxCartClip"><rect x="3.5" y="9" width="236" height="72"/></clipPath>
             </defs>
 
             <rect width="1600" height="900" fill="url(#hxLines)"/>
@@ -166,10 +223,9 @@
                 <g class="hx-r" style="transform-origin:800px 430px;animation-duration:22s"><path d="M995,430 l-9,-9 v18z" fill="#6fe0ff" transform="rotate(-8 800 430)"/><circle cx="800" cy="235" r="4" fill="#fff"/><circle cx="800" cy="625" r="4" fill="#4cc2ff"/></g>
                 <g class="hx-r hx-f" style="transform-origin:800px 430px;animation-duration:30s"><circle cx="800" cy="258" r="4" fill="#fff"/><circle cx="972" cy="430" r="3.5" fill="#6fe0ff"/><circle cx="628" cy="430" r="3.5" fill="#6fe0ff"/></g>
             </g>
-            
-            <!-- Dark circle backing for the new HTML 3D Logo to hide the glowing rings -->
+
             <circle cx="800" cy="430" r="70" fill="#020b18"/>
-            
+
             <g id="topBlocks"></g>
 
             <!-- ===== HEADER ===== -->
@@ -177,7 +233,7 @@
             <text x="800" y="56" font-size="31" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="4" style="filter:drop-shadow(0 0 8px #00e5ff)">PURIX ACADEMY</text>
             <text x="800" y="80" font-size="8.5" fill="#00e5ff" opacity=".7" text-anchor="middle" letter-spacing="3.5">CENTRAL COMMAND // SYSTEM PROTOCOL</text>
             <circle class="hx-pulse" cx="740" cy="113" r="3" fill="#00ff99"/><text x="750" y="116" font-size="8" fill="#00e5ff" opacity=".7" letter-spacing="2">SYSTEM ONLINE</text>
-            
+
             <!-- ===== TOP LEFT RADAR ===== -->
             <rect x="25" y="18" width="312" height="280" fill="#030c20" opacity=".85"/>
             <path d="M25,42 V18 H51 M284,17 L307,25 L327,48 V72 M337,96 V190 M25,262 V288 H55 L65,296 H99 M337,262 V292 H311 M127,18 H227" fill="none" stroke="#2a8fe0" stroke-width="1.5"/>
@@ -197,9 +253,7 @@
             <g id="specBars" fill="#3da6ff"></g>
             <line x1="1318" y1="318" x2="1530" y2="318" stroke="#3da6ff"/>
 
-            <!-- ===== LEFT PANELS A B C ===== -->
             <g id="leftPanels"></g>
-            <!-- ===== RIGHT PANELS ===== -->
             <g id="rightPanels"></g>
 
             <!-- ===== BOTTOM ===== -->
@@ -207,11 +261,40 @@
             <path d="M485,792 V772 L512,748 H548 M1115,792 V772 L1088,748 H1052 M485,848 V870 L505,888 H542 M1115,848 V870 L1095,888 H1058" fill="none" stroke="#2a8fe0" stroke-width="1.8"/>
             <g id="hxBtns"></g>
 
-            <!-- scan band + frame lines -->
             <rect class="hx-scan" x="0" y="0" width="1600" height="60" fill="url(#hxScanG)"/>
             <path d="M0,880 H590 M1010,880 H1600" stroke="#144a8c" stroke-width="2"/>
             <circle class="hx-blink" cx="1562" cy="870" r="4" fill="#4cc2ff"/>
         </svg>
+    </div>
+
+    <!-- ===== MOBILE / PORTRAIT LAYOUT ===== -->
+    <div class="hx-mob" id="hxMob">
+        <div class="hx-mob-hero">
+            <img src="logo.png" class="hx-mob-logo" alt="Purix Academy">
+            <div class="hx-mob-title">PURIX ACADEMY</div>
+            <div class="hx-mob-sub">CENTRAL COMMAND // SYSTEM PROTOCOL</div>
+            <div class="hx-mob-live"><i></i>SYSTEM ONLINE &middot; <span id="mDate"></span></div>
+        </div>
+        <div class="hx-mob-grid">
+            <div class="hx-mc"><small>TODAY'S ADMISSIONS</small><b id="mAdm">...</b></div>
+            <div class="hx-mc"><small>ACTIVE STUDENTS</small><b id="mAct">...</b></div>
+            <div class="hx-mc w"><small>TODAY'S COLLECTION</small><b id="mCol">...</b></div>
+            <div class="hx-mc w red" data-mod="alerts"><small>OVERDUE ALERTS &middot; TAP TO OPEN</small><b id="mAlr">...</b></div>
+        </div>
+        <div class="hx-mc" data-mod="alerts">
+            <small>DUES SPECTRUM</small>
+            <div class="hx-bar" id="mSpec"><i style="color:#ffd400;background:#ffd400"></i><i style="color:#00e5ff;background:#00e5ff"></i><i style="color:#ff8c00;background:#ff8c00"></i><i style="color:#ff245d;background:#ff245d"></i></div>
+            <div class="hx-leg" id="mLeg">
+                <span style="color:#ffd400"><b>-</b>UPCOMING</span><span style="color:#00e5ff"><b>-</b>TODAY</span><span style="color:#ff8c00"><b>-</b>CURRENT</span><span style="color:#ff245d"><b>-</b>OVERDUE</span>
+            </div>
+        </div>
+        <div class="hx-mob-btns">
+            <button data-mod="admission"><i class="fa-solid fa-user-plus"></i>ADMIT</button>
+            <button data-mod="payment"><i class="fa-solid fa-indian-rupee-sign"></i>FEE</button>
+            <button data-mod="profile"><i class="fa-solid fa-magnifying-glass"></i>SEARCH</button>
+            <button data-mod="reports"><i class="fa-solid fa-chart-pie"></i>REPORTS</button>
+            <button data-mod="alerts"><i class="fa-solid fa-bell"></i>ALERTS</button>
+        </div>
     </div>
 </div>
 
@@ -219,6 +302,7 @@
 (function(){
     var HC=document.getElementById('hudContainer'),NS='http://www.w3.org/2000/svg',$=function(i){return HC.querySelector('#'+i)};
     function el(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+    function idle(){return HC.classList.contains('hx-mobile')}
 
     /* top blocks on center ring */
     var tb=$('topBlocks');
@@ -285,7 +369,11 @@
             mkLayer(76,7,12,'#1fb4e8','#7fe3ff',['x',['z',.45]],.5,-1),
             mkLayer(58,4,8,'#8fefff','#d8fbff',['y',['z',-.95]],.65,-1)];
     var gt0=performance.now(),still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-    function gtick(now){var t=(now-gt0)/1000;gl.forEach(function(g){g(t)});if(!still)requestAnimationFrame(gtick)}
+    function gtick(now){
+        if(!HC.isConnected)return; /* page badalne par band (pehle ye chalta rehta tha) */
+        var t=(now-gt0)/1000;
+        if(!idle())gl.forEach(function(g){g(t)}); /* mobile layout me bhaari globe math band */
+        if(!still)requestAnimationFrame(gtick)}
     requestAnimationFrame(gtick);
 
     /* spectrum bars */
@@ -300,23 +388,22 @@
         if(typeof MutationObserver!=='undefined')new MutationObserver(function(){fit(e)}).observe(e,{childList:true,characterData:true,subtree:true});
         return e}
 
-    /* ===== LEFT PANELS (🔥 WIDE & BIG TEXT) ===== */
-    var LP=$('leftPanels'),cells=[],SC=1.35; 
+    /* ===== LEFT PANELS ===== */
+    var LP=$('leftPanels'),cells=[],SC=1.35;
     var LCFG=[{n:'A',label:"TODAY'S ADMISSIONS",id:'homeMonthAdmission',v:'...'},{n:'B',label:'ACTIVE STUDENTS',id:'homeActiveStudents',v:'...'},{n:'C',date:true}];
     [330,480,630].forEach(function(y,pi){var c0=LCFG[pi],g=el('g',{transform:'translate(35,'+y+') scale('+SC+')'},LP);
-        // Extra wide rectangle
         el('rect',{x:-14,y:-8,width:278,height:118,rx:14,fill:'#020a16',opacity:.85},g);
         el('path',{d:'M0,22 V6 Q0,2 5,2 H62 L75,13 H212 L222,6 H237 Q242,6 242,12 V52 L248,58 V82 L242,88 V96 H92 L86,92 H44 L38,86 H12 L7,80 V46 L0,40Z',fill:'#04122c',stroke:'#e2f1ff','stroke-width':1.2},g);
         el('path',{d:'M26,15 H210 L221,9 H235 Q238,9 238,12 V54 L243,58 V82 L237,87 V91 H94 L88,88 H46 L40,83 H12 V44 L9,40 V28 L14,22Z',fill:'#06204a',stroke:'url(#hxBlue)','stroke-width':5,'stroke-linejoin':'round'},g);
         el('rect',{x:26,y:22,width:192,height:62,fill:'#04122e',stroke:'#1b4fa0'},g);
-        
+
         [92,108,124,140,156,172,188].forEach(function(x){el('rect',{x:x,y:7.8,width:14,height:3.2,rx:1.6,fill:'#5fb4ff'},g)});
         [120,136,152,168,184,200,216].forEach(function(x){el('rect',{x:x,y:89.5,width:14,height:3.2,rx:1.6,fill:'#5fb4ff'},g)});
         el('rect',{x:10,y:52,width:4,height:28,fill:'#1a5ad0'},g);
         el('polygon',{points:'223,56 230,50 237,56 237,80 230,86 223,80',fill:'#08265a',stroke:'#3d8fff','stroke-width':1.2},g);
         el('path',{d:'M226,67 L230,62 L234,67 M226,74 L230,79 L234,74',fill:'none',stroke:'#8be6a0','stroke-width':1.4},g);
         el('polygon',{points:'3,22 10,16 22,16 29,22 29,44 22,50 10,50 3,44',fill:'#0a2a66',stroke:'#3d8fff','stroke-width':1.4},g);
-        
+
         var arr=[];for(var c=0;c<35;c++)for(var r=0;r<10;r++)arr.push({c:c,r:r,k:c0.date?.18:.3,e:el('rect',{x:42+c*4.85,y:30+r*5.1,width:3.6,height:3.3,fill:'#1b5e9e'},g)});
         cells.push(arr);
         if(c0.date){
@@ -343,19 +430,18 @@
     }
     var dt=setInterval(dateTick,1000);dateTick();
 
-    /* ===== RIGHT PANELS (🔥 WIDE & BIG TEXT) ===== */
-    var RP=$('rightPanels'),bars=[],cartG=null;
-    var RCFG=[{title:"TODAY'S COLLECTION",id:'homeTodayCollection',v:'...'},{title:'OVERDUE ALERTS',id:'alertCount',v:'...',go:'alerts',red:true},{cartoon:true}];
+    /* ===== RIGHT PANELS ===== */
+    var RP=$('rightPanels'),bars=[];
+    var RCFG=[{title:"TODAY'S COLLECTION",id:'homeTodayCollection',v:'...'},{title:'OVERDUE ALERTS',id:'alertCount',v:'...',go:'alerts',red:true},{gauge:true}];
     [330,480,630].forEach(function(y,pi){var c0=RCFG[pi],red=!!c0.red,hl=red?'#ff245d':'#2a9bff',g=el('g',{transform:'translate(1200,'+y+') scale('+SC+')'},RP);
-        // Extra wide right rectangle
         el('rect',{x:-42,y:-6,width:278,height:114,rx:12,fill:'#020a16',opacity:.85},g);
         el('path',{d:'M-20,36 V6 L-15,1 H138 L145,8 H198 L208,26 V44 L201,53 V83 L191,94 H158 L148,86 H-12 V44Z',fill:'none',stroke:'#eaf6ff','stroke-width':1.3},g);
         el('path',{d:'M-16,5 L-12,2 H136 M152,88 L159,92 L188,92 L195,85',fill:'none',stroke:red?'#ff8aa5':'#a8d8a0','stroke-width':.9},g);
         el('rect',{x:-16.5,y:9,width:216,height:72,fill:red?'#150610':'#031226',stroke:hl,'stroke-width':2},g);
         var h1='',h2='';for(var i=0;i<20;i++)h1+='M'+(-14+i*4)+',16 l4,-5 ';for(var i=0;i<22;i++)h2+='M'+(106+i*4)+',80 l4,-6 ';
         el('path',{d:h1+h2,stroke:hl,'stroke-width':1,fill:'none'},g);
-        
-        if(c0.cartoon){cartG=g;return}
+
+        if(c0.gauge){return} /* teesra card: "Dues Spectrum" neeche add-on script banata hai */
         var t=el('text',{x:190,y:24,'font-size':12.5,'font-weight':700,fill:red?'#ff9db4':'#fff','text-anchor':'end','letter-spacing':.5},g);t.textContent=c0.title;
         var bg=el('g',{opacity:.3},g),arr=[];
         for(var i=0;i<17;i++){var x=0+i*12.5;
@@ -366,102 +452,6 @@
         bars.push(arr);
         var v=vtxt(g,90,65,c0,180);v.textContent=c0.v;fit(v);
         if(c0.go)go(g,c0.go,true)});
-
-    /* 🔥 INTERACTIVE TALKING TOM BUDDY (Centered) */
-    (function(){
-        var g=cartG;if(!g)return;
-        // Wrapped in translation to center inside new wider box
-        var wrapper = el('g', {transform: 'translate(45, 0)'}, g); 
-        var cg=el('g',{'clip-path':'url(#hxCartClip)'},wrapper),S={};
-        
-        // Shadow
-        el('ellipse',{cx:61,cy:79,rx:17,ry:2.2,fill:'#000',opacity:.4},cg);
-        
-        var ch=el('g',{},cg);
-        function E(t,a,n){var e=el(t,a,ch);if(n)S[n]=e;return e}
-        
-        // Legs
-        [-5,5].forEach(function(x){E('line',{x1:x,y1:70,x2:x,y2:77,stroke:'#2b4a7a','stroke-width':3,'stroke-linecap':'round'});E('ellipse',{cx:x+(x<0?-1:1),cy:77.5,rx:4,ry:2,fill:'#fff'})});
-        
-        // Body (Belly - Touch Zone)
-        var belly = E('ellipse',{cx:0,cy:62,rx:13,ry:12,fill:'#2fa8ff',stroke:'#0c5aa8','stroke-width':.8, cursor:'pointer', pointerEvents:'all'});
-        
-        // Arms
-        E('path',{fill:'none',stroke:'#ffd166','stroke-width':3.2,'stroke-linecap':'round'},'aL');
-        E('path',{fill:'none',stroke:'#ffd166','stroke-width':3.2,'stroke-linecap':'round'},'aR');
-        
-        // Head (Touch Zone)
-        var head = E('circle',{cx:0,cy:36,r:18,fill:'#ffd166',stroke:'#b9791c','stroke-width':.8, cursor:'pointer', pointerEvents:'all'},'face');
-        
-        E('path',{d:'M-6,21 Q0,14 6,21 M0,20 Q-3,14 2,13',fill:'none',stroke:'#6b3b0a','stroke-width':2,'stroke-linecap':'round'});
-        E('circle',{cx:-10,cy:40,r:2.4,fill:'#ff8f8f',opacity:.55});E('circle',{cx:10,cy:40,r:2.4,fill:'#ff8f8f',opacity:.55});
-        
-        // Eyes
-        [-6,6].forEach(function(x,i){E('ellipse',{cx:x,cy:34,rx:3.6,ry:4.4,fill:'#fff',stroke:'#222','stroke-width':.6},'ew'+i);E('circle',{cx:x,cy:34,r:1.9,fill:'#111'},'pu'+i);E('path',{fill:'none',stroke:'#222','stroke-width':1.5,'stroke-linecap':'round'},'ld'+i)});
-        E('path',{fill:'none',stroke:'#6b3b0a','stroke-width':1.9,'stroke-linecap':'round'},'b0');
-        E('path',{fill:'none',stroke:'#6b3b0a','stroke-width':1.9,'stroke-linecap':'round'},'b1');
-        
-        // Mouth
-        E('path',{fill:'none',stroke:'#7a1f1f','stroke-width':1.6,'stroke-linecap':'round','stroke-linejoin':'round'},'mo');
-        
-        // Tears & Sweat
-        E('circle',{r:1.8,fill:'#4cc2ff',opacity:0},'t0');E('circle',{r:1.8,fill:'#4cc2ff',opacity:0},'t1');
-        for(var i=0;i<3;i++)E('circle',{fill:'#fff',opacity:0},'s'+i);
-        
-        // Speech Bubble
-        el('circle',{cx:87,cy:29,r:1.6,fill:'#e8fbff'},cg);el('circle',{cx:91,cy:25,r:2.4,fill:'#e8fbff'},cg);
-        el('rect',{x:95,y:12,width:40,height:16,rx:7,fill:'#e8fbff',stroke:'#2a8fe0','stroke-width':1},cg);
-        var bt=el('text',{x:115,y:23.4,'font-size':8.5,'font-weight':800,fill:'#06204a','text-anchor':'middle'},cg);
-        
-        var up=['M-9,27 Q-6,24 -3,27','M3,27 Q6,24 9,27'];
-        var M={
-            think:{face:'#ffd166',b:['M-9,28 Q-6,26 -3,28','M3,24 Q6,21 10,24'],eyes:1,mo:'M-4,44 Q0,42 4,44',fill:'none',bub:'?'},
-            jump:{face:'#ffd166',b:up,eyes:1,mo:'M-6,41 Q0,51 6,41 Z',fill:'#7a1f1f',bub:'YAY!'},
-            laugh:{face:'#ffd166',b:up,eyes:0,lid:['M-9,35 Q-6,30 -3,35','M3,35 Q6,30 9,35'],mo:'M-8,40 Q0,50 8,40 Z',fill:'#7a1f1f',bub:'HA HA'},
-            angry:{face:'#ff6f52',b:['M-10,26 L-2,30','M10,26 L2,30'],eyes:1,mo:'M-5,46 Q0,40 5,46',fill:'none',bub:'GRR!'},
-            cry:{face:'#bcd9ff',b:['M-10,31 L-3,27','M10,31 L3,27'],eyes:0,lid:['M-9,34 Q-6,37 -3,34','M3,34 Q6,37 9,34'],mo:'M-6,46 Q-3,42 0,46 Q3,42 6,46',fill:'none',bub:'HUHU'}
-        };
-        var cur='think',nxt=0,last=0, idleTimer;
-
-        function setMood(n, lockDuration){
-            cur=n;var m=M[n];
-            S.face.setAttribute('fill',m.face);S.b0.setAttribute('d',m.b[0]);S.b1.setAttribute('d',m.b[1]);
-            S.mo.setAttribute('d',m.mo);S.mo.setAttribute('fill',m.fill);
-            for(var i=0;i<2;i++){S['ew'+i].setAttribute('opacity',m.eyes?1:0);S['pu'+i].setAttribute('opacity',m.eyes?1:0);
-                S['ld'+i].setAttribute('opacity',m.eyes?0:1);if(!m.eyes)S['ld'+i].setAttribute('d',m.lid[i])}
-            bt.textContent=m.bub;
-            
-            clearTimeout(idleTimer);
-            if(n !== 'think') {
-                idleTimer = setTimeout(() => setMood('think'), lockDuration || 3000);
-            }
-        }
-        setMood('think');
-
-        // INTERACTIVE TOUCH ZONES
-        head.addEventListener('click', function(e) { e.stopPropagation(); setMood('cry', 4000); }); 
-        belly.addEventListener('click', function(e) { e.stopPropagation(); setMood('laugh', 3000); }); 
-        g.addEventListener('click', function() { setMood('jump', 2500); }); 
-
-        function ctick(now){
-            if(!HC.isConnected)return;requestAnimationFrame(ctick);
-            if(now-last<33)return;last=now;var t=now/1000;
-            
-            var dy=0,rot=0,gx=0,gy=0,aL,aR,i;
-            if(cur==='jump'){dy=-Math.abs(Math.sin(t*6))*10;rot=Math.sin(t*6)*3;var w=Math.sin(t*10)*3;aL='M-10,57 Q-19,'+(48+w)+' -16,'+(37+w);aR='M10,57 Q19,'+(48-w)+' 16,'+(37-w)}
-            else if(cur==='think'){rot=Math.sin(t*1.6)*3;gx=1.3+Math.sin(t*.8)*.6;gy=-1.6;aL='M-10,57 Q-17,63 -15,69';aR='M10,57 Q18,50 4,46';bt.textContent=Math.floor(t*1.2)%2?'...':'?'}
-            else if(cur==='laugh'){rot=Math.sin(t*22)*2.5;dy=Math.sin(t*22+1);aL='M-10,57 Q-7,66 0,64';aR='M10,57 Q7,66 0,64';S.mo.setAttribute('d','M-8,40 Q0,'+(49+3*Math.sin(t*18)).toFixed(1)+' 8,40 Z')}
-            else if(cur==='angry'){rot=Math.sin(t*38)*2;gy=.8;aL='M-10,57 Q-21,58 -17,48';aR='M10,57 Q21,58 17,48'}
-            else{rot=Math.sin(t*28)*1.2;gy=1;aL='M-10,57 Q-19,47 -8,38';aR='M10,57 Q19,47 8,38'}
-            
-            S.aL.setAttribute('d',aL);S.aR.setAttribute('d',aR);
-            for(i=0;i<2;i++){S['pu'+i].setAttribute('cx',(i?6:-6)+gx);S['pu'+i].setAttribute('cy',34+gy)}
-            ch.setAttribute('transform','translate(61,'+dy.toFixed(1)+') rotate('+rot.toFixed(1)+' 0 68)');
-            for(i=0;i<2;i++){var e=S['t'+i];if(cur==='cry'){var ph=(t*14+i*6)%12;e.setAttribute('cx',i?7:-7);e.setAttribute('cy',(38+ph).toFixed(1));e.setAttribute('opacity',(1-ph/12).toFixed(2))}else e.setAttribute('opacity',0)}
-            for(i=0;i<3;i++){var s=S['s'+i];if(cur==='angry'){var p=(t*12+i*5)%14;s.setAttribute('cx',(i-1)*13);s.setAttribute('cy',(19-p).toFixed(1));s.setAttribute('r',(2+p/4.5).toFixed(1));s.setAttribute('opacity',(.85-p/18).toFixed(2))}else s.setAttribute('opacity',0)}
-        }
-        requestAnimationFrame(ctick);
-    })();
 
     /* ===== bottom buttons ===== */
     var BG=$('hxBtns');
@@ -497,7 +487,7 @@
     function tick(now){
         if(!HC.isConnected)return;
         requestAnimationFrame(tick);
-        if(now-last<70)return;last=now;var t=(now-t0)/1000;
+        if(idle()||now-last<70)return;last=now;var t=(now-t0)/1000;
         cells.forEach(function(arr,pi){var fr=((t*6+pi*7)%34)-6;arr.forEach(function(o){
             var d=fr-Math.abs(o.r-4.5)*1.3-o.c,col='#1b5e9e',op=.85;
             if(d>=0&&d<2.2){col='#d4f8b8';op=1}
@@ -517,20 +507,18 @@
 })();
 
 /* =================================================
-   CRM DATA INTEGRATION (Auto-Sync & RAM Cache Logic)
+   CRM DATA INTEGRATION (Auto-Sync & Cache) — calculation pehle jaisa hi
 ================================================= */
 (function() {
-    // Helpers
     function safeJSON(value) { try { return JSON.parse(value); } catch (e) { return null; } }
     function setText(id, value) { const el = document.getElementById(id); if (el) el.textContent = value; }
-    
-    // Exact robust date parser
+
     const MS_DAY = 86400000;
     function startOfDay(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
     function parseDate(v) {
         if (v instanceof Date) return isNaN(v.getTime()) ? null : startOfDay(v);
         if (typeof v === 'number') {
-            if (v > 20000) { 
+            if (v > 20000) {
                 const u = new Date(Math.round((v - 25569) * MS_DAY));
                 return new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate());
             }
@@ -550,24 +538,21 @@
         return isNaN(d.getTime()) ? null : startOfDay(d);
     }
 
-    // MAIN LOAD FUNCTION (WITH RAM CACHE LOGIC)
     function loadDashboardData() {
         const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 Minutes
         const now = Date.now();
-        
+
         // 1. STATS (Active, Admissions, Collection) - 5 MIN CACHE
         const cachedStatsString = localStorage.getItem("purix_home_stats");
         let cachedStats = safeJSON(cachedStatsString);
 
         if (cachedStats && cachedStats.timestamp && (now - cachedStats.timestamp < CACHE_DURATION_MS)) {
-            console.log("HUD Stats loaded from 5-min Cache ⚡");
             if (cachedStats.data) {
                 setText("homeActiveStudents", cachedStats.data.activeStudents !== undefined ? cachedStats.data.activeStudents : 0);
                 setText("homeMonthAdmission", cachedStats.data.todayAdmissions !== undefined ? cachedStats.data.todayAdmissions : 0);
                 setText("homeTodayCollection", "₹" + (cachedStats.data.todayCollection !== undefined ? cachedStats.data.todayCollection : 0));
             }
         } else {
-            console.log("Fetching FRESH HUD Stats from Server...");
             const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
             fetch(API_URL + sep + "action=getStats&timestamp=" + Date.now())
                 .then(res => res.json())
@@ -582,7 +567,7 @@
         }
 
         // 2. ALERTS COUNT (Daily Midnight Cache)
-        const todayStr = new Date().toDateString(); 
+        const todayStr = new Date().toDateString();
         const cachedAlertsDate = localStorage.getItem("purix_alerts_date");
         const cachedAlertsData = safeJSON(localStorage.getItem("purix_alerts_data"));
 
@@ -594,23 +579,24 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === "success" && Array.isArray(data.data)) {
-                        localStorage.setItem("purix_alerts_date", todayStr); 
-                        localStorage.setItem("purix_alerts_data", JSON.stringify(data.data)); 
+                        localStorage.setItem("purix_alerts_date", todayStr);
+                        localStorage.setItem("purix_alerts_data", JSON.stringify(data.data));
+                        localStorage.setItem("purix_alerts_time", String(Date.now()));
                         setText("alertCount", countStrictOverDues(data.data));
                     }
                 }).catch(err => console.error("HUD Alerts Error:", err));
         }
     }
 
-    // STRICT COUNTING
+    // STRICT COUNTING (same as alerts.html)
     function countStrictOverDues(alertsList) {
         let count = 0;
-        const today = startOfDay(new Date()); 
-        const CURRENT_MAX_LATE = 30; // Exact match with alerts.html
+        const today = startOfDay(new Date());
+        const CURRENT_MAX_LATE = 30;
 
         alertsList.forEach(s => {
             const status = String(s.status == null ? '' : s.status).trim().toLowerCase();
-            if (status !== 'active') return; 
+            if (status !== 'active') return;
 
             const dues = parseFloat(String(s.dues == null ? '' : s.dues).replace(/[^0-9.\-]/g, ''));
             if (isNaN(dues) || dues <= 0) return;
@@ -618,8 +604,8 @@
             const due = parseDate(s.dueDate);
             if (!due) return;
 
-            const diff = Math.round((due.getTime() - today.getTime()) / MS_DAY); 
-            const late = -diff; 
+            const diff = Math.round((due.getTime() - today.getTime()) / MS_DAY);
+            const late = -diff;
 
             if (late > CURRENT_MAX_LATE) {
                 count++;
@@ -628,21 +614,312 @@
         return count;
     }
 
-    // SCALING LOGIC
+    // ===== AUTO-FIT: parent ki asli jagah napo, phir desktop (scale) ya mobile layout chuno =====
     function scaleHUD() {
         const hc = document.getElementById("hudContainer");
         const hs = document.getElementById("hudScaler");
         if (!hc || !hs) return;
-        
-        const s = Math.min(hc.clientWidth / 1600, hc.clientHeight / 900) * 0.98;
-        hs.style.transform = `translate(-50%, -50%) scale(${s})`;
+
+        let h = window.innerHeight - 90;
+        const p = hc.parentElement;
+        if (p) {
+            const cs = getComputedStyle(p);
+            const ph = p.clientHeight - parseFloat(cs.paddingTop || 0) - parseFloat(cs.paddingBottom || 0);
+            if (ph > 150) h = ph;
+        }
+        hc.style.height = Math.max(h, 280) + "px";
+
+        const w = hc.clientWidth, H = hc.clientHeight;
+        const mobile = w < 820 || (w / H) < 1.05;   // chhota ya portrait screen
+        hc.classList.toggle("hx-mobile", mobile);
+        if (!mobile) {
+            const s = Math.min(w / 1600, H / 900) * 0.98;
+            hs.style.transform = `translate(-50%, -50%) scale(${s})`;
+        }
     }
-    
+
     window.addEventListener("resize", scaleHUD);
+    let ro = null;
+    const hcNow = document.getElementById("hudContainer");
+    if (typeof ResizeObserver !== "undefined" && hcNow && hcNow.parentElement) {
+        ro = new ResizeObserver(scaleHUD);
+        ro.observe(hcNow.parentElement);
+    }
     requestAnimationFrame(scaleHUD);
 
-    // Initial Load & Auto-Refresh every 60 seconds
+    // Initial Load & Auto-Refresh every 60 seconds (page badalte hi apne aap band)
     loadDashboardData();
-    setInterval(loadDashboardData, 60000);
+    const hudIv = setInterval(function () {
+        if (!document.getElementById("hudContainer")) {
+            clearInterval(hudIv);
+            window.removeEventListener("resize", scaleHUD);
+            if (ro) ro.disconnect();
+            return;
+        }
+        loadDashboardData();
+    }, 60000);
+})();
+</script>
+
+<script>
+/* =================================================
+   HUD v2: Dues Spectrum card, 3D tilt, boot, ripple, Ctrl+K palette, mobile sync
+================================================= */
+(function () {
+    var HC = document.getElementById('hudContainer');
+    if (!HC) return;
+    var NS = 'http://www.w3.org/2000/svg';
+    var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function alive() { return HC.isConnected; }
+    function el(t, a, p) { var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; }
+    function safe(fn) { try { fn(); } catch (e) { console.error('HUD v2:', e); } }
+
+    /* ---------- 1) 3D PARALLAX TILT ---------- */
+    var tilt = document.createElement('div');
+    safe(function () {
+        var sc = document.getElementById('hudScaler'), svg = document.getElementById('hxSvg');
+        if (!sc || !svg) return;
+        var logo = sc.querySelector('.logo-3d-spin');
+        tilt.className = 'hx2-tilt';
+        sc.insertBefore(tilt, svg);
+        if (logo) tilt.appendChild(logo);
+        tilt.appendChild(svg);
+        if (still) return;
+        var tx = 0, ty = 0, cx = 0, cy = 0;
+        HC.addEventListener('pointermove', function (e) {
+            if (e.pointerType !== 'mouse') return;
+            var r = HC.getBoundingClientRect();
+            tx = ((e.clientX - r.left) / r.width - .5) * 2;
+            ty = ((e.clientY - r.top) / r.height - .5) * 2;
+        });
+        HC.addEventListener('pointerleave', function () { tx = ty = 0; });
+        (function loop() {
+            if (!alive()) return;
+            requestAnimationFrame(loop);
+            if (HC.classList.contains('hx-mobile')) return;
+            cx += (tx - cx) * .08; cy += (ty - cy) * .08;
+            tilt.style.transform = 'perspective(1800px) rotateX(' + (-cy * 2.5).toFixed(2) + 'deg) rotateY(' + (cx * 3.5).toFixed(2) + 'deg)';
+        })();
+    });
+
+    /* ---------- 2) TOUCH RIPPLE ---------- */
+    HC.addEventListener('pointerdown', function (e) {
+        var r = HC.getBoundingClientRect(), s = document.createElement('span');
+        s.className = 'hx2-rip';
+        s.style.left = (e.clientX - r.left) + 'px';
+        s.style.top = (e.clientY - r.top) + 'px';
+        HC.appendChild(s);
+        setTimeout(function () { s.remove(); }, 750);
+    });
+
+    /* ---------- 3) BOOT SEQUENCE (session me sirf pehli baar) ---------- */
+    safe(function () {
+        if (still) return;
+        var seen = false;
+        try { seen = !!sessionStorage.getItem('purix_boot'); sessionStorage.setItem('purix_boot', '1'); } catch (e) {}
+        if (seen) return;
+        var b = document.createElement('div');
+        b.className = 'hx2-boot';
+        ['PURIX OS // CORE v2.0', '> LINKING DATABASE ........... <b>OK</b>', '> SYNCING STUDENT REGISTRY ... <b>OK</b>', '> CALIBRATING REACTOR ........ <b>OK</b>', '> ACCESS GRANTED'].forEach(function (t, i) {
+            var d = document.createElement('div'); d.innerHTML = t; d.style.animationDelay = (i * .32) + 's'; b.appendChild(d);
+        });
+        HC.appendChild(b);
+        function done() {
+            if (b.classList.contains('out')) return;
+            b.classList.add('out'); tilt.classList.add('assemble');
+            setTimeout(function () { b.remove(); tilt.classList.remove('assemble'); }, 1200);
+        }
+        b.addEventListener('click', done);
+        setTimeout(done, 2100);
+    });
+
+    /* ---------- 4) COMMAND PALETTE: Ctrl+K ya "/" ---------- */
+    safe(function () {
+        var hint = document.createElement('div');
+        hint.className = 'hx2-hint';
+        hint.innerHTML = '<i class="fa-solid fa-terminal"></i> CTRL + K';
+        hint.addEventListener('click', function () { if (window.__pxOpenPal) window.__pxOpenPal(); });
+        HC.appendChild(hint);
+        if (window.__pxPal) return;
+        window.__pxPal = 1;
+        var ITEMS = [['home', 'Home Dashboard', 'fa-house'], ['admission', 'New Admission', 'fa-user-plus'], ['payment', 'Collect Fee Payment', 'fa-indian-rupee-sign'],
+                     ['profile', 'Student Profile', 'fa-id-card'], ['reports', 'Reports', 'fa-chart-pie'], ['alerts', 'Payment Alerts', 'fa-bell']];
+        function closePal() { var o = document.querySelector('.px-pal'); if (o) o.remove(); }
+        function openPal() {
+            if (document.querySelector('.px-pal')) return;
+            var o = document.createElement('div');
+            o.className = 'px-pal';
+            o.innerHTML = '<div class="px-pal-box"><input type="text" placeholder="Kahan jana hai? Type karein..." autocomplete="off"><div class="px-pal-list"></div></div>';
+            document.body.appendChild(o);
+            var inp = o.querySelector('input'), list = o.querySelector('.px-pal-list'), sel = 0, cur = ITEMS;
+            function draw() {
+                list.innerHTML = cur.length ? cur.map(function (it, i) {
+                    return '<div class="px-pal-item' + (i === sel ? ' on' : '') + '" data-i="' + i + '"><i class="fa-solid ' + it[2] + '"></i>' + it[1] + '<small>' + it[0].toUpperCase() + '</small></div>';
+                }).join('') : '<div class="px-pal-item">Kuch nahi mila</div>';
+            }
+            function go(i) { var it = cur[i]; if (!it) return; closePal(); if (typeof loadModule === 'function') loadModule(it[0]); }
+            inp.addEventListener('input', function () {
+                var q = inp.value.trim().toLowerCase();
+                cur = ITEMS.filter(function (it) { return (it[1] + ' ' + it[0]).toLowerCase().indexOf(q) > -1; });
+                sel = 0; draw();
+            });
+            inp.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowDown') { sel = Math.min(cur.length - 1, sel + 1); draw(); e.preventDefault(); }
+                else if (e.key === 'ArrowUp') { sel = Math.max(0, sel - 1); draw(); e.preventDefault(); }
+                else if (e.key === 'Enter') go(sel);
+                else if (e.key === 'Escape') closePal();
+            });
+            list.addEventListener('click', function (e) { var n = e.target.closest('.px-pal-item'); if (n && n.getAttribute('data-i') != null) go(+n.getAttribute('data-i')); });
+            o.addEventListener('mousedown', function (e) { if (e.target === o) closePal(); });
+            draw(); inp.focus();
+        }
+        window.__pxOpenPal = openPal;
+        document.addEventListener('keydown', function (e) {
+            var t = e.target && e.target.tagName;
+            if ((e.ctrlKey || e.metaKey) && String(e.key).toLowerCase() === 'k') { e.preventDefault(); openPal(); return; }
+            if (e.key === '/' && t !== 'INPUT' && t !== 'TEXTAREA' && t !== 'SELECT') { e.preventDefault(); openPal(); }
+        });
+    });
+
+    /* ---------- 5) DUES SPECTRUM (teesra right card) ---------- */
+    var D = null; // {cnt:[4], sum:[4]} - mobile layout bhi isi ko padhta hai
+    safe(function () {
+        var panel = document.querySelector('#rightPanels > g:nth-child(3)');
+        if (!panel) return;
+
+        var COL = ['#ffd400', '#00e5ff', '#ff8c00', '#ff245d'], NAMES = ['UPCOMING', 'TODAY', 'CURRENT', 'OVERDUE'];
+        var CX = 46, CY = 77, R1 = 34, R2 = 46;
+        function P(cx, cy, r, a) { a = a * Math.PI / 180; return [cx + r * Math.sin(a), cy - r * Math.cos(a)]; }
+        function f(n) { return n.toFixed(1); }
+        function sec(a1, a2, r1, r2) {
+            var l = (a2 - a1) > 180 ? 1 : 0, p = P(CX, CY, r2, a1), q = P(CX, CY, r2, a2), s = P(CX, CY, r1, a2), u = P(CX, CY, r1, a1);
+            return 'M' + f(p[0]) + ',' + f(p[1]) + 'A' + r2 + ',' + r2 + ' 0 ' + l + ' 1 ' + f(q[0]) + ',' + f(q[1]) + 'L' + f(s[0]) + ',' + f(s[1]) + 'A' + r1 + ',' + r1 + ' 0 ' + l + ' 0 ' + f(u[0]) + ',' + f(u[1]) + 'Z';
+        }
+        function pd(v) { // alerts.html jaisa hi date parser
+            var d, m;
+            if (v instanceof Date) return isNaN(v.getTime()) ? null : new Date(v.getFullYear(), v.getMonth(), v.getDate());
+            if (typeof v === 'number') { if (v > 20000) { var u = new Date(Math.round((v - 25569) * 86400000)); return new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate()); } return null; }
+            if (typeof v !== 'string') return null;
+            var s = v.trim(); if (!s || s === '-') return null;
+            if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/))) return new Date(+m[1], +m[2] - 1, +m[3]);
+            if (/^\d{4}-\d{2}-\d{2}T/.test(s)) { d = new Date(s); return isNaN(d.getTime()) ? null : new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+            if ((m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/))) return new Date(+m[3], +m[2] - 1, +m[1]);
+            d = new Date(s); return isNaN(d.getTime()) ? null : new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        }
+
+        var G = el('g', {}, panel);
+        el('path', { d: sec(-90, 90, R1, R2), fill: '#0a2442', opacity: .85 }, G);
+        for (var a = -90; a <= 90; a += 15) { var p1 = P(CX, CY, R2 + 3, a), p2 = P(CX, CY, R2 + 6, a); el('path', { d: 'M' + f(p1[0]) + ',' + f(p1[1]) + 'L' + f(p2[0]) + ',' + f(p2[1]), stroke: '#2a8fe0', 'stroke-width': 1 }, G); }
+        var ringA = P(CX, CY, R2 + 9, -90), ringB = P(CX, CY, R2 + 9, 90);
+        el('path', { d: 'M' + f(ringA[0]) + ',' + f(ringA[1]) + 'A' + (R2 + 9) + ',' + (R2 + 9) + ' 0 0 1 ' + f(ringB[0]) + ',' + f(ringB[1]), fill: 'none', stroke: '#fff', 'stroke-width': 2.2, 'stroke-linecap': 'round', 'stroke-dasharray': '0.1 6.2', class: 'hx-march' }, G);
+
+        var sel = -1, unit = 0, hov = -1, pulse = 0;
+        var segs = COL.map(function (c, i) {
+            var s = el('path', { fill: c, style: 'cursor:pointer' }, G);
+            s.addEventListener('pointerenter', function () { hov = i; });
+            s.addEventListener('pointerleave', function () { hov = -1; });
+            s.addEventListener('click', function (e) { e.stopPropagation(); sel = (sel === i ? -1 : i); pulse = 1; });
+            return s;
+        });
+        var needle = el('g', {}, G);
+        el('path', { d: 'M' + (CX - 2.2) + ',' + CY + ' L' + CX + ',' + (CY - 31) + ' L' + (CX + 2.2) + ',' + CY + 'Z', fill: '#fff', style: 'filter:drop-shadow(0 0 3px #00e5ff)' }, needle);
+        el('circle', { cx: CX, cy: CY, r: 4.5, fill: '#031225', stroke: '#00e5ff', 'stroke-width': 1.6 }, G);
+
+        var T = el('text', { x: 190, y: 24, 'font-size': 12.5, 'font-weight': 700, fill: '#fff', 'text-anchor': 'end', 'letter-spacing': .5 }, G); T.textContent = 'DUES SPECTRUM';
+        var V = el('text', { x: 146, y: 55, 'font-size': 30, 'font-weight': 800, fill: '#fff', 'text-anchor': 'middle', stroke: '#04122e', 'stroke-width': 3.2, 'paint-order': 'stroke', style: 'filter:drop-shadow(0 0 5px #00e5ff);pointer-events:none' }, G);
+        var S = el('text', { x: 146, y: 67, 'font-size': 6.8, 'font-weight': 700, fill: '#9be8ff', 'text-anchor': 'middle', 'letter-spacing': .8, style: 'pointer-events:none' }, G);
+        var hitV = el('rect', { x: 98, y: 30, width: 96, height: 40, fill: 'transparent', style: 'cursor:pointer' }, G);
+        el('title', {}, hitV).textContent = 'Tap: students / pending \u20B9';
+        hitV.addEventListener('click', function (e) { e.stopPropagation(); unit = 1 - unit; pulse = 1; });
+        var A = el('text', { x: 190, y: 77, 'font-size': 7, 'font-weight': 700, fill: '#00e5ff', 'text-anchor': 'end', 'letter-spacing': 1, style: 'cursor:pointer' }, G); A.textContent = 'OPEN ALERTS \u203A';
+        A.addEventListener('click', function (e) { e.stopPropagation(); if (typeof loadModule === 'function') loadModule('alerts'); });
+
+        // ----- data: Home ka cache hi padhta hai, koi nayi server call nahi -----
+        var lastKey = '', shown = [0, 0, 0, 0], sv = 0, ang = -90, vel = 0;
+        function read() {
+            var today = new Date(); today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            var raw = null; try { raw = localStorage.getItem('purix_alerts_data'); } catch (e) {}
+            var key = raw + '|' + today.getTime();
+            if (key === lastKey) return;
+            lastKey = key;
+            var arr = null; try { arr = JSON.parse(raw); } catch (e) {}
+            if (!Array.isArray(arr)) { D = null; return; }
+            var cnt = [0, 0, 0, 0], sum = [0, 0, 0, 0];
+            arr.forEach(function (s) {
+                if (String(s.status == null ? '' : s.status).trim().toLowerCase() !== 'active') return;
+                var dues = parseFloat(String(s.dues == null ? '' : s.dues).replace(/[^0-9.\-]/g, '')); if (isNaN(dues) || dues <= 0) return;
+                var due = pd(s.dueDate); if (!due) return;
+                var diff = Math.round((due.getTime() - today.getTime()) / 86400000), late = -diff, k = -1;
+                if (diff >= 1 && diff <= 5) k = 0; else if (diff === 0) k = 1; else if (late >= 1 && late <= 30) k = 2; else if (late > 30) k = 3;
+                if (k < 0) return;
+                cnt[k]++; sum[k] += dues;
+            });
+            D = { cnt: cnt, sum: sum };
+        }
+        read();
+        var iv = setInterval(function () { if (!alive()) { clearInterval(iv); return; } read(); }, 3000);
+
+        var last = 0;
+        (function frame(now) {
+            if (!alive()) return;
+            requestAnimationFrame(frame);
+            if (HC.classList.contains('hx-mobile') || now - last < 33) return; last = now;
+            var total = 0, money = 0, tf = [0, 0, 0, 0];
+            if (D) { D.cnt.forEach(function (c, i) { total += c; money += D.sum[i]; }); if (total) tf = D.cnt.map(function (c) { return c / total; }); }
+            var cur = -90;
+            for (var i = 0; i < 4; i++) {
+                shown[i] += (tf[i] - shown[i]) * .12;
+                var span = shown[i] * 180, grow = (sel === i || hov === i) ? 3 : 0;
+                if (span > 3) {
+                    segs[i].setAttribute('d', sec(cur + 1, cur + span - 1, R1 - grow, R2 + grow));
+                    segs[i].setAttribute('opacity', sel < 0 ? .95 : (sel === i ? 1 : .3));
+                } else segs[i].setAttribute('d', '');
+                cur += span;
+            }
+            var target = -90 + 180 * (total ? D.cnt[3] / total : 0);
+            if (sel >= 0 && total) { var st = 0; for (var j = 0; j < sel; j++) st += tf[j]; target = -90 + 180 * (st + tf[sel] / 2); }
+            vel += (target - ang) * .09; vel *= .78; ang += vel;
+            var jitter = still ? 0 : Math.sin(now / 700) * 1.1;
+            needle.setAttribute('transform', 'rotate(' + (ang + jitter).toFixed(2) + ' ' + CX + ' ' + CY + ')');
+            if (!D) { V.textContent = '--'; S.textContent = 'SYNCING...'; return; }
+            var tv = unit ? (sel < 0 ? money : D.sum[sel]) : (sel < 0 ? total : D.cnt[sel]);
+            sv += (tv - sv) * .2; if (Math.abs(tv - sv) < .5) sv = tv;
+            var txt = unit ? '\u20B9' + Math.round(sv).toLocaleString('en-IN') : String(Math.round(sv));
+            V.textContent = txt;
+            V.setAttribute('font-size', txt.length <= 4 ? 30 : txt.length <= 6 ? 25 : 19);
+            pulse *= .9; V.setAttribute('opacity', (1 - pulse * .35).toFixed(2));
+            S.textContent = total === 0 ? 'ALL CLEAR' : (sel < 0 ? (unit ? 'TOTAL PENDING' : 'STUDENTS') : NAMES[sel] + (unit ? ' DUES' : ' STUDENTS'));
+        })(0);
+    });
+
+    /* ---------- 6) MOBILE LAYOUT: SVG ke numbers ko mobile cards me copy karo ---------- */
+    safe(function () {
+        var M = document.getElementById('hxMob');
+        if (!M) return;
+        var map = [['homeMonthAdmission', 'mAdm'], ['homeActiveStudents', 'mAct'], ['homeTodayCollection', 'mCol'], ['alertCount', 'mAlr']];
+        var bar = document.getElementById('mSpec'), leg = document.getElementById('mLeg');
+        function sync() {
+            map.forEach(function (m) {
+                var s = document.getElementById(m[0]), d = document.getElementById(m[1]);
+                if (s && d && d.textContent !== s.textContent) d.textContent = s.textContent;
+            });
+            var dd = document.getElementById('mDate');
+            if (dd) dd.textContent = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+            if (bar && leg) {
+                var segsM = bar.children, chips = leg.children;
+                for (var i = 0; i < 4; i++) {
+                    var c = D ? D.cnt[i] : 0;
+                    segsM[i].style.flexGrow = c || 0.0001;
+                    chips[i].firstChild.textContent = D ? c : '-';
+                }
+            }
+        }
+        M.addEventListener('click', function (e) {
+            var n = e.target.closest('[data-mod]');
+            if (n && typeof loadModule === 'function') loadModule(n.getAttribute('data-mod'));
+        });
+        sync();
+        var iv = setInterval(function () { if (!alive()) { clearInterval(iv); return; } sync(); }, 700);
+    });
 })();
 </script>
