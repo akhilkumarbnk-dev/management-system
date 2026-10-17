@@ -8,26 +8,32 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwE3hB-RKimSeI11u8PqkLh
 
 
 // --- 1. MODULE NAVIGATION SYSTEM (Pages Change Karne Ke Liye) ---
+let _moduleLoadToken = 0; // jaldi-jaldi page badalne par purana page naye ko overwrite na kare
+
 function loadModule(moduleName) {
+    const myToken = ++_moduleLoadToken;
+
     const navItems = document.querySelectorAll('.nav-links li');
     navItems.forEach(item => item.classList.remove('active'));
-    
+
     const activeBtn = document.querySelector(`.nav-links li[onclick*="${moduleName}"]`);
     if (activeBtn) {
         activeBtn.classList.add('active');
     }
 
     console.log("System Initializing Module: " + moduleName);
-    
-    // YAHAN FIX KIYA GAYA HAI: Direct HTML file load karna bina kisi folder ke
+
+    // Direct HTML file load karna bina kisi folder ke
     fetch(moduleName + '.html?nocache=' + new Date().getTime())
         .then(response => {
             if (!response.ok) throw new Error('Module not found: ' + moduleName);
             return response.text();
         })
         .then(html => {
+            if (myToken !== _moduleLoadToken) return; // is beech koi aur page khul chuka hai
+
             document.getElementById('module-container').innerHTML = html;
-            
+
             // CRITICAL FIX: Executing scripts inside dynamically loaded HTML
             const scripts = document.getElementById('module-container').querySelectorAll('script');
             scripts.forEach(oldScript => {
@@ -35,49 +41,26 @@ function loadModule(moduleName) {
                 newScript.text = oldScript.text;
                 document.body.appendChild(newScript).parentNode.removeChild(newScript);
             });
-            
-            if(moduleName === 'home') {
-                fetchHomeStats();
-            }
+            // Home page apna data khud load karta hai (home.html ke andar), isliye yahan alag call nahi.
         })
         .catch(error => {
+            if (myToken !== _moduleLoadToken) return;
             console.error("Error loading module:", error);
             document.getElementById('module-container').innerHTML = `<h3 style="color: #00f3ff; text-align: center; margin-top: 50px;">MODULE OFFLINE OR MISSING</h3>`;
         });
 }
 
 
-// --- 2. FETCH LIVE STATS FOR SCI-FI DASHBOARD ---
+// --- 2. HOME STATS REFRESH ---
+// Payment / admission ke baad pages ye function bulate hain. Home apna 5-minute cache
+// khud rakhta hai, isliye yahan sirf wo cache hata dete hain - agli baar Home kholne par
+// naya data aayega. (Pehle yahan ek bekaar server call jati thi aur "undefined" bhi aa sakta tha.)
 function fetchHomeStats() {
-    if(API_URL === "YAHAN_APNA_WEB_APP_URL_PASTE_KAREIN" || API_URL === "") {
-        console.warn("⚠️ SYSTEM ALERT: API URL missing in script.js!");
-        return;
-    }
-
-    console.log("Fetching live data from Academy Database...");
-
-    fetch(API_URL + "?action=getStats")
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === "success") {
-                let activeStudentsEl = document.getElementById('homeActiveStudents');
-                let monthAdmissionEl = document.getElementById('homeMonthAdmission');
-                let todayCollectionEl = document.getElementById('homeTodayCollection');
-
-                if(activeStudentsEl) activeStudentsEl.innerText = data.data.activeStudents;
-                if(monthAdmissionEl) monthAdmissionEl.innerText = data.data.monthAdmission;
-                if(todayCollectionEl) todayCollectionEl.innerText = "₹" + data.data.todayCollection;
-            } else {
-                console.error("Database connection failed:", data.message);
-            }
-        })
-        .catch(error => {
-            console.error("Signal Lost! Error connecting to server:", error);
-        });
+    try { localStorage.removeItem("purix_home_stats"); } catch (e) {}
 }
 
 // ==========================================
-// 🚀 NEW: GLOBAL HELPER FUNCTIONS (PDF & WhatsApp)
+// 🚀 GLOBAL HELPER FUNCTIONS (PDF & WhatsApp)
 // ==========================================
 
 // --- 3. PROFESSIONAL PDF EXPORT LOGIC ---
@@ -133,7 +116,7 @@ function showPaymentSuccess(studentName, amount, dues, mobileNumber) {
         html: `<p style="color: var(--text-glow);">Amount of <b>₹${amount}</b> collected for <b>${studentName}</b>.</p>
                <p style="color: var(--danger-neon); margin-top: 5px;">Remaining Dues: <b>₹${dues}</b></p>`,
         icon: 'success',
-        background: '#050914', 
+        background: '#050914',
         color: '#00f3ff',
         showCancelButton: true,
         confirmButtonText: 'Done',
